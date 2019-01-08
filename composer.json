@@ -1,0 +1,66 @@
+{
+  "type": "typo3-cms-extension",
+  "name": "hoogi91/charts",
+  "description": "Extension to create datasets and show them as line, bar, pie or doughnut chart in frontend",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Thorsten Hogenkamp",
+      "email": "hoogi20@googlemail.com"
+    },
+    {
+      "name": "UDG Rhein-Main TYPO3 Development Team",
+      "email": "typo3-mainz@udg.de"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "typo3/cms-core": "^8.7 || ^9.5",
+    "typo3/cms-backend": "^8.7 || ^9.5",
+    "typo3/cms-frontend": "^8.7 || ^9.5",
+    "typo3/cms-extbase": "^8.7 || ^9.5",
+    "typo3/cms-fluid": "^8.7 || ^9.5"
+  },
+  "require-dev": {
+    "typo3/minimal": "^8.7 || ^9.5",
+    "squizlabs/php_codesniffer": "^3.0",
+    "phpunit/phpunit": "^6.0",
+    "nimut/testing-framework": "^4.0",
+    "hoogi91/spreadsheets": "^1.0"
+  },
+  "suggest": {
+    "hoogi91/spreadsheets": "Allows datasets (values and colors) to be filled by spreadsheet files (XLSX, CSV, ODT, etc.)"
+  },
+  "autoload": {
+    "psr-4": {
+      "Hoogi91\\Charts\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Hoogi91\\Charts\\Tests\\": "Tests"
+    }
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/web/typo3conf/ext/",
+      "[ -L .Build/web/typo3conf/ext/charts ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/charts"
+    ],
+    "extension-cleanup-for-release": [
+      "rm -rf Tests/",
+      "rm .gitignore",
+      "rm .travis.yml",
+      "rm composer.lock"
+    ]
+  },
+  "extra": {
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/web"
+    }
+  }
+}

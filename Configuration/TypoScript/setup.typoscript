@@ -1,0 +1,46 @@
+# default configuration is done for Bar Charts
+tt_content.chart_bar =< lib.contentElement
+tt_content.chart_bar {
+    layoutRootPaths {
+        200 = EXT:charts/Resources/Private/Layouts/
+        210 = {$plugin.tx_charts.view.layoutRootPath}
+    }
+
+    partialRootPaths {
+        200 = EXT:charts/Resources/Private/Partials/
+        210 = {$plugin.tx_charts.view.partialRootPath}
+    }
+
+    templateRootPaths {
+        200 = EXT:charts/Resources/Private/Templates/
+        210 = {$plugin.tx_charts.view.templateRootPath}
+    }
+
+    templateName = Chart
+
+    dataProcessing {
+        // process selected diagram data to easy output diagrams
+        10 = Hoogi91\Charts\DataProcessing\ChartsProcessor
+        10 {
+            data.field = tx_charts_chartdata
+            as = data_chart
+        }
+
+        // process pi_flexform field settings
+        20 = Hoogi91\Charts\DataProcessing\FlexFormProcessor
+        20 {
+            if.isTrue.field = pi_flexform
+            fieldName = pi_flexform
+            as = settings
+        }
+    }
+}
+
+# copy configuration from Bar Charts to Line Charts
+tt_content.chart_line < tt_content.chart_bar
+
+# copy configuration from Bar Charts to Pie Charts
+tt_content.chart_pie < tt_content.chart_bar
+
+# copy configuration from Bar Charts to Doughnut Charts
+tt_content.chart_doughnut < tt_content.chart_bar

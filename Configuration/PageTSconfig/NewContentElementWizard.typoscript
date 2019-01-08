@@ -1,0 +1,46 @@
+mod.wizards.newContentElement.wizardItems.charts {
+    header = Charts
+    after = common
+    elements {
+        barChart {
+            iconIdentifier = tx_charts_bar_chart
+            title = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.bar_chart_title
+            description = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.bar_chart_description
+            tt_content_defValues {
+                CType = chart_bar
+            }
+        }
+
+        lineChart {
+            iconIdentifier = tx_charts_line_chart
+            title = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.line_chart_title
+            description = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.line_chart_description
+            tt_content_defValues {
+                CType = chart_line
+            }
+        }
+
+        pieChart {
+            iconIdentifier = tx_charts_pie_chart
+            title = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.pie_chart_title
+            description = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.pie_chart_description
+            tt_content_defValues {
+                CType = chart_pie
+            }
+        }
+
+        doughnutChart {
+            iconIdentifier = tx_charts_doughnut_chart
+            title = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.doughnut_chart_title
+            description = LLL:EXT:charts/Resources/Private/Language/locallang_db_new_content_el.xlf:wizards.newContentElement.doughnut_chart_description
+            tt_content_defValues {
+                CType = chart_doughnut
+            }
+        }
+    }
+
+    show := addToList(barChart)
+    show := addToList(lineChart)
+    show := addToList(pieChart)
+    show := addToList(doughnutChart)
+}

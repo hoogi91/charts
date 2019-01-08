@@ -1,0 +1,17 @@
+.chart-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.chart-container > .chart {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.chart-container > .chart .ct-label {
+    font-size: 1.25rem;
+}

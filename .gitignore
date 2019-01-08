@@ -1,0 +1,9 @@
+.idea
+.vagrant
+.Build
+ansible/
+vendor/
+var/
+composer.phar
+composer.lock
+Vagrantfile

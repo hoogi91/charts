@@ -1,0 +1,35 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:c="http://typo3.org/ns/Hoogi91/Charts/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<strong>
+    <f:translate key="LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf:tt_content.CType.{CType}"/>
+</strong>
+<ul>
+    <f:alias map="{chartData: '{c:getChartData(list: tx_charts_chartdata)}'}">
+        <f:if condition="{chartData.0}">
+            <c:backend.editLink recordId="{chartData.0.uid}" recordTable="tx_charts_domain_model_chartdata"
+                                returnPid="{pid}">
+                <li>
+                    <span>Dataset:</span>
+                    <span class="text-primary">
+                        <f:if condition="{chartData.0.title}" then="{chartData.0.title}" else="[No Title]"/>
+                    </span>
+                </li>
+            </c:backend.editLink>
+        </f:if>
+    </f:alias>
+
+    <f:alias map="{config: pi_flexform_transformed.chart}">
+        <li>
+            <span>Cutout Percentage:</span>
+            <span>{config.doughnut.cutoutPercentage}%</span>
+        </li>
+        <li>
+            <span>Legend:</span>
+            <span>
+                <f:if condition="{config.legend.active}" then="Yes" else="No"/> ({config.legend.position})
+            </span>
+        </li>
+    </f:alias>
+</ul>
+</html>

@@ -1,0 +1,31 @@
+# ==============================================
+# Persistence object mapping configuration
+# ==============================================
+config.tx_extbase.persistence.classes {
+    Hoogi91\Charts\Domain\Model\ChartData {
+        subclasses {
+            0 = Hoogi91\Charts\Domain\Model\ChartDataPlain
+            1 = Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet
+        }
+    }
+
+    Hoogi91\Charts\Domain\Model\ChartDataPlain {
+        mapping {
+            tableName = tx_charts_domain_model_chartdata
+            recordType = 0
+        }
+    }
+
+    Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet {
+        mapping {
+            tableName = tx_charts_domain_model_chartdata
+            recordType = 1
+            columns {
+                spreadsheet_labels.mapOnProperty = labels
+                spreadsheet_datasets.mapOnProperty = datasets
+                spreadsheet_datasets_labels.mapOnProperty = datasetsLabels
+                spreadsheet_assets.mapOnProperty = assets
+            }
+        }
+    }
+}

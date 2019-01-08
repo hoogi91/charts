@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" product-name="charts">
+		<header/>
+		<body>
+			<trans-unit id="wizards.newContentElement.bar_chart_title" xml:space="preserve">
+				<source>Bar Chart</source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.bar_chart_description" xml:space="preserve">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.line_chart_title" xml:space="preserve">
+				<source>Line Chart</source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.line_chart_description" xml:space="preserve">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.pie_chart_title" xml:space="preserve">
+				<source>Pie Chart</source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.pie_chart_description" xml:space="preserve">
+				<source></source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.doughnut_chart_title" xml:space="preserve">
+				<source>Doughnut Chart</source>
+			</trans-unit>
+			<trans-unit id="wizards.newContentElement.doughnut_chart_description" xml:space="preserve">
+				<source></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

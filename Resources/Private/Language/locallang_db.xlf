@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" product-name="charts">
+        <header/>
+        <body>
+            <trans-unit id="tt_content.tx_charts_chartdata" xml:space="preserve">
+				<source>Chart Data</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.div._charts_" xml:space="preserve">
+				<source>Charts</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.chart_bar" xml:space="preserve">
+				<source>Bar Chart</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.chart_line" xml:space="preserve">
+				<source>Line Chart</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.chart_pie" xml:space="preserve">
+				<source>Pie Chart</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.chart_doughnut" xml:space="preserve">
+				<source>Doughnut Chart</source>
+			</trans-unit>
+
+			<trans-unit id="tx_charts_domain_model_chartdata" xml:space="preserve">
+				<source>Chart Dataset</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.title" xml:space="preserve">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.type" xml:space="preserve">
+				<source>Spreadsheet based?</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.alignment" xml:space="preserve">
+				<source>Is Data vertical aligned?</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.type.activate" xml:space="preserve">
+				<source>Activate</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.labels" xml:space="preserve">
+				<source>Labels</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.datasets" xml:space="preserve">
+				<source>Datasets</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.datasets_labels" xml:space="preserve">
+				<source>Dataset Labels</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.spreadsheet_labels" xml:space="preserve">
+				<source>Labels (single row or column)</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.spreadsheet_datasets" xml:space="preserve">
+				<source>Datasets (mulitple rows or columns)</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.spreadsheet_datasets_labels" xml:space="preserve">
+				<source>Dataset Labels (single row or column)</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.spreadsheet_assets" xml:space="preserve">
+				<source>Spreadsheet Assets</source>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

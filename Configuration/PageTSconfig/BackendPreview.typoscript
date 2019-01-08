@@ -1,0 +1,4 @@
+mod.web_layout.tt_content.preview.chart_bar = EXT:charts/Resources/Private/Templates/Preview/Bar.html
+mod.web_layout.tt_content.preview.chart_line = EXT:charts/Resources/Private/Templates/Preview/Line.html
+mod.web_layout.tt_content.preview.chart_pie = EXT:charts/Resources/Private/Templates/Preview/Pie.html
+mod.web_layout.tt_content.preview.chart_doughnut = EXT:charts/Resources/Private/Templates/Preview/Doughnut.html

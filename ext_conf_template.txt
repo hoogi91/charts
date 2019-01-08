@@ -1,0 +1,2 @@
+# cat=basic/enable; type=user[Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry->getLibrarySelect]; label=Chart Library to use
+library =
