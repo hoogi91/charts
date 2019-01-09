@@ -4,6 +4,10 @@ namespace Hoogi91\Charts\Tests\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ChartDataPlainTest
@@ -19,6 +23,17 @@ class ChartDataPlainTest extends UnitTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        // register cache_runtime to make xml2array work in v9 setups
+        /** @var CacheManager $cacheManager */
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $cacheManager->setCacheConfigurations([
+            'cache_runtime' => [
+                'backend'  => NullBackend::class,
+                'frontend' => VariableFrontend::class,
+            ],
+        ]);
+
         $this->chartDataPlainModel = $this->getMockBuilder(ChartDataPlain::class)
             ->setMethods(['getAllowedTypes'])
             ->getMock();
