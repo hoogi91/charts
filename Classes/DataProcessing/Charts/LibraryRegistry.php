@@ -3,6 +3,7 @@
 namespace Hoogi91\Charts\DataProcessing\Charts;
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use Hoogi91\Charts\RegisterChartLibraryException;
@@ -83,6 +84,9 @@ class LibraryRegistry implements SingletonInterface
      */
     public function getLibrarySelect($data)
     {
+        // ensure that localconf is executed/loaded
+        ExtensionManagementUtility::loadExtLocalconf();
+
         $html = '<div class="form-inline">';
         $html .= sprintf('<input type="hidden" name="%s" value="%s"/>', $data['fieldName'], $data['fieldValue']);
         $html .= sprintf('<select class="form-control" name="%s">', $data['fieldName']);
