@@ -4,7 +4,6 @@ namespace Hoogi91\Charts\ViewHelpers\Backend;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use UdgTypo3\UdgBackendPreview\ViewHelpers\Link\AbstractLinkViewHelper;
 
 /**
  * ViewHelper to create a link to edit a record of a specific table
