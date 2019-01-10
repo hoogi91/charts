@@ -84,8 +84,8 @@ class LibraryRegistry implements SingletonInterface
      */
     public function getLibrarySelect($data)
     {
-        // ensure that localconf is executed/loaded
-        ExtensionManagementUtility::loadExtLocalconf();
+        // ensure loading of extension configuration before creating library select
+        $this->loadExtensionConfigurations();
 
         $html = '<div class="form-inline">';
         $html .= sprintf('<input type="hidden" name="%s" value="%s"/>', $data['fieldName'], $data['fieldValue']);
@@ -100,5 +100,14 @@ class LibraryRegistry implements SingletonInterface
         $html .= '</select>';
         $html .= '</div>';
         return $html;
+    }
+
+    /**
+     * ensure that localconf is executed/loaded
+     * this fixes issue when getting library select in TYPO3 v9 install tool settings
+     */
+    protected function loadExtensionConfigurations()
+    {
+        ExtensionManagementUtility::loadExtLocalconf();
     }
 }

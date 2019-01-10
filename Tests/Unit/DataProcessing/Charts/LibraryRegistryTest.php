@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class LibraryRegistryTest extends UnitTestCase
 {
     /**
-     * @var LibraryRegistry
+     * @var LibraryRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
@@ -32,13 +32,19 @@ class LibraryRegistryTest extends UnitTestCase
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheManager->setCacheConfigurations([
+            'cache_core'     => [
+                'backend'  => NullBackend::class,
+                'frontend' => VariableFrontend::class,
+            ],
             'extbase_object' => [
                 'backend'  => NullBackend::class,
                 'frontend' => VariableFrontend::class,
             ],
         ]);
 
-        $this->registry = new LibraryRegistry();
+        $this->registry = $this->getMockBuilder(LibraryRegistry::class)
+            ->setMethods(['loadExtensionConfigurations'])
+            ->getMock();
     }
 
     /**
