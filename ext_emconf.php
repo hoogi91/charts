@@ -15,4 +15,9 @@ $EM_CONF[$_EXTKEY] = [
             'spreadsheets' => '1.0.0-1.99.99',
         ],
     ],
+    'autoload'     => [
+        'psr-4' => [
+            'Hoogi91\\Charts\\' => 'Classes',
+        ],
+    ],
 ];
