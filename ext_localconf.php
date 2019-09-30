@@ -1,5 +1,5 @@
 <?php
-(function ($extKey) {
+(function ($extKey, $extConfig = []) {
     /** @var \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry $libraryRegistry */
     $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class);
     $libraryRegistry->register('chart.js', \Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs::class, true);
@@ -14,7 +14,11 @@
         $cacheConfiguration['cache_charts_data']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
     }
     if (!isset($cacheConfiguration['cache_charts_data']['backend'])) {
-        $cacheConfiguration['cache_charts_data']['backend'] = \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class;
+        if (isset($extConfig['disableCaching']) && (bool) $extConfig['disableCaching'] === true) {
+            $cacheConfiguration['cache_charts_data']['backend'] = \TYPO3\CMS\Core\Cache\Backend\NullBackend::class;
+        } else {
+            $cacheConfiguration['cache_charts_data']['backend'] = \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class;
+        }
     }
     if (!isset($cacheConfiguration['cache_charts_data']['groups'])) {
         $cacheConfiguration['cache_charts_data']['groups'] = ['pages'];
@@ -56,4 +60,4 @@
             );
         }
     }
-})('charts');
+})('charts', unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts']));
