@@ -172,10 +172,16 @@ return (function ($extKey) {
                     'default'    => 0,
                 ],
             ],
+            // @deprecated - option will be removed in further releases
             'alignment'                   => [
                 'exclude'     => true,
                 'label'       => $ll . '.alignment',
-                'displayCond' => 'FIELD:type:=:1',
+                'displayCond' => [
+                    'AND' => [
+                        'FIELD:type:=:1',
+                        'USER:Hoogi91\Charts\Utility\ExtensionUtility->missesSpreadsheetExtensionOrDirectionSupport',
+                    ],
+                ],
                 'config'      => [
                     'type'    => 'check',
                     'default' => 0,
@@ -249,6 +255,7 @@ return (function ($extKey) {
                     'renderType'  => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
                     'sheetsOnly'  => false,
+                    'allowColumnExtraction' => true,
                     'behaviour'   => [
                         'allowLanguageSynchronization' => true,
                     ],
@@ -262,6 +269,7 @@ return (function ($extKey) {
                     'renderType'  => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
                     'sheetsOnly'  => false,
+                    'allowColumnExtraction' => true,
                     'behaviour'   => [
                         'allowLanguageSynchronization' => true,
                     ],
@@ -275,6 +283,7 @@ return (function ($extKey) {
                     'renderType'  => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
                     'sheetsOnly'  => false,
+                    'allowColumnExtraction' => true,
                     'behaviour'   => [
                         'allowLanguageSynchronization' => true,
                     ],

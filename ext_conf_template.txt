@@ -1,2 +1,5 @@
 # cat=basic/enable; type=user[Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry->getLibrarySelect]; label=Chart Library to use
 library =
+
+# cat=basic/enable; type=boolean; label=Disable Spreadsheet data caching
+disableCaching = 0
