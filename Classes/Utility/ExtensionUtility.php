@@ -2,6 +2,8 @@
 
 namespace Hoogi91\Charts\Utility;
 
+use Hoogi91\Spreadsheets\Utility\ExtensionManagementUtility;
+
 /**
  * Class ExtensionUtility
  * @package Hoogi91\Charts\Utility
@@ -34,5 +36,28 @@ class ExtensionUtility
             return static::$extConf[$key];
         }
         return $defaultValue ?? null;
+    }
+
+    /**
+     * Easy check whether spreadsheet extension is loaded and has direction support
+     *
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Package\Exception
+     */
+    public static function hasSpreadsheetExtensionWithDirectionSupport(): bool
+    {
+        $extVersion = ExtensionManagementUtility::getExtensionVersion('spreadsheets');
+        return !empty($extVersion) && version_compare($extVersion, '1.1', '>=');
+    }
+
+    /**
+     * Easy check whether spreadsheet extension is NOT loaded or has NOT direction support
+     *
+     * @return bool
+     * @throws \TYPO3\CMS\Core\Package\Exception
+     */
+    public static function missesSpreadsheetExtensionOrDirectionSupport(): bool
+    {
+        return !self::hasSpreadsheetExtensionWithDirectionSupport();
     }
 }

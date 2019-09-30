@@ -2,6 +2,7 @@
 
 namespace Hoogi91\Charts\Domain\Model;
 
+use Hoogi91\Charts\Utility\ExtensionUtility;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -256,18 +257,7 @@ class ChartDataSpreadsheet extends ChartData
 
         // convert array structure if alignment is vertical instead of horizontal
         if ($this->getAlignment() === static::ALIGNMENT_VERTICAL) {
-            $resultData = [];
-            foreach ($cellData as $row => $columns) {
-                if (empty($columns)) {
-                    continue;
-                }
-                foreach ($columns as $column => $cell) {
-                    $resultData[$column][$row] = $cell;
-                }
-            }
-
-            // override celldata with inverted resultdata and proceed as normal
-            $cellData = $resultData;
+            $cellData = $this->flipCellData($cellData);
         }
 
         // only get zero-indexed value arrays
@@ -283,6 +273,32 @@ class ChartDataSpreadsheet extends ChartData
         }
 
         return $entry;
+    }
+
+    /**
+     * Flip given cell data
+     *
+     * @param array $cellData
+     *
+     * @return array
+     * @deprecated
+     */
+    private function flipCellData(array $cellData):array
+    {
+        if (ExtensionUtility::hasSpreadsheetExtensionWithDirectionSupport() === true) {
+            return $cellData;
+        }
+
+        $resultData = [];
+        foreach ($cellData as $row => $columns) {
+            if (empty($columns)) {
+                continue;
+            }
+            foreach ($columns as $column => $cell) {
+                $resultData[$column][$row] = $cell;
+            }
+        }
+        return $resultData;
     }
 
     /**
@@ -303,6 +319,16 @@ class ChartDataSpreadsheet extends ChartData
         }
 
         try {
+            if (ExtensionUtility::hasSpreadsheetExtensionWithDirectionSupport() === true) {
+                return $spreadsheetExtractor->rangeToCellArray(
+                    $spreadsheetValue->getSelection(),
+                    false,
+                    true,
+                    false,
+                    $spreadsheetValue->getDirectionOfSelection()
+                );
+            }
+
             return $spreadsheetExtractor->rangeToCellArray($spreadsheetValue->getSelection(), false, true, false);
         } catch (SpreadsheetException $e) {
             return [];

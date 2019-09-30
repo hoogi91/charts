@@ -2,6 +2,7 @@
 .vagrant
 .Build
 ansible/
+config/
 vendor/
 var/
 composer.phar
