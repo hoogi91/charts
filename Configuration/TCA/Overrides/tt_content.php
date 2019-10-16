@@ -17,6 +17,7 @@ defined('TYPO3_MODE') or die();
                 'size'          => 1,
                 'minitems'      => 1,
                 'maxitems'      => 1,
+                'default'       => 0,
             ],
         ],
     ]);
