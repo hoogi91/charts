@@ -84,7 +84,6 @@ class FlexFormProcessor implements DataProcessorInterface
             $service = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
         } else {
             /** @deprecated since v1.0.6 and will be removed in v2.0 */
-            /** @var \TYPO3\CMS\Extbase\Service\FlexFormService $service */
             // @phpstan-ignore-next-line
             $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
         }
