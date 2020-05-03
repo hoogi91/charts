@@ -95,8 +95,7 @@ class ChartDataSpreadsheet extends ChartData
                 $style = null;
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
-                } // @phpstan-ignore-next-line
-                elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
                     /** @deprecated since v1.0.6 and will be removed in v2.0 */
                     $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
                 }
@@ -144,8 +143,7 @@ class ChartDataSpreadsheet extends ChartData
                 $style = null;
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
-                } // @phpstan-ignore-next-line
-                elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
                     /** @deprecated since v1.0.6 and will be removed in v2.0 */
                     $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
                 }
@@ -220,8 +218,7 @@ class ChartDataSpreadsheet extends ChartData
             static function (&$item) {
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $item = $item->getRenderedValue();
-                } // @phpstan-ignore-next-line
-                elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
                     /** @deprecated since v1.0.6 and will be removed in v2.0 */
                     $item = $item->getValue();// @phpstan-ignore-line
                 }
@@ -244,8 +241,7 @@ class ChartDataSpreadsheet extends ChartData
             static function (&$item) {
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $item = (float)$item->getRenderedValue();
-                } // @phpstan-ignore-next-line
-                elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
                     /** @deprecated since v1.0.6 and will be removed in v2.0 */
                     $item = (float)$item->getValue();// @phpstan-ignore-line
                 }
