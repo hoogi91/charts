@@ -63,20 +63,14 @@ jobs:
         if: (matrix.php_version == '7.4' && matrix.typo3_version == '^10.4') == false
         run: |
           if [ -d "Tests/Unit" ]; then
-            .Build/bin/phpunit --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php Tests/Unit/
+            .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/
           fi
 
       - name: Running unit tests with coverage report
         if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
         run: |
           if [ -d "Tests/Unit" ]; then
-            .Build/bin/phpunit --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php Tests/Unit/ --coverage-clover=./coverage.xml --whitelist=./Classes/
-          fi
-
-      - name: Running functional tests
-        run: |
-          if [ -d "Tests/Functional" ]; then
-            find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; .Build/bin/phpunit --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php {}'
+            .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=./coverage.xml --whitelist=./Classes/
           fi
 
       - name: Upload coverage report to codecov
