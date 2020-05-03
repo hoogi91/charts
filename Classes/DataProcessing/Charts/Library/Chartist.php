@@ -2,11 +2,11 @@
 
 namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
-use TYPO3\CMS\Core\Page\PageRenderer;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryFlexformInterface;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 use Hoogi91\Charts\Form\Types\Chart;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
  * Class Chartist
@@ -14,12 +14,12 @@ use Hoogi91\Charts\Form\Types\Chart;
  */
 class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterface
 {
-    const NAME = 'Chartist';
+    public const NAME = 'Chartist';
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }
@@ -29,7 +29,7 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
      *
      * @return array
      */
-    public function getDefaultColors($type = self::BACKGROUND)
+    public function getDefaultColors($type = self::BACKGROUND): array
     {
         return [
             "rgba(255, 99, 132, 0.6)",
@@ -45,13 +45,13 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
     /**
      * @return array
      */
-    protected function getStylesheetAssetsToLoad()
+    protected function getStylesheetAssetsToLoad(): array
     {
         return [
             'https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.css' => [
                 'noConcat' => true,
             ],
-            'typo3conf/ext/charts/Resources/Public/Css/chartist.css'                  => [
+            'typo3conf/ext/charts/Resources/Public/Css/chartist.css' => [
                 'compress' => true,
             ],
         ];
@@ -60,76 +60,91 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
     /**
      * @return array
      */
-    protected function getJavascriptAssetsToLoad()
+    protected function getJavascriptAssetsToLoad(): array
     {
         return [
             'https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.js' => [
                 'noConcat' => true,
             ],
-            'typo3conf/ext/charts/Resources/Public/JavaScript/chartist.js'           => [
+            'typo3conf/ext/charts/Resources/Public/JavaScript/chartist.js' => [
                 'compress' => true,
             ],
         ];
     }
 
     /**
-     * @param string       $chartIdentifier
-     * @param string       $chartType
-     * @param ChartData    $chartEntity
+     * @param string $chartIdentifier
+     * @param string $chartType
+     * @param ChartData $chartEntity
      * @param PageRenderer $pageRenderer
      *
      * @return string
      */
-    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null)
+    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
     {
         $datasets = $chartEntity->getDatasets();
-        $backgroundColorsByDataset = array_map(function ($dataKey) use ($datasets, $chartEntity) {
-            if ($chartEntity instanceof ChartDataSpreadsheet) {
-                // try to get background colors from spreadsheet
-                $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
-                if (empty($backgroundColors)) {
+        $backgroundColorsByDataset = array_map(
+            function ($dataKey) use ($datasets, $chartEntity) {
+                if ($chartEntity instanceof ChartDataSpreadsheet) {
+                    // try to get background colors from spreadsheet
+                    $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
+                    if (empty($backgroundColors)) {
+                        $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
+                    }
+                } else {
                     $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
                 }
-            } else {
-                $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
-            }
 
-            return $backgroundColors;
-        }, array_keys($datasets));
+                return $backgroundColors;
+            },
+            array_keys($datasets)
+        );
 
         if (empty($backgroundColorsByDataset)) {
             return '';
         }
 
         // create stylesheet pattern
-        $stylesheetPatternBarAndLines = implode(' ', [
-            '#%1$s .ct-series-%2$s .ct-bar',
-            '#%1$s .ct-series-%2$s .ct-line',
-            '#%1$s .ct-series-%2$s .ct-point',
-            '#%1$s .ct-series-%2$s .ct-slice-donut{stroke: %3$s}',
-        ]);
-        $stylesheetPatternAreaAndPie = implode(' ', [
-            ' #%1$s .ct-series-%2$s .ct-area',
-            '#%1$s .ct-series-%2$s .ct-slice-donut-solid',
-            '#%1$s .ct-series-%2$s .ct-slice-pie{fill: %3$s}',
-        ]);
+        $stylesheetPatternBarAndLines = implode(
+            ' ',
+            [
+                '#%1$s .ct-series-%2$s .ct-bar',
+                '#%1$s .ct-series-%2$s .ct-line',
+                '#%1$s .ct-series-%2$s .ct-point',
+                '#%1$s .ct-series-%2$s .ct-slice-donut{stroke: %3$s}',
+            ]
+        );
+        $stylesheetPatternAreaAndPie = implode(
+            ' ',
+            [
+                ' #%1$s .ct-series-%2$s .ct-area',
+                '#%1$s .ct-series-%2$s .ct-slice-donut-solid',
+                '#%1$s .ct-series-%2$s .ct-slice-pie{fill: %3$s}',
+            ]
+        );
 
         $stylesheet = '';
         foreach ($backgroundColorsByDataset as $key => $colors) {
-            $stylesheet .= vsprintf($stylesheetPatternBarAndLines, [
-                $chartIdentifier,
-                chr((int)$key + 97),
-                $colors[0],
-            ]);
+            $stylesheet .= vsprintf(
+                $stylesheetPatternBarAndLines,
+                [
+                    $chartIdentifier,
+                    chr((int)$key + 97),
+                    $colors[0],
+                ]
+            );
         }
 
         // for area and pie chart => only one dataset is allow => directly iterator over first dataset
         foreach ($backgroundColorsByDataset[0] as $key => $color) {
-            $stylesheet .= vsprintf($stylesheetPatternAreaAndPie, [
-                $chartIdentifier,
-                chr((int)$key + 97),
-                $color,
-            ]);
+            $stylesheet .= vsprintf(
+                $stylesheetPatternAreaAndPie,
+                [
+                    $chartIdentifier,
+                    chr((int)$key + 97),
+                    $color,
+                ]
+            );
         }
 
         if ($pageRenderer instanceof PageRenderer) {
@@ -147,11 +162,11 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
      *
      * @return array
      */
-    public function getDataStructures()
+    public function getDataStructures(): array
     {
         return [
-            Chart::TYPE_BAR      => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Bar.xml',
-            Chart::TYPE_LINE     => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Line.xml',
+            Chart::TYPE_BAR => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Bar.xml',
+            Chart::TYPE_LINE => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Line.xml',
             Chart::TYPE_DOUGHNUT => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Doughnut.xml',
         ];
     }

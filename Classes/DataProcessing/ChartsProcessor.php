@@ -2,11 +2,6 @@
 
 namespace Hoogi91\Charts\DataProcessing;
 
-use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs as ChartJsLibrary;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
@@ -15,6 +10,11 @@ use Hoogi91\Charts\Domain\Repository\ChartDataRepository;
 use Hoogi91\Charts\Form\Types\Chart as ChartTypes;
 use Hoogi91\Charts\RegisterChartLibraryException;
 use Hoogi91\Charts\Utility\ExtensionUtility;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 /**
  * Class ChartsProcessor
@@ -65,21 +65,24 @@ class ChartsProcessor implements DataProcessorInterface
         $chartLibraryToLoad = ExtensionUtility::getConfig('library', ChartJsLibrary::class);
         $this->chartLibrary = $libraryRegistry->getLibrary($chartLibraryToLoad);
         if (!$this->chartLibrary instanceof LibraryInterface) {
-            throw new RegisterChartLibraryException(sprintf(
-                'Evaluated Chart Library "%s" doesn\'t exist or doesn\'t implement "%s"',
-                $chartLibraryToLoad,
-                LibraryInterface::class
-            ), 1522167560);
+            throw new RegisterChartLibraryException(
+                sprintf(
+                    'Evaluated Chart Library "%s" doesn\'t exist or doesn\'t implement "%s"',
+                    $chartLibraryToLoad,
+                    LibraryInterface::class
+                ),
+                1522167560
+            );
         }
     }
 
     /**
      * Process content object data
      *
-     * @param ContentObjectRenderer $cObj                       The data of the content element or page
-     * @param array                 $contentObjectConfiguration The configuration of Content Object
-     * @param array                 $processorConfiguration     The configuration of this processor
-     * @param array                 $processedData              Key/value store of processed data
+     * @param ContentObjectRenderer $cObj The data of the content element or page
+     * @param array $contentObjectConfiguration The configuration of Content Object
+     * @param array $processorConfiguration The configuration of this processor
+     * @param array $processedData Key/value store of processed data
      *                                                          (e.g. to be passed to a Fluid View)
      *
      * @return array the processed data as key/value store
@@ -89,24 +92,24 @@ class ChartsProcessor implements DataProcessorInterface
         array $contentObjectConfiguration,
         array $processorConfiguration,
         array $processedData
-    ) {
+    ): array {
         $this->cObj = $cObj;
         $this->configuration = $processorConfiguration;
 
         // evaluate options from configuration
-        $chartIdentifier = uniqid('chart-');
+        $chartIdentifier = uniqid('chart-', true);
         $chartType = ChartTypes::getShortName($processedData['data']['CType']);
-        $includeAssets = (bool)$cObj->stdWrapValue('assets', $this->configuration, 1);
+        $includeAssets = (bool)$cObj->stdWrapValue('assets', $this->configuration, '1');
         $targetVariableName = $cObj->stdWrapValue('as', $this->configuration, 'chart');
 
         // the chart data uid to load
-        $dataUid = (int)$cObj->stdWrapValue('data', $this->configuration, 0);
+        $dataUid = (int)$cObj->stdWrapValue('data', $this->configuration, '0');
         if (empty($dataUid)) {
             $processedData[$targetVariableName] = [
                 'identifier' => $chartIdentifier,
-                'type'       => $chartType,
-                'library'    => $this->chartLibrary->getName(),
-                'entity'     => null,
+                'type' => $chartType,
+                'library' => $this->chartLibrary->getName(),
+                'entity' => null,
             ];
             return $processedData;
         }
@@ -115,9 +118,9 @@ class ChartsProcessor implements DataProcessorInterface
         $chartEntity = $this->chartDataRepository->findByUid($dataUid);
         $chartData = [
             'identifier' => $chartIdentifier,
-            'type'       => $chartType,
-            'library'    => $this->chartLibrary->getName(),
-            'entity'     => $chartEntity,
+            'type' => $chartType,
+            'library' => $this->chartLibrary->getName(),
+            'entity' => $chartEntity,
         ];
 
         // render assets of this
@@ -128,13 +131,13 @@ class ChartsProcessor implements DataProcessorInterface
             $this->chartLibrary->getEntityJavascript($chartIdentifier, $chartType, $chartEntity, $this->pageRenderer);
         } else {
             $chartData['assets']['css']['libs'] = $this->chartLibrary->getStylesheetAssets($chartType);
-            $chartData['assets']['css']['entity'][] = $this->chartLibrary->getEntityStylesheetAssets(
+            $chartData['assets']['css']['entity'][] = $this->chartLibrary->getEntityStylesheet(
                 $chartIdentifier,
                 $chartType,
                 $chartEntity
             );
             $chartData['assets']['js']['libs'] = $this->chartLibrary->getJavascriptAssets($chartType);
-            $chartData['assets']['js']['entity'][] = $this->chartLibrary->getEntityJavascriptAssets(
+            $chartData['assets']['js']['entity'][] = $this->chartLibrary->getEntityJavascript(
                 $chartIdentifier,
                 $chartType,
                 $chartEntity

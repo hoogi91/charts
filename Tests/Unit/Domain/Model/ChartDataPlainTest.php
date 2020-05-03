@@ -7,6 +7,7 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -24,24 +25,30 @@ class ChartDataPlainTest extends UnitTestCase
     {
         parent::setUp();
 
+        $cacheName = class_exists(Typo3Version::class) ? 'runtime' : 'cache_runtime';
+
         // register cache_runtime to make xml2array work in v9 setups
         /** @var CacheManager $cacheManager */
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->setCacheConfigurations([
-            'cache_runtime' => [
-                'backend'  => NullBackend::class,
-                'frontend' => VariableFrontend::class,
-            ],
-        ]);
+        $cacheManager->setCacheConfigurations(
+            [
+                $cacheName => [
+                    'backend' => NullBackend::class,
+                    'frontend' => VariableFrontend::class,
+                ],
+            ]
+        );
 
         $this->chartDataPlainModel = $this->getMockBuilder(ChartDataPlain::class)
             ->setMethods(['getAllowedTypes'])
             ->getMock();
 
         // simulate not loaded spreadsheet extension
-        $this->chartDataPlainModel->method('getAllowedTypes')->willReturn([
-            ChartDataPlain::TYPE_PLAIN,
-        ]);
+        $this->chartDataPlainModel->method('getAllowedTypes')->willReturn(
+            [
+                ChartDataPlain::TYPE_PLAIN,
+            ]
+        );
     }
 
     /**
@@ -69,7 +76,9 @@ class ChartDataPlainTest extends UnitTestCase
      */
     public function testLabelMethods()
     {
-        $this->chartDataPlainModel->setLabels(trim('
+        $this->chartDataPlainModel->setLabels(
+            trim(
+                '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
             <T3TableWizard>
                 <numIndex index="2" type="array">
@@ -79,7 +88,9 @@ class ChartDataPlainTest extends UnitTestCase
                     <numIndex index="8">China</numIndex>
                 </numIndex>
             </T3TableWizard>
-        '));
+        '
+            )
+        );
         $labels = $this->chartDataPlainModel->getLabels();
 
         $this->assertInternalType('array', $labels);
@@ -92,7 +103,9 @@ class ChartDataPlainTest extends UnitTestCase
      */
     public function testDatasetMethods()
     {
-        $this->chartDataPlainModel->setDatasets(trim('
+        $this->chartDataPlainModel->setDatasets(
+            trim(
+                '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
             <T3TableWizard>
                 <numIndex index="2" type="array">
@@ -110,7 +123,9 @@ class ChartDataPlainTest extends UnitTestCase
                     <numIndex index="10">6.9</numIndex>
                 </numIndex>
             </T3TableWizard>
-        '));
+        '
+            )
+        );
         $datasets = $this->chartDataPlainModel->getDatasets();
 
         $this->assertInternalType('array', $datasets);
@@ -124,7 +139,9 @@ class ChartDataPlainTest extends UnitTestCase
      */
     public function testDatasetLabelMethods()
     {
-        $this->chartDataPlainModel->setDatasetsLabels(trim('
+        $this->chartDataPlainModel->setDatasetsLabels(
+            trim(
+                '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
             <T3TableWizard>
                 <numIndex index="2" type="array">
@@ -134,7 +151,9 @@ class ChartDataPlainTest extends UnitTestCase
                     <numIndex index="8">China</numIndex>
                 </numIndex>
             </T3TableWizard>
-        '));
+        '
+            )
+        );
         $labels = $this->chartDataPlainModel->getDatasetsLabels();
 
         $this->assertInternalType('array', $labels);

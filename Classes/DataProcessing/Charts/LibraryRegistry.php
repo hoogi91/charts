@@ -2,11 +2,11 @@
 
 namespace Hoogi91\Charts\DataProcessing\Charts;
 
+use Hoogi91\Charts\RegisterChartLibraryException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use Hoogi91\Charts\RegisterChartLibraryException;
 
 /**
  * Class LibraryRegistry
@@ -36,27 +36,33 @@ class LibraryRegistry implements SingletonInterface
     /**
      * @param string $name
      * @param string $class
-     * @param bool   $override
+     * @param bool $override
      *
      * @throws RegisterChartLibraryException
      */
-    public function register($name, $class, $override = false)
+    public function register($name, $class, $override = false): void
     {
         if ($override === false && array_key_exists($name, $this->classMap)) {
-            throw new RegisterChartLibraryException(sprintf(
-                'Registration of chart library "%s" failed cause it\'s key/name "%s" is already in use.',
-                $class,
-                $name
-            ), 1522149364);
+            throw new RegisterChartLibraryException(
+                sprintf(
+                    'Registration of chart library "%s" failed cause it\'s key/name "%s" is already in use.',
+                    $class,
+                    $name
+                ),
+                1522149364
+            );
         }
 
         $interfaces = class_implements($class);
-        if (!in_array(LibraryInterface::class, $interfaces)) {
-            throw new RegisterChartLibraryException(sprintf(
-                'Registration of chart library "%s" failed cause it doesn\'t implement "%s".',
-                $class,
-                LibraryInterface::class
-            ), 1522149372);
+        if (!in_array(LibraryInterface::class, $interfaces, true)) {
+            throw new RegisterChartLibraryException(
+                sprintf(
+                    'Registration of chart library "%s" failed cause it doesn\'t implement "%s".',
+                    $class,
+                    LibraryInterface::class
+                ),
+                1522149372
+            );
         }
 
         // add new library to class map
@@ -66,23 +72,24 @@ class LibraryRegistry implements SingletonInterface
     /**
      * @param string $name
      *
-     * @return null|object
+     * @return LibraryInterface|null
      */
-    public function getLibrary($name)
+    public function getLibrary($name): ?LibraryInterface
     {
         if (!array_key_exists($name, $this->classMap)) {
             return null;
         }
 
-        /** @var LibraryInterface $object */
+        /** @var LibraryInterface $libraryInstance */
         $libraryInstance = $this->objectManager->get($this->classMap[$name]);
         return $libraryInstance;
     }
 
     /**
+     * @param array $data
      * @return string
      */
-    public function getLibrarySelect($data)
+    public function getLibrarySelect(array $data): string
     {
         // ensure loading of extension configuration before creating library select
         $this->loadExtensionConfigurations();
@@ -106,7 +113,7 @@ class LibraryRegistry implements SingletonInterface
      * ensure that localconf is executed/loaded
      * this fixes issue when getting library select in TYPO3 v9 install tool settings
      */
-    protected function loadExtensionConfigurations()
+    protected function loadExtensionConfigurations(): void
     {
         ExtensionManagementUtility::loadExtLocalconf();
     }

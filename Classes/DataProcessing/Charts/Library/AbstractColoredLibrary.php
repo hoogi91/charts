@@ -11,60 +11,66 @@ use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
  */
 abstract class AbstractColoredLibrary extends AbstractLibrary
 {
-    const BACKGROUND = 1;
-    const BORDER = 2;
+    protected const BACKGROUND = 1;
+    protected const BORDER = 2;
 
     /**
      * @param int $type
      *
      * @return array
      */
-    abstract public function getDefaultColors($type = self::BACKGROUND);
+    abstract public function getDefaultColors(int $type = self::BACKGROUND): array;
 
     /**
      * map chart entities to short arrays with data for javascript processing
      *
-     * @param array     $datasets
+     * @param array $datasets
      * @param ChartData $chartEntity
      *
      * @return array
      */
-    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity)
+    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity): array
     {
         // get processed datasets from above
         $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);
 
         // process special mapping for spreadsheet based charts
         if ($chartEntity instanceof ChartDataSpreadsheet) {
-            return array_map(function ($dataKey) use ($datasets, $processedDatasets, $chartEntity) {
-                // try to get background colors from spreadsheet
-                $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
-                if (empty($backgroundColors)) {
-                    $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
-                }
+            return array_map(
+                function ($dataKey) use ($datasets, $processedDatasets, $chartEntity) {
+                    // try to get background colors from spreadsheet
+                    $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
+                    if (empty($backgroundColors)) {
+                        $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
+                    }
 
-                // try to get border colors from spreadsheet
-                $borderColors = $chartEntity->getBorderColors($dataKey);
-                if (empty($borderColors)) {
-                    $borderColors = $this->getBorderColors(count($datasets[$dataKey]));
-                }
+                    // try to get border colors from spreadsheet
+                    $borderColors = $chartEntity->getBorderColors($dataKey);
+                    if (empty($borderColors)) {
+                        $borderColors = $this->getBorderColors(count($datasets[$dataKey]));
+                    }
 
-                $additionalDatasetData = [
-                    'background' => $backgroundColors,
-                    'border'     => $borderColors,
-                ];
-                return $additionalDatasetData + $processedDatasets[$dataKey];
-            }, array_keys($datasets));
+                    $additionalDatasetData = [
+                        'background' => $backgroundColors,
+                        'border' => $borderColors,
+                    ];
+                    return $additionalDatasetData + $processedDatasets[$dataKey];
+                },
+                array_keys($datasets)
+            );
         }
 
         // create default mapping for all chart data entities
-        return array_map(function ($dataKey) use ($datasets, $processedDatasets) {
-            $additionalDatasetData = [
-                'background' => $this->getBackgroundColors(count($datasets[$dataKey])),
-                'border'     => $this->getBorderColors(count($datasets[$dataKey])),
-            ];
-            return $additionalDatasetData + $processedDatasets[$dataKey];
-        }, array_keys($datasets));
+        return array_map(
+            function ($dataKey) use ($datasets, $processedDatasets) {
+                $additionalDatasetData = [
+                    'background' => $this->getBackgroundColors(count($datasets[$dataKey])),
+                    'border' => $this->getBorderColors(count($datasets[$dataKey])),
+                ];
+                return $additionalDatasetData + $processedDatasets[$dataKey];
+            },
+            array_keys($datasets)
+        );
     }
 
     /**
@@ -72,9 +78,30 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
      *
      * @return array
      */
-    protected function getBackgroundColors($count = 1)
+    protected function getBackgroundColors(int $count = 1): array
     {
-        $defaultColors = $this->getDefaultColors(self::BACKGROUND);
+        return $this->getColor(self::BACKGROUND, $count);
+    }
+
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    protected function getBorderColors(int $count = 1): array
+    {
+        return $this->getColor(self::BORDER, $count);
+    }
+
+    /**
+     * @param int $colorType
+     * @param int $count
+     *
+     * @return array
+     */
+    private function getColor(int $colorType, int $count = 1): array
+    {
+        $defaultColors = $this->getDefaultColors($colorType);
         if (count($defaultColors) >= $count) {
             return array_slice($defaultColors, 0, $count);
         }
@@ -85,37 +112,11 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
             $firstItemOfDefaultColors = array_shift($defaultColors);
 
             // (re-)add first item to our default color and result array
-            array_push($defaultColors, $firstItemOfDefaultColors);
-            array_push($colors, $firstItemOfDefaultColors);
+            $defaultColors[] = $firstItemOfDefaultColors;
+            $colors[] = $firstItemOfDefaultColors;
         }
 
-        // final result should be a repeating array of our defaultcolors
-        return $colors;
-    }
-
-    /**
-     * @param int $count
-     *
-     * @return array
-     */
-    protected function getBorderColors($count = 1)
-    {
-        $defaultColors = $this->getDefaultColors(self::BORDER);
-        if (count($defaultColors) >= $count) {
-            return array_slice($defaultColors, 0, $count);
-        }
-
-        $colors = $defaultColors;
-        while (count($colors) < $count) {
-            // get first color of default colors and remove it from there
-            $firstItemOfDefaultColors = array_shift($defaultColors);
-
-            // (re-)add first item to our default color and result array
-            array_push($defaultColors, $firstItemOfDefaultColors);
-            array_push($colors, $firstItemOfDefaultColors);
-        }
-
-        // final result should be a repeating array of our defaultcolors
+        // final result should be a repeating array of our default colors
         return $colors;
     }
 }

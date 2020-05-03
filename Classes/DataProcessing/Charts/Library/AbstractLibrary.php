@@ -2,9 +2,9 @@
 
 namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
-use TYPO3\CMS\Core\Page\PageRenderer;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\Domain\Model\ChartData;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
  * Class AbstractLibrary
@@ -20,7 +20,7 @@ abstract class AbstractLibrary implements LibraryInterface
     /**
      * @return PageRenderer
      */
-    public function getPageRenderer()
+    public function getPageRenderer(): PageRenderer
     {
         return $this->pageRenderer;
     }
@@ -28,18 +28,18 @@ abstract class AbstractLibrary implements LibraryInterface
     /**
      * @param PageRenderer $pageRenderer
      */
-    public function setPageRenderer($pageRenderer)
+    public function setPageRenderer($pageRenderer): void
     {
         $this->pageRenderer = $pageRenderer;
     }
 
     /**
-     * @param string       $chartType
+     * @param string $chartType
      * @param PageRenderer $pageRenderer
      *
      * @return array
      */
-    public function getStylesheetAssets($chartType, $pageRenderer = null)
+    public function getStylesheetAssets($chartType, $pageRenderer = null): array
     {
         $assets = $this->getStylesheetAssetsToLoad();
         if (empty($assets)) {
@@ -60,18 +60,18 @@ abstract class AbstractLibrary implements LibraryInterface
     /**
      * @return array
      */
-    protected function getStylesheetAssetsToLoad()
+    protected function getStylesheetAssetsToLoad(): array
     {
         return [];
     }
 
     /**
-     * @param string       $chartType
+     * @param string $chartType
      * @param PageRenderer $pageRenderer
      *
      * @return array
      */
-    public function getJavascriptAssets($chartType, $pageRenderer = null)
+    public function getJavascriptAssets($chartType, $pageRenderer = null): array
     {
         $assets = $this->getJavascriptAssetsToLoad();
         if (empty($assets)) {
@@ -92,33 +92,33 @@ abstract class AbstractLibrary implements LibraryInterface
     /**
      * @return array
      */
-    protected function getJavascriptAssetsToLoad()
+    protected function getJavascriptAssetsToLoad(): array
     {
         return [];
     }
 
     /**
-     * @param string       $chartIdentifier
-     * @param string       $chartType
-     * @param ChartData    $chartEntity
+     * @param string $chartIdentifier
+     * @param string $chartType
+     * @param ChartData $chartEntity
      * @param PageRenderer $pageRenderer
      *
      * @return string
      */
-    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null)
+    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
     {
         return '';
     }
 
     /**
-     * @param string       $chartIdentifier
-     * @param string       $chartType
-     * @param ChartData    $chartEntity
+     * @param string $chartIdentifier
+     * @param string $chartType
+     * @param ChartData $chartEntity
      * @param PageRenderer $pageRenderer
      *
      * @return string
      */
-    public function getEntityJavascript($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null)
+    public function getEntityJavascript($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
     {
         // check if labels and datasets are not empty ;)
         $labels = $chartEntity->getLabels();
@@ -133,11 +133,14 @@ abstract class AbstractLibrary implements LibraryInterface
         // create standardized initialization and dataset/labels code
         $initCode = 'var Hoogi91 = Hoogi91 || {}; Hoogi91.chartsData = {};';
         $codeIdentifier = sprintf('chartsData%d', $chartEntity->getUid());
-        $code = vsprintf("Hoogi91.chartsData['%s'] = {labels: %s, datasets: %s};", [
-            $codeIdentifier,
-            json_encode($labels),
-            json_encode($datasets),
-        ]);
+        $code = vsprintf(
+            "Hoogi91.chartsData['%s'] = {labels: %s, datasets: %s};",
+            [
+                $codeIdentifier,
+                json_encode($labels),
+                json_encode($datasets),
+            ]
+        );
 
         // directly include when pageRenderer is given
         if ($pageRenderer instanceof PageRenderer) {
@@ -149,29 +152,32 @@ abstract class AbstractLibrary implements LibraryInterface
     }
 
     /**
-     * @param array     $datasets
+     * @param array $datasets
      * @param ChartData $chartEntity
      *
      * @return array
      */
-    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity)
+    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity): array
     {
         $datasetsLabels = $chartEntity->getDatasetsLabels();
-        return array_map(function ($dataKey) use ($datasets, $datasetsLabels) {
-            return [
-                'data'  => $datasets[$dataKey],
-                'label' => $datasetsLabels[$dataKey] ?? '',
-            ];
-        }, array_keys($datasets));
+        return array_map(
+            static function ($dataKey) use ($datasets, $datasetsLabels) {
+                return [
+                    'data' => $datasets[$dataKey],
+                    'label' => $datasetsLabels[$dataKey] ?? '',
+                ];
+            },
+            array_keys($datasets)
+        );
     }
 
     /**
      * only includes when page renderer is available
      *
      * @param string $asset
-     * @param array  $options
+     * @param array $options
      */
-    protected function registerStylesheetAssetsWithOptions($asset, $options)
+    protected function registerStylesheetAssetsWithOptions($asset, $options): void
     {
         if ($this->pageRenderer instanceof PageRenderer) {
             $this->pageRenderer->addCssLibrary(
@@ -192,9 +198,9 @@ abstract class AbstractLibrary implements LibraryInterface
      * only includes when page renderer is available
      *
      * @param string $asset
-     * @param array  $options
+     * @param array $options
      */
-    protected function registerJavascriptAssetsWithOptions($asset, $options)
+    protected function registerJavascriptAssetsWithOptions($asset, $options): void
     {
         if ($this->pageRenderer instanceof PageRenderer) {
             $this->pageRenderer->addJsFooterLibrary(
