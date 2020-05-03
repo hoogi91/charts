@@ -80,7 +80,7 @@ class FlexFormProcessor implements DataProcessorInterface
     {
         // @phpstan-ignore-next-line
         if (version_compare(TYPO3_version, '10.0', '>=')) {
-            /** @var \TYPO3\CMS\Core\Service\FlexFormService::class $service */
+            /** @var \TYPO3\CMS\Core\Service\FlexFormService $service */
             $service = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
         } else {
             /** @deprecated since v1.0.6 and will be removed in v2.0 */
