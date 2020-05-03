@@ -30,7 +30,9 @@ class LibraryRegistryTest extends UnitTestCase
     {
         parent::setUp();
 
-        $cacheName = class_exists(Typo3Version::class) ? 'core' : 'cache_core';
+        $cacheName = class_exists(Typo3Version::class) && (new Typo3Version())->getMajorVersion() >= 10
+            ? 'core'
+            : 'cache_core';
 
         // disable extbase object caching to let object manager work in unit tests
         /** @var CacheManager $cacheManager */

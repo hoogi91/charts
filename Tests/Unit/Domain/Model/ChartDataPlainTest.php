@@ -25,7 +25,9 @@ class ChartDataPlainTest extends UnitTestCase
     {
         parent::setUp();
 
-        $cacheName = class_exists(Typo3Version::class) ? 'runtime' : 'cache_runtime';
+        $cacheName = class_exists(Typo3Version::class) && (new Typo3Version())->getMajorVersion() >= 10
+            ? 'runtime'
+            : 'cache_runtime';
 
         // register cache_runtime to make xml2array work in v9 setups
         /** @var CacheManager $cacheManager */
