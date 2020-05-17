@@ -1,35 +1,36 @@
 <?php
-return (function ($extKey) {
+
+return (static function ($extKey = 'charts') {
     $ll = 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:tx_charts_domain_model_chartdata';
 
     // default chartdata tca configuration
     $chartDataTcaConfig = [
-        'ctrl'      => [
-            'title'                    => $ll,
-            'label'                    => 'title',
-            'tstamp'                   => 'tstamp',
-            'crdate'                   => 'crdate',
-            'cruser_id'                => 'cruser_id',
-            'dividers2tabs'            => true,
-            'versioningWS'             => true,
-            'languageField'            => 'sys_language_uid',
-            'transOrigPointerField'    => 'l10n_parent',
+        'ctrl' => [
+            'title' => $ll,
+            'label' => 'title',
+            'tstamp' => 'tstamp',
+            'crdate' => 'crdate',
+            'cruser_id' => 'cruser_id',
+            'dividers2tabs' => true,
+            'versioningWS' => true,
+            'languageField' => 'sys_language_uid',
+            'transOrigPointerField' => 'l10n_parent',
             'transOrigDiffSourceField' => 'l10n_diffsource',
-            'delete'                   => 'deleted',
-            'enablecolumns'            => [
-                'disabled'  => 'hidden',
+            'delete' => 'deleted',
+            'enablecolumns' => [
+                'disabled' => 'hidden',
                 'starttime' => 'starttime',
-                'endtime'   => 'endtime',
+                'endtime' => 'endtime',
             ],
-            'type'                     => 'type',
-            'searchFields'             => 'title',
-            'dynamicConfigFile'        => '',
-            'iconfile'                 => 'EXT:' . $extKey . '/Resources/Public/Icons/Extension.svg',
+            'type' => 'type',
+            'searchFields' => 'title',
+            'dynamicConfigFile' => '',
+            'iconfile' => 'EXT:' . $extKey . '/Resources/Public/Icons/Extension.svg',
         ],
         'interface' => [
             'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, type, assets, labels, datasets',
         ],
-        'types'     => [
+        'types' => [
             0 => [
                 'showitem' => '--palette--;;corePalette,--palette--;;spreadsheetOptionPalette,labels,--palette--;;datasetPalette,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime',
             ],
@@ -37,273 +38,277 @@ return (function ($extKey) {
                 'showitem' => '--palette--;;corePalette,--palette--;;spreadsheetOptionPalette,spreadsheet_assets,spreadsheet_labels,--palette--;;spreadsheetDatasetPalette,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime',
             ],
         ],
-        'palettes'  => [
-            'corePalette'               => [
+        'palettes' => [
+            'corePalette' => [
                 'showitem' => 'title, sys_language_uid, l10n_parent, l10n_diffsource',
             ],
-            'datasetPalette'            => [
+            'datasetPalette' => [
                 'showitem' => 'datasets, datasets_labels',
             ],
             'spreadsheetDatasetPalette' => [
                 'showitem' => 'spreadsheet_datasets, spreadsheet_datasets_labels',
             ],
-            'spreadsheetOptionPalette'  => [
+            'spreadsheetOptionPalette' => [
                 'showitem' => 'type, alignment',
             ],
         ],
-        'columns'   => [
-            'sys_language_uid'            => [
+        'columns' => [
+            'sys_language_uid' => [
                 'exclude' => 1,
-                'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-                'config'  => [
-                    'type'       => 'select',
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
+                'config' => [
+                    'type' => 'select',
                     'renderType' => 'selectSingle',
-                    'special'    => 'languages',
-                    'items'      => [
+                    'special' => 'languages',
+                    'items' => [
                         [
                             'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                             -1,
                             'flags-multiple',
                         ],
                     ],
-                    'default'    => 0,
+                    'default' => 0,
                 ],
             ],
-            'l10n_parent'                 => [
+            'l10n_parent' => [
                 'displayCond' => 'FIELD:sys_language_uid:>:0',
-                'exclude'     => 1,
-                'label'       => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-                'config'      => [
-                    'type'                => 'select',
-                    'renderType'          => 'selectSingle',
-                    'items'               => [
+                'exclude' => 1,
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
+                'config' => [
+                    'type' => 'select',
+                    'renderType' => 'selectSingle',
+                    'items' => [
                         0 => [
                             0 => '',
                             1 => 0,
                         ],
                     ],
-                    'foreign_table'       => 'tx_charts_domain_model_chartdata',
+                    'foreign_table' => 'tx_charts_domain_model_chartdata',
                     'foreign_table_where' => 'AND tx_charts_domain_model_chartdata.pid=###CURRENT_PID### AND tx_charts_domain_model_chartdata.sys_language_uid IN (-1,0)',
                 ],
             ],
-            'l10n_diffsource'             => [
+            'l10n_diffsource' => [
                 'config' => [
                     'type' => 'passthrough',
                 ],
             ],
-            't3ver_label'                 => [
-                'label'  => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
+            't3ver_label' => [
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
                 'config' => [
                     'type' => 'input',
                     'size' => 30,
-                    'max'  => 255,
+                    'max' => 255,
                 ],
             ],
-            'hidden'                      => [
+            'hidden' => [
                 'exclude' => 1,
-                'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-                'config'  => [
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+                'config' => [
                     'type' => 'check',
                 ],
             ],
-            'starttime'                   => [
+            'starttime' => [
                 'exclude' => 1,
-                'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
-                'config'  => [
-                    'behaviour'  => [
-                        'allowLanguageSynchronization' => true,
-                    ],
-                    'renderType' => 'inputDateTime',
-                    'type'       => 'input',
-                    'size'       => 13,
-                    'eval'       => 'datetime',
-                    'checkbox'   => 0,
-                    'default'    => 0,
-                ],
-            ],
-            'endtime'                     => [
-                'exclude' => 1,
-                'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
-                'config'  => [
-                    'behaviour'  => [
-                        'allowLanguageSynchronization' => true,
-                    ],
-                    'renderType' => 'inputDateTime',
-                    'type'       => 'input',
-                    'size'       => 13,
-                    'eval'       => 'datetime',
-                    'checkbox'   => 0,
-                    'default'    => 0,
-                ],
-            ],
-            'parentid'                    => [
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
                 'config' => [
-                    'type'                => 'select',
-                    'renderType'          => 'selectSingle',
-                    'items'               => [
+                    'behaviour' => [
+                        'allowLanguageSynchronization' => true,
+                    ],
+                    'renderType' => 'inputDateTime',
+                    'type' => 'input',
+                    'size' => 13,
+                    'eval' => 'datetime',
+                    'checkbox' => 0,
+                    'default' => 0,
+                ],
+            ],
+            'endtime' => [
+                'exclude' => 1,
+                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+                'config' => [
+                    'behaviour' => [
+                        'allowLanguageSynchronization' => true,
+                    ],
+                    'renderType' => 'inputDateTime',
+                    'type' => 'input',
+                    'size' => 13,
+                    'eval' => 'datetime',
+                    'checkbox' => 0,
+                    'default' => 0,
+                ],
+            ],
+            'parentid' => [
+                'config' => [
+                    'type' => 'select',
+                    'renderType' => 'selectSingle',
+                    'items' => [
                         0 => [
                             0 => '',
                             1 => 0,
                         ],
                     ],
-                    'foreign_table'       => 'tt_content',
+                    'foreign_table' => 'tt_content',
                     'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,###REC_FIELD_sys_language_uid###)',
                 ],
             ],
-            'parenttable'                 => [
+            'parenttable' => [
                 'config' => [
                     'type' => 'passthrough',
                 ],
             ],
-            'title'                       => [
+            'title' => [
                 'exclude' => true,
-                'label'   => $ll . '.title',
-                'config'  => [
+                'label' => $ll . '.title',
+                'config' => [
                     'type' => 'input',
                     'eval' => 'required',
                 ],
             ],
-            'type'                        => [
+            'type' => [
                 'exclude' => true,
-                'label'   => $ll . '.type',
-                'config'  => [
-                    'type'       => 'check',
+                'label' => $ll . '.type',
+                'config' => [
+                    'type' => 'check',
                     'renderType' => 'hidden',
-                    'default'    => 0,
+                    'default' => 0,
                 ],
             ],
             // @deprecated - option will be removed in further releases
-            'alignment'                   => [
-                'exclude'     => true,
-                'label'       => $ll . '.alignment',
+            'alignment' => [
+                'exclude' => true,
+                'label' => $ll . '.alignment',
                 'displayCond' => [
                     'AND' => [
                         'FIELD:type:=:1',
                         'USER:Hoogi91\Charts\Utility\ExtensionUtility->missesSpreadsheetExtensionOrDirectionSupport',
                     ],
                 ],
-                'config'      => [
-                    'type'    => 'check',
+                'config' => [
+                    'type' => 'check',
                     'default' => 0,
                 ],
             ],
-            'labels'                      => [
+            'labels' => [
                 'exclude' => true,
-                'label'   => $ll . '.labels',
-                'config'  => [
-                    'type'         => 'text',
-                    'renderType'   => 'textTable',
-                    'rows'         => '3',
+                'label' => $ll . '.labels',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'textTable',
+                    'rows' => '3',
                     'fieldControl' => [
                         'tableWizard' => [
                             'options' => [
-                                'xmlOutput'  => true,
+                                'xmlOutput' => true,
                                 'numNewRows' => 1,
                             ],
                         ],
                     ],
-                    'behaviour'    => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
-            'datasets'                    => [
+            'datasets' => [
                 'exclude' => true,
-                'label'   => $ll . '.datasets',
-                'config'  => [
-                    'type'         => 'text',
-                    'renderType'   => 'textTable',
-                    'rows'         => '3',
+                'label' => $ll . '.datasets',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'textTable',
+                    'rows' => '3',
                     'fieldControl' => [
                         'tableWizard' => [
                             'options' => [
-                                'xmlOutput'  => true,
+                                'xmlOutput' => true,
                                 'numNewRows' => 1,
                             ],
                         ],
                     ],
-                    'behaviour'    => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
-            'datasets_labels'             => [
+            'datasets_labels' => [
                 'exclude' => true,
-                'label'   => $ll . '.datasets_labels',
-                'config'  => [
-                    'type'         => 'text',
-                    'renderType'   => 'textTable',
-                    'rows'         => '3',
+                'label' => $ll . '.datasets_labels',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'textTable',
+                    'rows' => '3',
                     'fieldControl' => [
                         'tableWizard' => [
                             'options' => [
-                                'xmlOutput'  => true,
+                                'xmlOutput' => true,
                                 'numNewRows' => 1,
                             ],
                         ],
                     ],
-                    'behaviour'    => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
-            'spreadsheet_labels'          => [
+            'spreadsheet_labels' => [
                 'exclude' => true,
-                'label'   => $ll . '.spreadsheet_labels',
-                'config'  => [
-                    'type'        => 'text',
-                    'renderType'  => 'spreadsheetInput',
+                'label' => $ll . '.spreadsheet_labels',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
-                    'sheetsOnly'  => false,
+                    'sheetsOnly' => false,
                     'allowColumnExtraction' => true,
-                    'behaviour'   => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
-            'spreadsheet_datasets'        => [
+            'spreadsheet_datasets' => [
                 'exclude' => true,
-                'label'   => $ll . '.spreadsheet_datasets',
-                'config'  => [
-                    'type'        => 'text',
-                    'renderType'  => 'spreadsheetInput',
+                'label' => $ll . '.spreadsheet_datasets',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
-                    'sheetsOnly'  => false,
+                    'sheetsOnly' => false,
                     'allowColumnExtraction' => true,
-                    'behaviour'   => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
             'spreadsheet_datasets_labels' => [
                 'exclude' => true,
-                'label'   => $ll . '.spreadsheet_datasets_labels',
-                'config'  => [
-                    'type'        => 'text',
-                    'renderType'  => 'spreadsheetInput',
+                'label' => $ll . '.spreadsheet_datasets_labels',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'spreadsheetInput',
                     'uploadField' => 'spreadsheet_assets',
-                    'sheetsOnly'  => false,
+                    'sheetsOnly' => false,
                     'allowColumnExtraction' => true,
-                    'behaviour'   => [
+                    'behaviour' => [
                         'allowLanguageSynchronization' => true,
                     ],
                 ],
             ],
-            'spreadsheet_assets'          => [
+            'spreadsheet_assets' => [
                 'exclude' => true,
-                'label'   => $ll . '.spreadsheet_assets',
-                'config'  => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('assets', [
-                    'appearance'       => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/Database.xlf:tt_content.asset_references.addFileReference',
-                    ],
-                    'overrideChildTca' => [
-                        'types' => [
-                            '0' => [
-                                'showitem' => '--palette--;;filePalette',
+                'label' => $ll . '.spreadsheet_assets',
+                'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+                    'assets',
+                    [
+                        'appearance' => [
+                            'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/Database.xlf:tt_content.asset_references.addFileReference',
+                        ],
+                        'overrideChildTca' => [
+                            'types' => [
+                                '0' => [
+                                    'showitem' => '--palette--;;filePalette',
+                                ],
                             ],
                         ],
                     ],
-                ], 'xls,xlsx,ods'),
+                    'xls,xlsx,ods'
+                ),
             ],
         ],
     ];
@@ -315,5 +320,5 @@ return (function ($extKey) {
     }
 
     return $chartDataTcaConfig;
-})('charts');
+})();
 

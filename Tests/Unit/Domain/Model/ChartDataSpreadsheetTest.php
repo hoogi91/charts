@@ -3,9 +3,8 @@
 namespace Hoogi91\Charts\Tests\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Hoogi91\Spreadsheets\Service\ExtractorService;
+use Hoogi91\Charts\Tests\Unit\LegacyTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 /**
  * Class ChartDataSpreadsheetTest
@@ -13,6 +12,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
  */
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
+    use LegacyTrait;
+
     const LABEL_POSITION = 'file:label|0!A1:E1';
     const DATASET_POSITION = 'file:dataset|0!A2:E7';
     const DATASETLABEL_POSITION = 'file:datasetLabels|0!A7:C7';
@@ -20,30 +21,23 @@ class ChartDataSpreadsheetTest extends UnitTestCase
     /**
      * @var ChartDataSpreadsheet|\PHPUnit_Framework_MockObject_MockObject
      */
-        protected $chartDataSpreadsheetModel;
+    protected $chartDataSpreadsheetModel;
 
-        protected function setUp()
+    protected function setUp()
     {
         parent::setUp();
-
-        // create xlsx reader and load default fixture spreadsheet
-        $reader = new Xlsx();
-        $spreadsheet = $reader->load(dirname(__DIR__, 3) . '/Fixtures/01_fixture.xlsx');
-        $extractorService = new ExtractorService($spreadsheet);
 
         $this->chartDataSpreadsheetModel = $this->getMockBuilder(ChartDataSpreadsheet::class)
             ->setMethods(['getCellDataFromDatabaseString'])
             ->getMock();
 
         $this->chartDataSpreadsheetModel->method('getCellDataFromDatabaseString')->willReturnCallback(
-            function ($data) use ($extractorService) {
-                return $extractorService->rangeToCellArray(
-                    substr($data, strpos($data, '!') + 1),
-                    false,
-                    true,
-                    false
-                );
-            }
+            $this->getDataCallbackForFixture(
+                '01_fixture.xlsx',
+                static function ($data) {
+                    return substr($data, strpos($data, '!') + 1);
+                }
+            )
         );
     }
 

@@ -8,16 +8,16 @@ namespace Hoogi91\Charts\Form\Types;
  */
 class Chart
 {
-    const TYPE_BAR = 'chart_bar';
-    const TYPE_LINE = 'chart_line';
-    const TYPE_PIE = 'chart_pie';
-    const TYPE_DOUGHNUT = 'chart_doughnut';
-    const LANGUAGE_FILE = 'LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf';
+    public const TYPE_BAR = 'chart_bar';
+    public const TYPE_LINE = 'chart_line';
+    public const TYPE_PIE = 'chart_pie';
+    public const TYPE_DOUGHNUT = 'chart_doughnut';
+    public const LANGUAGE_FILE = 'LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf';
 
     /**
      * @return array
      */
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return [self::TYPE_BAR, self::TYPE_LINE, self::TYPE_PIE, self::TYPE_DOUGHNUT];
     }
@@ -27,7 +27,7 @@ class Chart
      *
      * @return string
      */
-    public static function getShortName($type = self::TYPE_BAR)
+    public static function getShortName($type = self::TYPE_BAR): string
     {
         switch ($type) {
             case self::TYPE_BAR:
@@ -47,7 +47,7 @@ class Chart
      *
      * @return string
      */
-    public static function getIconIdentifier($type = self::TYPE_BAR)
+    public static function getIconIdentifier($type = self::TYPE_BAR): string
     {
         switch ($type) {
             case self::TYPE_BAR:
@@ -65,7 +65,7 @@ class Chart
     /**
      * @param bool $includeDividerBefore
      */
-    public static function addCTypeSelectItems($includeDividerBefore = true)
+    public static function addCTypeSelectItems($includeDividerBefore = true): void
     {
         if ($includeDividerBefore === true) {
             $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
@@ -85,9 +85,9 @@ class Chart
 
     /**
      * @param string $type
-     * @param array  $columnOverrides
+     * @param array $columnOverrides
      */
-    public static function addTypeConfiguration($type = self::TYPE_BAR, $columnOverrides = [])
+    public static function addTypeConfiguration($type = self::TYPE_BAR, $columnOverrides = []): void
     {
         if (empty($type)) {
             return;
@@ -119,7 +119,7 @@ class Chart
      * @return string
      * @phpcs:disable
      */
-    public static function getDefaultShowItems($addFlexFormField = false)
+    public static function getDefaultShowItems($addFlexFormField = false): string
     {
         return '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,

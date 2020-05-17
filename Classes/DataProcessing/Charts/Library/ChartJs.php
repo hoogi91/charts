@@ -11,12 +11,12 @@ use Hoogi91\Charts\Form\Types\Chart;
  */
 class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
 {
-    const NAME = 'ChartJS';
+    public const NAME = 'ChartJS';
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }
@@ -26,7 +26,7 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
      *
      * @return array
      */
-    public function getDefaultColors($type = self::BACKGROUND)
+    public function getDefaultColors($type = self::BACKGROUND): array
     {
         if ($type === self::BACKGROUND) {
             return [
@@ -54,13 +54,13 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
     /**
      * @return array
      */
-    protected function getJavascriptAssetsToLoad()
+    protected function getJavascriptAssetsToLoad(): array
     {
         return [
             'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js' => [
                 'noConcat' => true,
             ],
-            'typo3conf/ext/charts/Resources/Public/JavaScript/chartjs.js'  => [
+            'typo3conf/ext/charts/Resources/Public/JavaScript/chartjs.js' => [
                 'compress' => true,
             ],
         ];
@@ -74,12 +74,12 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
      *
      * @return array
      */
-    public function getDataStructures()
+    public function getDataStructures(): array
     {
         return [
-            Chart::TYPE_BAR      => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Bar.xml',
-            Chart::TYPE_LINE     => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Line.xml',
-            Chart::TYPE_PIE      => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
+            Chart::TYPE_BAR => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Bar.xml',
+            Chart::TYPE_LINE => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Line.xml',
+            Chart::TYPE_PIE => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
             Chart::TYPE_DOUGHNUT => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
         ];
     }

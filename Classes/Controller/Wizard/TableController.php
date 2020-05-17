@@ -21,6 +21,7 @@ class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableControll
      */
     public function getConfigCode($row)
     {
+        // @phpstan-ignore-next-line
         return $this->fixEmptyConfiguration(parent::getConfigCode($row));
     }
 
