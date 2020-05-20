@@ -35,6 +35,7 @@ Charts Extension
    a GNU/GPL CMS/Framework available from `typo3.org
    <https://typo3.org/>`_ .
 
+
 **Community Documentation:**
 
    This documentation is community documentation for the TYPO3 extension "charts"
