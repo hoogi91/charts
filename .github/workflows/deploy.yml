@@ -1,0 +1,35 @@
+name: 🚢 to TER
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: ['7.2']
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '${{ matrix.php_version }}'
+          tools: composer
+          extensions: json, mbstring
+
+      - name: Get current tag version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Preparing upload of release ${{ steps.get_version.outputs.VERSION }} to TER
+        run: composer global require helhum/ter-client
+
+      - name: Cleanup before we upload
+        run: git reset --hard HEAD && git clean -fx && composer extension-cleanup-for-release
+
+      - name: Uploading release ${{ steps.get_version.outputs.VERSION }} to TER
+        run: $HOME/.composer/vendor/bin/ter-client upload charts . -u "${{ secrets.TYPO3_ORG_USERNAME }}" -p "${{ secrets.TYPO3_ORG_PASSWORD }}" -m "${{ github.event.release.html_url }}"

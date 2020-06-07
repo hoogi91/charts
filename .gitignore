@@ -1,10 +1,14 @@
 .idea
 .vagrant
+.docker
+.docker.env
 .Build
 ansible/
 config/
 vendor/
 var/
+Documentation-GENERATED*/
 composer.phar
 composer.lock
+Makefile
 Vagrantfile

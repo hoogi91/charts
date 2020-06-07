@@ -17,5 +17,5 @@ interface LibraryFlexformInterface extends LibraryInterface
      *
      * @return array
      */
-    public function getDataStructures();
+    public function getDataStructures(): array;
 }

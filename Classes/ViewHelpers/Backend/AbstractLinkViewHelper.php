@@ -2,7 +2,7 @@
 
 namespace Hoogi91\Charts\ViewHelpers\Backend;
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
  * Class AbstractLinkViewHelper
@@ -19,7 +19,7 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
     /**
      * Initializes the arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
@@ -30,7 +30,7 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
     /**
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $classes = trim($this->arguments['class']);
         if (!empty($classes)) {
@@ -46,5 +46,5 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
      *
      * @return string
      */
-    abstract protected function renderModuleUrl($arguments = []);
+    abstract protected function renderModuleUrl(array $arguments = []): string;
 }

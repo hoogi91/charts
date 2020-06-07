@@ -4,9 +4,12 @@ namespace Hoogi91\Charts\Tests\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Hoogi91\Spreadsheets\Service\ExtractorService;
+use Hoogi91\Charts\Tests\Unit\LegacyTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ChartistTest
@@ -14,6 +17,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
  */
 class ChartistTest extends UnitTestCase
 {
+    use LegacyTrait;
+
     /**
      * @var Chartist
      */
@@ -30,20 +35,33 @@ class ChartistTest extends UnitTestCase
         $this->library = new Chartist();
         $this->library->setPageRenderer($this->getMockBuilder(PageRenderer::class)->getMock());
 
-        // create xlsx reader and load default fixture spreadsheet
-        $reader = new Xlsx();
-        $spreadsheet = $reader->load(dirname(__DIR__, 4) . '/Fixtures/01_fixture.xlsx');
-        $extractorService = new ExtractorService($spreadsheet);
-
         $this->chartDataSpreadsheetModel = $this->getMockBuilder(ChartDataSpreadsheet::class)
             ->setMethods(['getCellDataFromDatabaseString'])
             ->getMock();
+        $this->chartDataSpreadsheetModel->setDatasets('file:10|0!A1:E1');
 
         $this->chartDataSpreadsheetModel->method('getCellDataFromDatabaseString')->willReturnCallback(
-            function () use ($extractorService) {
-                return $extractorService->rangeToCellArray('A1:E1', false, true, false);
-            }
+            $this->getDataCallbackForFixture('01_fixture.xlsx', 'A1:E1')
         );
+
+        $fileRepositoryMock = $this->createMock(FileRepository::class);
+        $fileRepositoryMock->method('findFileReferenceByUid')->willReturn(
+            $this->createConfiguredMock(
+                FileReference::class,
+                [
+                    'getOriginalFile' => $this->createConfiguredMock(File::class, ['exists' => true]),
+                    'getExtension' => 'xlsx',
+                    'getForLocalProcessing' => dirname(__DIR__, 4) . '/Fixtures/01_fixture.xlsx'
+                ]
+            )
+        );
+        \Closure::bind(
+            static function () use ($fileRepositoryMock) {
+                self::$singletonInstances[FileRepository::class] = $fileRepositoryMock;
+            },
+            null,
+            GeneralUtility::class
+        )();
     }
 
     /**

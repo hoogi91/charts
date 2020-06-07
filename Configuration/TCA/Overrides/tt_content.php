@@ -1,32 +1,38 @@
 <?php
+
 defined('TYPO3_MODE') or die();
 
-(function ($extKey, $extConfig = []) {
+(static function ($extConfig = [], $extKey = 'charts') {
     $ll = sprintf('LLL:EXT:%s/Resources/Private/Language/locallang_db.xlf:', $extKey);
 
     // add new columns to tt_content to filter contacts from tt_address
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', [
-        'tx_charts_chartdata' => [
-            'exclude'   => true,
-            'l10n_mode' => 'copy',
-            'label'     => $ll . 'tt_content.tx_charts_chartdata',
-            'config'    => [
-                'type'          => 'group',
-                'internal_type' => 'db',
-                'allowed'       => 'tx_charts_domain_model_chartdata',
-                'size'          => 1,
-                'minitems'      => 1,
-                'maxitems'      => 1,
-                'default'       => 0,
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+        'tt_content',
+        [
+            'tx_charts_chartdata' => [
+                'exclude' => true,
+                'l10n_mode' => 'copy',
+                'label' => $ll . 'tt_content.tx_charts_chartdata',
+                'config' => [
+                    'type' => 'group',
+                    'internal_type' => 'db',
+                    'allowed' => 'tx_charts_domain_model_chartdata',
+                    'size' => 1,
+                    'minitems' => 1,
+                    'maxitems' => 1,
+                    'default' => 0,
+                ],
             ],
-        ],
-    ]);
+        ]
+    );
 
     // IMPORTANT! add this before type configuration so it's possible to check if pi_flexform field is needed
     // get current chart library and add flexform data structures if library supports them
     if (is_array($extConfig)) {
         /** @var \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry $libraryRegistry */
-        $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class);
+        $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class
+        );
         $chartLibrary = $libraryRegistry->getLibrary($extConfig['library']);
 
         // add all data structures of library to tt_content TCA
@@ -48,4 +54,9 @@ defined('TYPO3_MODE') or die();
 
     // register typoscript path of this extension
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript/', $extKey);
-})('charts', unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts']));
+})(
+    $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['charts'] ?? unserialize(
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts'],
+        ['allowed_classes' => false]
+    )
+);

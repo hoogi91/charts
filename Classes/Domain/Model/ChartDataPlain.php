@@ -13,7 +13,7 @@ class ChartDataPlain extends ChartData
      *
      * @return array
      */
-    protected function extractLabelList($labelData)
+    protected function extractLabelList($labelData): array
     {
         $data = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($labelData);
         if (!is_array($data)) {
@@ -27,14 +27,19 @@ class ChartDataPlain extends ChartData
      *
      * @return array
      */
-    protected function extractDatasetList($datasetData)
+    protected function extractDatasetList($datasetData): array
     {
         $data = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($datasetData);
         if (!is_array($data)) {
             return [];
         }
-        return array_values(array_map(function ($data) {
-            return array_values(array_map('floatval', $data));
-        }, $data));
+        return array_values(
+            array_map(
+                static function ($data) {
+                    return array_values(array_map('floatval', $data));
+                },
+                $data
+            )
+        );
     }
 }

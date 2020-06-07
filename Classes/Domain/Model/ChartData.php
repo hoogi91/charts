@@ -11,8 +11,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 abstract class ChartData extends AbstractEntity
 {
-    const TYPE_PLAIN = 0;
-    const TYPE_SPREADSHEET = 1;
+    public const TYPE_PLAIN = 0;
+    public const TYPE_SPREADSHEET = 1;
 
     /**
      * @var string
@@ -42,7 +42,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -50,7 +50,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $title
      */
-    public function setTitle($title)
+    public function setTitle($title): void
     {
         $this->title = $title;
     }
@@ -58,9 +58,9 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return int
      */
-    public function getType()
+    public function getType(): int
     {
-        if (!in_array($this->type, $this->getAllowedTypes())) {
+        if (!in_array($this->type, $this->getAllowedTypes(), true)) {
             return static::TYPE_PLAIN;
         }
         return (int)$this->type;
@@ -69,9 +69,9 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param int $type
      */
-    public function setType($type = self::TYPE_PLAIN)
+    public function setType($type = self::TYPE_PLAIN): void
     {
-        if (in_array($type, $this->getAllowedTypes())) {
+        if (in_array($type, $this->getAllowedTypes(), true)) {
             $this->type = $type;
         }
     }
@@ -79,7 +79,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array
      */
-    public function getLabels()
+    public function getLabels(): array
     {
         // only get first row of labels and ignore multiple column/row selections
         $labels = $this->extractLabelList($this->labels);
@@ -89,7 +89,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $labels
      */
-    public function setLabels($labels)
+    public function setLabels($labels): void
     {
         $this->labels = $labels;
     }
@@ -97,7 +97,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array
      */
-    public function getDatasets()
+    public function getDatasets(): array
     {
         return $this->extractDatasetList($this->datasets);
     }
@@ -105,7 +105,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $datasets
      */
-    public function setDatasets($datasets)
+    public function setDatasets($datasets): void
     {
         $this->datasets = $datasets;
     }
@@ -113,7 +113,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array
      */
-    public function getDatasetsLabels()
+    public function getDatasetsLabels(): array
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);
@@ -123,7 +123,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $datasetsLabels
      */
-    public function setDatasetsLabels($datasetsLabels)
+    public function setDatasetsLabels($datasetsLabels): void
     {
         $this->datasetsLabels = $datasetsLabels;
     }
@@ -131,7 +131,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array
      */
-    protected function getAllowedTypes()
+    protected function getAllowedTypes(): array
     {
         $allowedTypes = [static::TYPE_PLAIN];
         if (ExtensionManagementUtility::isLoaded('spreadsheets')) {
@@ -146,12 +146,12 @@ abstract class ChartData extends AbstractEntity
      *
      * @return array
      */
-    abstract protected function extractLabelList($labelData);
+    abstract protected function extractLabelList($labelData): array;
 
     /**
      * @param string $datasetData
      *
      * @return array
      */
-    abstract protected function extractDatasetList($datasetData);
+    abstract protected function extractDatasetList($datasetData): array;
 }

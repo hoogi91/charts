@@ -3,8 +3,10 @@
 namespace Hoogi91\Charts\Domain\Model;
 
 use Hoogi91\Charts\Utility\ExtensionUtility;
+use Hoogi91\Spreadsheets\Service\ExtractorService;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Exception as SpreadsheetException;
+use PhpOffice\PhpSpreadsheet\Reader\Exception as SpreadsheetReaderException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Border as CellBorder;
 use PhpOffice\PhpSpreadsheet\Style\Borders as CellBorders;
@@ -16,9 +18,6 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use Hoogi91\Spreadsheets\Domain\Model\CellValue;
-use Hoogi91\Spreadsheets\Domain\Model\SpreadsheetValue;
-use Hoogi91\Spreadsheets\Service\ExtractorService;
 
 /**
  * Class ChartDataSpreadsheet
@@ -26,8 +25,8 @@ use Hoogi91\Spreadsheets\Service\ExtractorService;
  */
 class ChartDataSpreadsheet extends ChartData
 {
-    const ALIGNMENT_HORIZONTAL = 0;
-    const ALIGNMENT_VERTICAL = 1;
+    public const ALIGNMENT_HORIZONTAL = 0;
+    public const ALIGNMENT_VERTICAL = 1;
 
     /**
      * @var int
@@ -42,15 +41,16 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * ChartData constructor.
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
+        // @phpstan-ignore-next-line
         $this->assets = new ObjectStorage();
     }
 
     /**
      * @return int
      */
-    public function getAlignment()
+    public function getAlignment(): int
     {
         return $this->alignment;
     }
@@ -58,7 +58,7 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * @param int $alignment
      */
-    public function setAlignment($alignment)
+    public function setAlignment($alignment): void
     {
         $this->alignment = $alignment;
     }
@@ -66,44 +66,57 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * @return ObjectStorage
      */
-    public function getAssets()
+    public function getAssets(): ObjectStorage
     {
         return $this->assets;
     }
 
     /**
-     * @param ObjectStorage $assets
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $assets
      */
-    public function setAssets($assets)
+    public function setAssets($assets): void
     {
         $this->assets = $assets;
     }
 
     /**
-     * @param int    $dataKey index of dataset to output
+     * @param int $dataKey index of dataset to output
      * @param string $defaultColor
      *
      * @return array
      */
-    public function getBackgroundColors($dataKey, $defaultColor = 'rgba(0, 0, 0, 0.1)')
+    public function getBackgroundColors($dataKey, $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
     {
-        $spreadsheetData = array_shift(array_slice($this->getSpreadsheetData($this->datasets), $dataKey, 1));
-        array_walk_recursive($spreadsheetData, function (&$item) use ($defaultColor) {
-            $result = $defaultColor;
-            if ($item instanceof CellValue) {
-                $style = $this->getStyleFromSpreadsheet($item->getCell());
-                if ($style instanceof CellStyle && $style->getFill()->getFillType() !== CellBackground::FILL_NONE) {
-                    $color = $style->getFill()->getStartColor();
-                    $result = vsprintf('rgb(%s, %s, %s)', [
+        $spreadsheetData = array_slice($this->getSpreadsheetData($this->datasets), $dataKey, 1);
+        $spreadsheetData = array_shift($spreadsheetData);
+        array_walk_recursive(
+            $spreadsheetData,
+            function (&$item) use ($defaultColor) {
+                $style = null;
+                if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
+                    $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
+                    $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
+                }
+
+                if (!$style instanceof CellStyle || $style->getFill()->getFillType() === CellBackground::FILL_NONE) {
+                    $item = $defaultColor;
+                    return;
+                }
+
+                // get color from cell
+                $color = $style->getFill()->getStartColor();
+                $item = vsprintf(
+                    'rgb(%s, %s, %s)',
+                    [
                         hexdec(CellColor::getRed($color->getRGB())),
                         hexdec(CellColor::getGreen($color->getRGB())),
                         hexdec(CellColor::getBlue($color->getRGB())),
-                    ]);
-                }
+                    ]
+                );
             }
-            // set calculated result as new item value
-            $item = $result;
-        });
+        );
 
         // check if background colors have been found or only default color has been set
         $uniqueBackgroundColors = array_values(array_unique($spreadsheetData));
@@ -115,51 +128,72 @@ class ChartDataSpreadsheet extends ChartData
     }
 
     /**
-     * @param int    $dataKey index of dataset to output
+     * @param int $dataKey index of dataset to output
      * @param string $defaultColor
      *
      * @return array
      */
-    public function getBorderColors($dataKey, $defaultColor = 'rgba(0, 0, 0, 0.1)')
+    public function getBorderColors($dataKey, $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
     {
-        $spreadsheetData = array_shift(array_slice($this->getSpreadsheetData($this->datasets), $dataKey, 1));
-        array_walk_recursive($spreadsheetData, function (&$item) use ($defaultColor) {
-            $result = $defaultColor;
-            if ($item instanceof CellValue) {
-                $style = $this->getStyleFromSpreadsheet($item->getCell());
-                if ($style instanceof CellStyle && $style->getBorders() instanceof CellBorders) {
-                    $rawBorderData = [
-                        'top'    => $style->getBorders()->getTop(),
-                        'bottom' => $style->getBorders()->getBottom(),
-                        'left'   => $style->getBorders()->getLeft(),
-                        'right'  => $style->getBorders()->getRight(),
-                    ];
+        $spreadsheetData = array_slice($this->getSpreadsheetData($this->datasets), $dataKey, 1);
+        $spreadsheetData = array_shift($spreadsheetData);
+        array_walk_recursive(
+            $spreadsheetData,
+            function (&$item) use ($defaultColor) {
+                $style = null;
+                if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
+                    $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
+                    $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
+                }
 
-                    // filter border data and return only rgb value
-                    $borders = array_map(function ($border) {
+                if (!$style instanceof CellStyle || !$style->getBorders() instanceof CellBorders) {
+                    $item = $defaultColor;
+                    return;
+                }
+
+                // filter border data and return only rgb value
+                $borders = array_map(
+                    static function ($border) {
                         /** @var CellBorder $border */
                         return $border->getColor()->getRGB();
-                    }, array_filter($rawBorderData, function ($border) {
-                        /** @var CellBorder $border */
-                        return $border->getBorderStyle() !== CellBorder::BORDER_NONE;
-                    }));
-
-                    // return new result only if borders are found ;)
-                    if (!empty($borders)) {
-                        $borderCount = array_count_values($borders);
-                        arsort($borderCount);
-                        $borderColor = array_shift(array_keys($borderCount));
-                        $result = vsprintf('rgb(%s, %s, %s)', [
-                            hexdec(CellColor::getRed($borderColor)),
-                            hexdec(CellColor::getGreen($borderColor)),
-                            hexdec(CellColor::getBlue($borderColor)),
-                        ]);
-                    }
+                    },
+                    array_filter(
+                        [
+                            'top' => $style->getBorders()->getTop(),
+                            'bottom' => $style->getBorders()->getBottom(),
+                            'left' => $style->getBorders()->getLeft(),
+                            'right' => $style->getBorders()->getRight(),
+                        ],
+                        static function ($border) {
+                            /** @var CellBorder $border */
+                            return $border->getBorderStyle() !== CellBorder::BORDER_NONE;
+                        }
+                    )
+                );
+                if (empty($borders)) {
+                    // return default if no valid borders are given
+                    $item = $defaultColor;
+                    return;
                 }
+
+                $borderCounts = array_count_values($borders);
+                arsort($borderCounts);
+                $borderCountKeys = array_keys($borderCounts);
+
+                // extract border color
+                $borderColor = array_shift($borderCountKeys);
+                $item = vsprintf(
+                    'rgb(%s, %s, %s)',
+                    [
+                        hexdec(CellColor::getRed($borderColor)),
+                        hexdec(CellColor::getGreen($borderColor)),
+                        hexdec(CellColor::getBlue($borderColor)),
+                    ]
+                );
             }
-            // set calculated result as new item value
-            $item = $result;
-        });
+        );
 
         // check if border colors have been found or only default color has been set
         $uniqueBorderColors = array_values(array_unique($spreadsheetData));
@@ -175,15 +209,21 @@ class ChartDataSpreadsheet extends ChartData
      *
      * @return array
      */
-    protected function extractLabelList($labelData)
+    protected function extractLabelList($labelData): array
     {
         // label data should be a reference/selection of spreadsheet data of an external asset
         $spreadsheetData = $this->getSpreadsheetData($labelData);
-        array_walk_recursive($spreadsheetData, function (&$item) {
-            if ($item instanceof CellValue) {
-                $item = $item->getValue();
+        array_walk_recursive(
+            $spreadsheetData,
+            static function (&$item) {
+                if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
+                    $item = $item->getRenderedValue();
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
+                    $item = $item->getValue();// @phpstan-ignore-line
+                }
             }
-        });
+        );
         return $spreadsheetData;
     }
 
@@ -192,24 +232,31 @@ class ChartDataSpreadsheet extends ChartData
      *
      * @return array
      */
-    protected function extractDatasetList($datasetData)
+    protected function extractDatasetList($datasetData): array
     {
         // label data should be a reference/selection of spreadsheet data of an external asset
         $spreadsheetData = $this->getSpreadsheetData($datasetData);
-        array_walk_recursive($spreadsheetData, function (&$item) {
-            if ($item instanceof CellValue) {
-                $item = floatval($item->getValue());
+        array_walk_recursive(
+            $spreadsheetData,
+            static function (&$item) {
+                if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
+                    $item = (float)$item->getRenderedValue();
+                } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
+                    $item = (float)$item->getValue();// @phpstan-ignore-line
+                }
             }
-        });
+        );
         return $spreadsheetData;
     }
 
     /**
      * @param Cell $cell
      *
-     * @return null|\PhpOffice\PhpSpreadsheet\Style\Style
+     * @return CellStyle|null
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
-    protected function getStyleFromSpreadsheet($cell)
+    protected function getStyleFromSpreadsheet($cell): ?CellStyle
     {
         if (!$cell instanceof Cell) {
             return null;
@@ -230,15 +277,19 @@ class ChartDataSpreadsheet extends ChartData
      * @param string $dataValue
      *
      * @return array
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
-    protected function getSpreadsheetData($dataValue)
+    protected function getSpreadsheetData($dataValue): array
     {
         // try to get value from cache
         $cache = null;
         try {
             /** @var CacheManager $cacheManager */
             $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-            $cache = $cacheManager->getCache('cache_charts_data');
+            $cache = $cacheManager->getCache(
+            // @phpstan-ignore-next-line
+                version_compare(TYPO3_version, '10.0', '>=') ? 'charts_data' : 'cache_charts_data'
+            );
 
             // If $entry is found, it has been cached => return that value
             $cacheIdentifier = md5(trim($dataValue));
@@ -266,10 +317,14 @@ class ChartDataSpreadsheet extends ChartData
         // save value in cache when identifier and cache is available
         if (!empty($cacheIdentifier) && $cache instanceof FrontendInterface) {
             $pageUid = static::getTyposcriptFrontendController()->page['uid'];
-            $cache->set($cacheIdentifier, $entry, [
-                sprintf('pageId_%d', $pageUid),
-                sprintf('chartDataId_%d', $this->getUid()),
-            ]);
+            $cache->set(
+                $cacheIdentifier,
+                $entry,
+                [
+                    sprintf('pageId_%d', $pageUid),
+                    sprintf('chartDataId_%d', $this->getUid()),
+                ]
+            );
         }
 
         return $entry;
@@ -281,9 +336,9 @@ class ChartDataSpreadsheet extends ChartData
      * @param array $cellData
      *
      * @return array
-     * @deprecated
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
-    private function flipCellData(array $cellData):array
+    private function flipCellData(array $cellData): array
     {
         if (ExtensionUtility::hasSpreadsheetExtensionWithDirectionSupport() === true) {
             return $cellData;
@@ -302,17 +357,70 @@ class ChartDataSpreadsheet extends ChartData
     }
 
     /**
-     * @param string $data
+     * @param int $index
+     * @return CellStyle|null
+     * @deprecated since v1.1.0 and will be removed in v2.0
+     */
+    protected function getDatasetSpreadsheetStyleByIndex(int $index): ?CellStyle
+    {
+        // get spreadsheet DSN value from content object to parse and render
+        try {
+            $dsnValue = \Hoogi91\Spreadsheets\Domain\ValueObject\DsnValueObject::createFromDSN($this->datasets);
+
+            /** @var \Hoogi91\Spreadsheets\Service\ReaderService $readerService */
+            $readerService = GeneralUtility::makeInstance(\Hoogi91\Spreadsheets\Service\ReaderService::class);
+            $spreadsheet = $readerService->getSpreadsheet($dsnValue->getFileReference());
+            $spreadsheet->setActiveSheetIndex($dsnValue->getSheetIndex());
+
+            return $spreadsheet->getCellXfByIndex($index);
+        } catch (SpreadsheetReaderException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string|null $data
      *
      * @return array
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
-    protected function getCellDataFromDatabaseString($data = null)
+    protected function getCellDataFromDatabaseString(?string $data = null): array
     {
         if (empty($data) || !is_string($data)) {
             return [];
         }
 
-        $spreadsheetValue = SpreadsheetValue::createFromDatabaseString($data);
+        // @phpstan-ignore-next-line
+        if (version_compare(TYPO3_version, '10.0', '<')) {
+            return $this->legacyGetCellData($data);
+        }
+
+        try {
+            // get spreadsheet DSN value from content object to parse and render
+            /** @var ExtractorService $spreadsheetExtractor */
+            $spreadsheetExtractor = GeneralUtility::makeInstance(ExtractorService::class);
+            $dsnValue = \Hoogi91\Spreadsheets\Domain\ValueObject\DsnValueObject::createFromDSN($data);
+            $extraction = $spreadsheetExtractor->getDataByDsnValueObject($dsnValue, false);
+            if ($extraction === null) {
+                return [];
+            }
+
+            return $extraction->getBodyData();
+        } catch (\Hoogi91\Spreadsheets\Exception\InvalidDataSourceNameException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param string|null $data
+     * @return array
+     * @deprecated since v1.1.0 and will be removed in v2.0
+     */
+    private function legacyGetCellData(?string $data = null): array
+    {
+        // @phpstan-ignore-next-line
+        $spreadsheetValue = \Hoogi91\Spreadsheets\Domain\Model\SpreadsheetValue::createFromDatabaseString($data);
+        // @phpstan-ignore-next-line
         $spreadsheetExtractor = ExtractorService::createFromSpreadsheetValue($spreadsheetValue);
         if (!$spreadsheetExtractor instanceof ExtractorService) {
             return [];
@@ -320,6 +428,7 @@ class ChartDataSpreadsheet extends ChartData
 
         try {
             if (ExtensionUtility::hasSpreadsheetExtensionWithDirectionSupport() === true) {
+                // @phpstan-ignore-next-line
                 return $spreadsheetExtractor->rangeToCellArray(
                     $spreadsheetValue->getSelection(),
                     false,
@@ -329,6 +438,7 @@ class ChartDataSpreadsheet extends ChartData
                 );
             }
 
+            // @phpstan-ignore-next-line
             return $spreadsheetExtractor->rangeToCellArray($spreadsheetValue->getSelection(), false, true, false);
         } catch (SpreadsheetException $e) {
             return [];
@@ -338,7 +448,7 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * @return TypoScriptFrontendController
      */
-    protected static function getTyposcriptFrontendController()
+    protected static function getTyposcriptFrontendController(): TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
     }

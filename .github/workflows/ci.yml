@@ -1,0 +1,82 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - release/*
+      - feature/*
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        php_version: ['7.2', '7.3', '7.4']
+        typo3_version: ['^8.7', '^9.5', '^10.4']
+        experimental: [false]
+        include:
+          # add experimental dev-master for PHP 7.4
+          - php_version: '7.4'
+            typo3_version: 'dev-master'
+            experimental: true
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '${{ matrix.php_version }}'
+          coverage: xdebug
+          tools: composer
+          extensions: json, mbstring
+
+      - name: Install project testing dependencies
+        run: |
+          if [[ "${{ matrix.typo3_version }}" = *"dev"* ]]; then
+            composer config minimum-stability dev;
+            composer config prefer-stable true;
+            composer require typo3/cms-core:"@dev" --no-update;
+          fi
+          composer require nimut/typo3-complete:"${{ matrix.typo3_version }}"
+          export TYPO3_PATH_ROOT=$GITHUB_WORKSPACE/.Build/web
+          export typo3DatabaseName=typo3
+          export typo3DatabaseHost=localhost
+          export typo3DatabaseUsername=root
+          export typo3DatabasePassword=
+
+      - name: Executing PHP code sniffer
+        run: .Build/bin/phpcs -p --standard=PSR2 Classes/
+
+      - name: Executing PHPStan
+        if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
+        run: .Build/bin/phpstan analyse --level 5 Classes/
+
+      - name: Running unit tests
+        if: (matrix.php_version == '7.4' && matrix.typo3_version == '^10.4') == false
+        run: |
+          if [ -d "Tests/Unit" ]; then
+            .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/
+          fi
+
+      - name: Running unit tests with coverage report
+        if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
+        run: |
+          if [ -d "Tests/Unit" ]; then
+            .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=./coverage.xml --whitelist=./Classes/
+          fi
+
+      - name: Upload coverage report to codecov
+        uses: codecov/codecov-action@v1
+        if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: phpunit

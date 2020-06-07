@@ -1,7 +1,10 @@
 <?php
-(function ($extKey, $extConfig = []) {
+
+(static function ($extConfig = [], $extKey = 'charts') {
     /** @var \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry $libraryRegistry */
-    $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class);
+    $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class
+    );
     $libraryRegistry->register('chart.js', \Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs::class, true);
     $libraryRegistry->register('chartist', \Hoogi91\Charts\DataProcessing\Charts\Library\Chartist::class, true);
 
@@ -14,7 +17,7 @@
         $cacheConfiguration['cache_charts_data']['frontend'] = \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class;
     }
     if (!isset($cacheConfiguration['cache_charts_data']['backend'])) {
-        if (isset($extConfig['disableCaching']) && (bool) $extConfig['disableCaching'] === true) {
+        if (isset($extConfig['disableCaching']) && (bool)$extConfig['disableCaching'] === true) {
             $cacheConfiguration['cache_charts_data']['backend'] = \TYPO3\CMS\Core\Cache\Backend\NullBackend::class;
         } else {
             $cacheConfiguration['cache_charts_data']['backend'] = \TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend::class;
@@ -45,13 +48,15 @@
 
         // register extension relevant icons
         $icons = [
-            'chart'          => 'Extension',
-            'bar_chart'      => 'BarChart',
-            'line_chart'     => 'LineChart',
-            'pie_chart'      => 'PieChart',
+            'chart' => 'Extension',
+            'bar_chart' => 'BarChart',
+            'line_chart' => 'LineChart',
+            'pie_chart' => 'PieChart',
             'doughnut_chart' => 'DoughnutChart',
         ];
-        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Imaging\IconRegistry::class
+        );
         foreach ($icons as $key => $icon) {
             $iconRegistry->registerIcon(
                 'tx_charts_' . strtolower($key),
@@ -60,4 +65,9 @@
             );
         }
     }
-})('charts', unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts']));
+})(
+    $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['charts'] ?? unserialize(
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts'],
+        ['allowed_classes' => false]
+    )
+);
