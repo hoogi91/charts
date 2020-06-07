@@ -96,7 +96,7 @@ class ChartDataSpreadsheet extends ChartData
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
                 } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
-                    /** @deprecated since v1.0.6 and will be removed in v2.0 */
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
                     $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
                 }
 
@@ -144,7 +144,7 @@ class ChartDataSpreadsheet extends ChartData
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $style = $this->getDatasetSpreadsheetStyleByIndex($item->getStyleIndex());
                 } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
-                    /** @deprecated since v1.0.6 and will be removed in v2.0 */
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
                     $style = $this->getStyleFromSpreadsheet($item->getCell());// @phpstan-ignore-line
                 }
 
@@ -219,7 +219,7 @@ class ChartDataSpreadsheet extends ChartData
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $item = $item->getRenderedValue();
                 } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
-                    /** @deprecated since v1.0.6 and will be removed in v2.0 */
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
                     $item = $item->getValue();// @phpstan-ignore-line
                 }
             }
@@ -242,7 +242,7 @@ class ChartDataSpreadsheet extends ChartData
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
                     $item = (float)$item->getRenderedValue();
                 } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
-                    /** @deprecated since v1.0.6 and will be removed in v2.0 */
+                    /** @deprecated since v1.1.0 and will be removed in v2.0 */
                     $item = (float)$item->getValue();// @phpstan-ignore-line
                 }
             }
@@ -254,7 +254,7 @@ class ChartDataSpreadsheet extends ChartData
      * @param Cell $cell
      *
      * @return CellStyle|null
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     protected function getStyleFromSpreadsheet($cell): ?CellStyle
     {
@@ -277,7 +277,7 @@ class ChartDataSpreadsheet extends ChartData
      * @param string $dataValue
      *
      * @return array
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     protected function getSpreadsheetData($dataValue): array
     {
@@ -336,7 +336,7 @@ class ChartDataSpreadsheet extends ChartData
      * @param array $cellData
      *
      * @return array
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     private function flipCellData(array $cellData): array
     {
@@ -359,7 +359,7 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * @param int $index
      * @return CellStyle|null
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     protected function getDatasetSpreadsheetStyleByIndex(int $index): ?CellStyle
     {
@@ -382,7 +382,7 @@ class ChartDataSpreadsheet extends ChartData
      * @param string|null $data
      *
      * @return array
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     protected function getCellDataFromDatabaseString(?string $data = null): array
     {
@@ -414,7 +414,7 @@ class ChartDataSpreadsheet extends ChartData
     /**
      * @param string|null $data
      * @return array
-     * @deprecated since v1.0.6 and will be removed in v2.0
+     * @deprecated since v1.1.0 and will be removed in v2.0
      */
     private function legacyGetCellData(?string $data = null): array
     {

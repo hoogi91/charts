@@ -54,7 +54,7 @@ class EditLinkViewHelper extends AbstractLinkViewHelper
     {
         // @phpstan-ignore-next-line
         if (version_compare(TYPO3_version, '10.0', '<')) {
-            /** @deprecated since v1.0.6 and will be removed in v2.0 */
+            /** @deprecated since v1.1.0 and will be removed in v2.0 */
             // @phpstan-ignore-next-line
             return \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl($module, $params);
         }
