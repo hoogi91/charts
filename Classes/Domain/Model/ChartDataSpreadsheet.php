@@ -240,7 +240,7 @@ class ChartDataSpreadsheet extends ChartData
             $spreadsheetData,
             static function (&$item) {
                 if ($item instanceof \Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject) {
-                    $item = (float)$item->getRenderedValue();
+                    $item = (float)$item->getCalculatedValue();
                 } elseif ($item instanceof \Hoogi91\Spreadsheets\Domain\Model\CellValue) {// @phpstan-ignore-line
                     /** @deprecated since v1.1.0 and will be removed in v2.0 */
                     $item = (float)$item->getValue();// @phpstan-ignore-line
