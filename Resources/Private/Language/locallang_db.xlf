@@ -31,9 +31,6 @@
 			<trans-unit id="tx_charts_domain_model_chartdata.type" xml:space="preserve">
 				<source>Spreadsheet based?</source>
 			</trans-unit>
-			<trans-unit id="tx_charts_domain_model_chartdata.alignment" xml:space="preserve">
-				<source>Is Data vertical aligned?</source>
-			</trans-unit>
 			<trans-unit id="tx_charts_domain_model_chartdata.type.activate" xml:space="preserve">
 				<source>Activate</source>
 			</trans-unit>

@@ -27,7 +27,6 @@ CREATE TABLE tx_charts_domain_model_chartdata (
     l10n_diffsource mediumblob,
     title varchar(255) DEFAULT '' NOT NULL,
     type tinyint(1) unsigned DEFAULT '0' NOT NULL,
-    alignment tinyint(1) unsigned DEFAULT '0' NOT NULL,
     labels text,
     datasets text,
     datasets_labels text,

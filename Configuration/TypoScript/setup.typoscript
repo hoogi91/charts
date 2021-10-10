@@ -36,11 +36,6 @@ tt_content.chart_bar {
     }
 }
 
-# copy configuration from Bar Charts to Line Charts
 tt_content.chart_line < tt_content.chart_bar
-
-# copy configuration from Bar Charts to Pie Charts
 tt_content.chart_pie < tt_content.chart_bar
-
-# copy configuration from Bar Charts to Doughnut Charts
 tt_content.chart_doughnut < tt_content.chart_bar

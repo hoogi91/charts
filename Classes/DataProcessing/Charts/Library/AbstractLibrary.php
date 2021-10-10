@@ -12,46 +12,31 @@ use TYPO3\CMS\Core\Page\PageRenderer;
  */
 abstract class AbstractLibrary implements LibraryInterface
 {
-    /**
-     * @var PageRenderer
-     */
-    protected $pageRenderer;
-
-    /**
-     * @return PageRenderer
-     */
-    public function getPageRenderer(): PageRenderer
-    {
-        return $this->pageRenderer;
-    }
-
-    /**
-     * @param PageRenderer $pageRenderer
-     */
-    public function setPageRenderer($pageRenderer): void
-    {
-        $this->pageRenderer = $pageRenderer;
-    }
 
     /**
      * @param string $chartType
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return array
      */
-    public function getStylesheetAssets($chartType, $pageRenderer = null): array
+    public function getStylesheetAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
         $assets = $this->getStylesheetAssetsToLoad();
-        if (empty($assets)) {
-            return [];
-        }
 
         // directly include when pageRenderer is given
         if ($pageRenderer instanceof PageRenderer) {
-            $this->setPageRenderer($pageRenderer);
-
             foreach ($assets as $asset => $options) {
-                $this->registerStylesheetAssetsWithOptions($asset, $options);
+                $pageRenderer->addCssLibrary(
+                    $asset,
+                    $options['rel'] ?? 'stylesheet',
+                    $options['media'] ?? 'all',
+                    $options['title'] ?? '',
+                    $options['compress'] ?? false,
+                    $options['forceOnTop'] ?? false,
+                    $options['wrap'] ?? '',
+                    $options['noConcat'] ?? false,
+                    $options['split'] ?? '|'
+                );
             }
         }
         return array_keys($assets);
@@ -67,23 +52,29 @@ abstract class AbstractLibrary implements LibraryInterface
 
     /**
      * @param string $chartType
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return array
      */
-    public function getJavascriptAssets($chartType, $pageRenderer = null): array
+    public function getJavascriptAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
         $assets = $this->getJavascriptAssetsToLoad();
-        if (empty($assets)) {
-            return [];
-        }
 
         // directly include when pageRenderer is given
         if ($pageRenderer instanceof PageRenderer) {
-            $this->setPageRenderer($pageRenderer);
-
             foreach ($assets as $asset => $options) {
-                $this->registerJavascriptAssetsWithOptions($asset, $options);
+                $pageRenderer->addJsFooterLibrary(
+                    md5($asset),
+                    $asset,
+                    $options['type'] ?? 'text/javascript',
+                    $options['compress'] ?? false,
+                    $options['forceOnTop'] ?? false,
+                    $options['wrap'] ?? '',
+                    $options['noConcat'] ?? false,
+                    $options['split'] ?? '|',
+                    $options['async'] ?? false,
+                    $options['integrity'] ?? ''
+                );
             }
         }
         return array_keys($assets);
@@ -91,6 +82,7 @@ abstract class AbstractLibrary implements LibraryInterface
 
     /**
      * @return array
+     * @codeCoverageIgnore
      */
     protected function getJavascriptAssetsToLoad(): array
     {
@@ -101,12 +93,16 @@ abstract class AbstractLibrary implements LibraryInterface
      * @param string $chartIdentifier
      * @param string $chartType
      * @param ChartData $chartEntity
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return string
      */
-    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
-    {
+    public function getEntityStylesheet(
+        string $chartIdentifier,
+        string $chartType,
+        ChartData $chartEntity,
+        PageRenderer $pageRenderer = null
+    ): string {
         return '';
     }
 
@@ -114,12 +110,16 @@ abstract class AbstractLibrary implements LibraryInterface
      * @param string $chartIdentifier
      * @param string $chartType
      * @param ChartData $chartEntity
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return string
      */
-    public function getEntityJavascript($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
-    {
+    public function getEntityJavascript(
+        string $chartIdentifier,
+        string $chartType,
+        ChartData $chartEntity,
+        PageRenderer $pageRenderer = null
+    ): string {
         // check if labels and datasets are not empty ;)
         $labels = $chartEntity->getLabels();
         $datasets = $chartEntity->getDatasets();
@@ -157,7 +157,7 @@ abstract class AbstractLibrary implements LibraryInterface
      *
      * @return array
      */
-    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity): array
+    protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
         $datasetsLabels = $chartEntity->getDatasetsLabels();
         return array_map(
@@ -169,52 +169,5 @@ abstract class AbstractLibrary implements LibraryInterface
             },
             array_keys($datasets)
         );
-    }
-
-    /**
-     * only includes when page renderer is available
-     *
-     * @param string $asset
-     * @param array $options
-     */
-    protected function registerStylesheetAssetsWithOptions($asset, $options): void
-    {
-        if ($this->pageRenderer instanceof PageRenderer) {
-            $this->pageRenderer->addCssLibrary(
-                $asset,
-                $options['rel'] ?? 'stylesheet',
-                $options['media'] ?? 'all',
-                $options['title'] ?? '',
-                $options['compress'] ?? false,
-                $options['forceOnTop'] ?? false,
-                $options['wrap'] ?? '',
-                $options['noConcat'] ?? false,
-                $options['split'] ?? '|'
-            );
-        }
-    }
-
-    /**
-     * only includes when page renderer is available
-     *
-     * @param string $asset
-     * @param array $options
-     */
-    protected function registerJavascriptAssetsWithOptions($asset, $options): void
-    {
-        if ($this->pageRenderer instanceof PageRenderer) {
-            $this->pageRenderer->addJsFooterLibrary(
-                md5($asset),
-                $asset,
-                $options['type'] ?? 'text/javascript',
-                $options['compress'] ?? false,
-                $options['forceOnTop'] ?? false,
-                $options['wrap'] ?? '',
-                $options['noConcat'] ?? false,
-                $options['split'] ?? '|',
-                $options['async'] ?? false,
-                $options['integrity'] ?? ''
-            );
-        }
     }
 }

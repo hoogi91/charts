@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Hoogi91\Charts\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
+  Hoogi91\Charts\DataProcessing\ChartsProcessor:
+    public: true
+
+  Hoogi91\Charts\DataProcessing\FlexFormProcessor:
+    public: true

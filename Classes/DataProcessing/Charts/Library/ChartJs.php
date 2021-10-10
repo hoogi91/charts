@@ -3,7 +3,10 @@
 namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\LibraryFlexformInterface;
-use Hoogi91\Charts\Form\Types\Chart;
+use Hoogi91\Charts\Form\Types\BarChart;
+use Hoogi91\Charts\Form\Types\DoughnutChart;
+use Hoogi91\Charts\Form\Types\LineChart;
+use Hoogi91\Charts\Form\Types\PieChart;
 
 /**
  * Class ChartJs
@@ -77,10 +80,10 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
     public function getDataStructures(): array
     {
         return [
-            Chart::TYPE_BAR => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Bar.xml',
-            Chart::TYPE_LINE => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Line.xml',
-            Chart::TYPE_PIE => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
-            Chart::TYPE_DOUGHNUT => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
+            BarChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Bar.xml',
+            LineChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Line.xml',
+            PieChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
+            DoughnutChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
         ];
     }
 }

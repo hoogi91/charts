@@ -49,7 +49,7 @@ return (static function ($extKey = 'charts') {
                 'showitem' => 'spreadsheet_datasets, spreadsheet_datasets_labels',
             ],
             'spreadsheetOptionPalette' => [
-                'showitem' => 'type, alignment',
+                'showitem' => 'type',
             ],
         ],
         'columns' => [
@@ -62,7 +62,7 @@ return (static function ($extKey = 'charts') {
                     'special' => 'languages',
                     'items' => [
                         [
-                            'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
+                            'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
                             -1,
                             'flags-multiple',
                         ],
@@ -102,14 +102,14 @@ return (static function ($extKey = 'charts') {
             ],
             'hidden' => [
                 'exclude' => 1,
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
                 'config' => [
                     'type' => 'check',
                 ],
             ],
             'starttime' => [
                 'exclude' => 1,
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
                 'config' => [
                     'behaviour' => [
                         'allowLanguageSynchronization' => true,
@@ -124,7 +124,7 @@ return (static function ($extKey = 'charts') {
             ],
             'endtime' => [
                 'exclude' => 1,
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
                 'config' => [
                     'behaviour' => [
                         'allowLanguageSynchronization' => true,
@@ -170,21 +170,6 @@ return (static function ($extKey = 'charts') {
                 'config' => [
                     'type' => 'check',
                     'renderType' => 'hidden',
-                    'default' => 0,
-                ],
-            ],
-            // @deprecated - option will be removed in further releases
-            'alignment' => [
-                'exclude' => true,
-                'label' => $ll . '.alignment',
-                'displayCond' => [
-                    'AND' => [
-                        'FIELD:type:=:1',
-                        'USER:Hoogi91\Charts\Utility\ExtensionUtility->missesSpreadsheetExtensionOrDirectionSupport',
-                    ],
-                ],
-                'config' => [
-                    'type' => 'check',
                     'default' => 0,
                 ],
             ],

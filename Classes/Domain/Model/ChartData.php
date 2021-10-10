@@ -50,7 +50,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $title
      */
-    public function setTitle($title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -60,16 +60,13 @@ abstract class ChartData extends AbstractEntity
      */
     public function getType(): int
     {
-        if (!in_array($this->type, $this->getAllowedTypes(), true)) {
-            return static::TYPE_PLAIN;
-        }
-        return (int)$this->type;
+        return in_array($this->type, $this->getAllowedTypes(), true) ? $this->type : static::TYPE_PLAIN;
     }
 
     /**
      * @param int $type
      */
-    public function setType($type = self::TYPE_PLAIN): void
+    public function setType(int $type = self::TYPE_PLAIN): void
     {
         if (in_array($type, $this->getAllowedTypes(), true)) {
             $this->type = $type;
@@ -83,13 +80,13 @@ abstract class ChartData extends AbstractEntity
     {
         // only get first row of labels and ignore multiple column/row selections
         $labels = $this->extractLabelList($this->labels);
-        return array_shift($labels);
+        return array_shift($labels) ?? [];
     }
 
     /**
      * @param string $labels
      */
-    public function setLabels($labels): void
+    public function setLabels(string $labels): void
     {
         $this->labels = $labels;
     }
@@ -105,7 +102,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @param string $datasets
      */
-    public function setDatasets($datasets): void
+    public function setDatasets(string $datasets): void
     {
         $this->datasets = $datasets;
     }
@@ -117,13 +114,13 @@ abstract class ChartData extends AbstractEntity
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);
-        return array_shift($labels);
+        return array_shift($labels) ?? [];
     }
 
     /**
      * @param string $datasetsLabels
      */
-    public function setDatasetsLabels($datasetsLabels): void
+    public function setDatasetsLabels(string $datasetsLabels): void
     {
         $this->datasetsLabels = $datasetsLabels;
     }
@@ -146,12 +143,12 @@ abstract class ChartData extends AbstractEntity
      *
      * @return array
      */
-    abstract protected function extractLabelList($labelData): array;
+    abstract protected function extractLabelList(string $labelData): array;
 
     /**
      * @param string $datasetData
      *
      * @return array
      */
-    abstract protected function extractDatasetList($datasetData): array;
+    abstract protected function extractDatasetList(string $datasetData): array;
 }

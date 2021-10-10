@@ -1,23 +1,23 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-	  data-namespace-typo3-fluid="true">
+      data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
 
 <f:section name="Main">
-	<f:if condition="{data_chart.type} && {data_chart.library} && {data_chart.entity}">
-		<f:switch expression="{data_chart.type}">
-			<f:case value="line">
-				<f:render partial="{data_chart.library}/Line" section="Main" arguments="{data_chart}"/>
-			</f:case>
-			<f:case value="pie">
-				<f:render partial="{data_chart.library}/Pie" section="Main" arguments="{data_chart}"/>
-			</f:case>
-			<f:case value="doughnut">
-				<f:render partial="{data_chart.library}/Doughnut" section="Main" arguments="{data_chart}"/>
-			</f:case>
-			<f:defaultCase>
-				<f:render partial="{data_chart.library}/Bar" section="Main" arguments="{data_chart}"/>
-			</f:defaultCase>
-		</f:switch>
-	</f:if>
+    <f:if condition="{data_chart.type} && {data_chart.library} && {data_chart.entity}">
+        <f:switch expression="{data_chart.type}">
+            <f:case value="chart_line">
+                <f:render partial="{data_chart.library}/Line" section="Main" arguments="{data_chart}"/>
+            </f:case>
+            <f:case value="chart_pie">
+                <f:render partial="{data_chart.library}/Pie" section="Main" arguments="{data_chart}"/>
+            </f:case>
+            <f:case value="chart_doughnut">
+                <f:render partial="{data_chart.library}/Doughnut" section="Main" arguments="{data_chart}"/>
+            </f:case>
+            <f:defaultCase>
+                <f:render partial="{data_chart.library}/Bar" section="Main" arguments="{data_chart}"/>
+            </f:defaultCase>
+        </f:switch>
+    </f:if>
 </f:section>

@@ -17,23 +17,23 @@
     }
   ],
   "require": {
-    "ext-json": "*",
     "php": ">=7.2",
-    "typo3/cms-core": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-backend": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-frontend": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-extbase": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-fluid": "^8.7 || ^9.5 || ^10.4",
-    "typo3/cms-fluid-styled-content": "^8.7 || ^9.5 || ^10.4"
+    "ext-json": "*",
+    "typo3/cms-backend": "^10.4 || ^11.5",
+    "typo3/cms-core": "^10.4 || ^11.5",
+    "typo3/cms-extbase": "^10.4 || ^11.5",
+    "typo3/cms-fluid": "^10.4 || ^11.5",
+    "typo3/cms-fluid-styled-content": "^10.4 || ^11.5",
+    "typo3/cms-frontend": "^10.4 || ^11.5"
   },
   "require-dev": {
-    "hoogi91/spreadsheets": "^1.0 || ^2.0",
-    "nimut/testing-framework": "^4.0 || ^5.0",
+    "hoogi91/spreadsheets": "^2.0",
+    "nimut/testing-framework": "^5.0",
     "phpstan/phpstan": "^0.12.19",
     "phpunit/phpunit": "^7.0",
-    "roave/security-advisories": "dev-master",
+    "roave/security-advisories": "dev-latest",
     "squizlabs/php_codesniffer": "^3.5",
-    "typo3/minimal": "^8.7 || ^9.5 || ^10.4"
+    "typo3/minimal": "^10.4 || ^11.5"
   },
   "suggest": {
     "hoogi91/spreadsheets": "Allows datasets (values and colors) to be filled by spreadsheet files (XLSX, CSV, ODT, etc.)"
@@ -68,6 +68,7 @@
   },
   "extra": {
     "typo3/cms": {
+      "extension-key": "charts",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/web"
     }

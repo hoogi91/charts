@@ -43,17 +43,15 @@ defined('TYPO3_MODE') or die();
         }
     }
 
-    // add new CType items to render different chart types
-    \Hoogi91\Charts\Form\Types\Chart::addCTypeSelectItems();
-
-    // add new CType showitem configuration to existing type configuration
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_BAR);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_LINE);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_PIE);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_DOUGHNUT);
-
-    // register typoscript path of this extension
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript/', $extKey);
+    // configure all chart types in TCA
+    $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
+        sprintf('%s:tt_content.CType.div._charts_', \Hoogi91\Charts\Form\Types\ChartTypeInterface::LANGUAGE_FILE),
+        '--div--',
+    ];
+    \Hoogi91\Charts\Form\Types\BarChart::register();
+    \Hoogi91\Charts\Form\Types\LineChart::register();
+    \Hoogi91\Charts\Form\Types\PieChart::register();
+    \Hoogi91\Charts\Form\Types\DoughnutChart::register();
 })(
     $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['charts'] ?? unserialize(
         $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts'],

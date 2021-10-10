@@ -41,10 +41,6 @@
 				<source>Spreadsheet based?</source>
 				<target>basierend auf Kalkulationstabellen?</target>
 			</trans-unit>
-			<trans-unit id="tx_charts_domain_model_chartdata.alignment" xml:space="preserve">
-				<source>Is Data vertical aligned?</source>
-				<target>Sind die Daten vertikal angeordnet?</target>
-			</trans-unit>
 			<trans-unit id="tx_charts_domain_model_chartdata.type.activate" xml:space="preserve">
 				<source>Activate</source>
 				<target>Aktivieren</target>

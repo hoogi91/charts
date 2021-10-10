@@ -55,8 +55,9 @@ class FlexFormProcessor implements DataProcessorInterface
         $fieldName = $cObj->stdWrapValue('fieldName', $processorConfiguration, 'pi_flexform');
 
         // parse flexform
-        $processedData[$targetVariableName] = $this->getFlexFormService()
-            ->convertFlexFormContentToArray($cObj->data[$fieldName]);
+        /** @var \TYPO3\CMS\Core\Service\FlexFormService $flexFormService */
+        $flexFormService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
+        $processedData[$targetVariableName] = $flexFormService->convertFlexFormContentToArray($cObj->data[$fieldName]);
 
         // if target variable is settings, try to merge it with contentObjectConfiguration['settings.']
         if ($targetVariableName === 'settings') {
@@ -71,23 +72,5 @@ class FlexFormProcessor implements DataProcessorInterface
         }
 
         return $processedData;
-    }
-
-    /**
-     * @return \TYPO3\CMS\Core\Service\FlexFormService
-     */
-    private function getFlexFormService()
-    {
-        // @phpstan-ignore-next-line
-        if (version_compare(TYPO3_version, '10.0', '>=')) {
-            /** @var \TYPO3\CMS\Core\Service\FlexFormService $service */
-            $service = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
-        } else {
-            /** @deprecated since v1.1.0 and will be removed in v2.0 */
-            // @phpstan-ignore-next-line
-            $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
-        }
-
-        return $service;
     }
 }

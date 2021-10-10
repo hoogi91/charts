@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         php_version: ['7.2', '7.3', '7.4']
-        typo3_version: ['^8.7', '^9.5', '^10.4']
+        typo3_version: ['^10.4']
         experimental: [false]
         include:
           # add experimental dev-master for PHP 7.4
@@ -40,6 +40,7 @@ jobs:
 
       - name: Install project testing dependencies
         run: |
+          rm composer.lock
           if [[ "${{ matrix.typo3_version }}" = *"dev"* ]]; then
             composer config minimum-stability dev;
             composer config prefer-stable true;
@@ -56,7 +57,6 @@ jobs:
         run: .Build/bin/phpcs -p --standard=PSR2 Classes/
 
       - name: Executing PHPStan
-        if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
         run: .Build/bin/phpstan analyse --level 5 Classes/
 
       - name: Running unit tests
@@ -71,6 +71,12 @@ jobs:
         run: |
           if [ -d "Tests/Unit" ]; then
             .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=./coverage.xml --whitelist=./Classes/
+          fi
+
+      - name: Running functional tests
+        run: |
+          if [ -d "Tests/Functional" ]; then
+            find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; .Build/bin/phpunit --bootstrap .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php {}'
           fi
 
       - name: Upload coverage report to codecov

@@ -4,10 +4,8 @@ namespace Hoogi91\Charts\Tests\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Cache\Backend\NullBackend;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -16,69 +14,43 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ChartDataPlainTest extends UnitTestCase
 {
-    /**
-     * @var ChartDataPlain|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $chartDataPlainModel;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $cacheName = class_exists(Typo3Version::class) && (new Typo3Version())->getMajorVersion() >= 10
-            ? 'runtime'
-            : 'cache_runtime';
-
-        // register cache_runtime to make xml2array work in v9 setups
-        /** @var CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->setCacheConfigurations(
-            [
-                $cacheName => [
-                    'backend' => NullBackend::class,
-                    'frontend' => VariableFrontend::class,
-                ],
-            ]
-        );
-
-        $this->chartDataPlainModel = $this->getMockBuilder(ChartDataPlain::class)
-            ->setMethods(['getAllowedTypes'])
-            ->getMock();
-
-        // simulate not loaded spreadsheet extension
-        $this->chartDataPlainModel->method('getAllowedTypes')->willReturn(
-            [
-                ChartDataPlain::TYPE_PLAIN,
-            ]
-        );
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
+        ExtensionManagementUtility::setPackageManager($packageManager);
     }
 
-    /**
-     * @test
-     */
-    public function testTitleMethods()
+    protected function tearDown(): void
     {
-        $this->chartDataPlainModel->setTitle('Lorem Ipsum');
-        $this->assertEquals('Lorem Ipsum', $this->chartDataPlainModel->getTitle());
+        parent::tearDown();
+        ExtensionManagementUtility::setPackageManager(GeneralUtility::makeInstance(PackageManager::class));
     }
 
-    /**
-     * @test
-     */
-    public function testTypeMethods()
+    public function testTitleMethods(): void
     {
-        $this->chartDataPlainModel->setType(ChartDataPlain::TYPE_PLAIN);
-        $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $this->chartDataPlainModel->getType());
-        $this->chartDataPlainModel->setType(ChartDataPlain::TYPE_SPREADSHEET);
-        $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $this->chartDataPlainModel->getType());
+        $chartData = new ChartDataPlain();
+        $chartData->setTitle('Lorem Ipsum');
+        $this->assertEquals('Lorem Ipsum', $chartData->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function testLabelMethods()
+    public function testTypeMethods(): void
     {
-        $this->chartDataPlainModel->setLabels(
+        $chartData = new ChartDataPlain();
+        $chartData->setType(ChartDataPlain::TYPE_PLAIN);
+        $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
+
+        $chartData->setType(ChartDataPlain::TYPE_SPREADSHEET);
+        $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
+    }
+
+
+    public function testLabelMethods(): void
+    {
+        $chartData = new ChartDataPlain();
+        $chartData->setLabels(
             trim(
                 '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
@@ -93,19 +65,16 @@ class ChartDataPlainTest extends UnitTestCase
         '
             )
         );
-        $labels = $this->chartDataPlainModel->getLabels();
-
-        $this->assertInternalType('array', $labels);
+        $labels = $chartData->getLabels();
+        $this->assertIsArray($labels);
         $this->assertCount(4, $labels);
         $this->assertEquals('Europe', $labels[1]);
     }
 
-    /**
-     * @test
-     */
-    public function testDatasetMethods()
+    public function testDatasetMethods(): void
     {
-        $this->chartDataPlainModel->setDatasets(
+        $chartData = new ChartDataPlain();
+        $chartData->setDatasets(
             trim(
                 '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
@@ -128,20 +97,17 @@ class ChartDataPlainTest extends UnitTestCase
         '
             )
         );
-        $datasets = $this->chartDataPlainModel->getDatasets();
-
-        $this->assertInternalType('array', $datasets);
+        $datasets = $chartData->getDatasets();
+        $this->assertIsArray($datasets);
         $this->assertCount(2, $datasets);
-        $this->assertInternalType('float', $datasets[0][0]);
+        $this->assertIsFloat($datasets[0][0]);
         $this->assertEquals(29.8, $datasets[0][3]);
     }
 
-    /**
-     * @test
-     */
-    public function testDatasetLabelMethods()
+    public function testDatasetLabelMethods(): void
     {
-        $this->chartDataPlainModel->setDatasetsLabels(
+        $chartData = new ChartDataPlain();
+        $chartData->setDatasetsLabels(
             trim(
                 '
             <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
@@ -156,9 +122,8 @@ class ChartDataPlainTest extends UnitTestCase
         '
             )
         );
-        $labels = $this->chartDataPlainModel->getDatasetsLabels();
-
-        $this->assertInternalType('array', $labels);
+        $labels = $chartData->getDatasetsLabels();
+        $this->assertIsArray($labels);
         $this->assertCount(4, $labels);
         $this->assertEquals('Europe', $labels[1]);
     }

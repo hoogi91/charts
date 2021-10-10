@@ -1,236 +1,238 @@
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<sheets>
-		<options>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Chart</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<chart.line.fill>
-						<TCEforms>
-							<label>Fill</label>
-							<config>
-								<type>check</type>
-							</config>
-						</TCEforms>
-					</chart.line.fill>
-					<chart.line.stepped>
-						<TCEforms>
-							<label>Stepped</label>
-							<onChange>reload</onChange>
-							<config>
-								<type>select</type>
-								<items type="array">
-									<numIndex index="0" type="array">
-										<numIndex index="0">No Step Interpolation (default)</numIndex>
-										<numIndex index="1">0</numIndex>
-									</numIndex>
-									<numIndex index="1" type="array">
-										<numIndex index="0">Step-before Interpolation</numIndex>
-										<numIndex index="1">1</numIndex>
-									</numIndex>
-									<numIndex index="2" type="array">
-										<numIndex index="0">Step-after Interpolation</numIndex>
-										<numIndex index="1">after</numIndex>
-									</numIndex>
-								</items>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</chart.line.stepped>
-					<chart.line.interpolation>
-						<TCEforms>
-							<label>Interpolation</label>
-							<displayCond>FIELD:options.chart.line.stepped:=:0</displayCond>
-							<config>
-								<type>check</type>
-								<default>1</default>
-							</config>
-						</TCEforms>
-					</chart.line.interpolation>
-					<chart.line.stacked>
-						<TCEforms>
-							<label>Stacked (useful for multiple datasets)</label>
-							<config>
-								<type>check</type>
-							</config>
-						</TCEforms>
-					</chart.line.stacked>
-				</el>
-			</ROOT>
-		</options>
-		<legend>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Legend</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<chart.legend.active>
-						<TCEforms>
-							<label>Activate</label>
-							<config>
-								<type>check</type>
-								<default>1</default>
-							</config>
-						</TCEforms>
-					</chart.legend.active>
-					<chart.legend.position>
-						<TCEforms>
-							<label>Position</label>
-							<config>
-								<type>select</type>
-								<items type="array">
-									<numIndex index="0" type="array">
-										<numIndex index="0">Top</numIndex>
-										<numIndex index="1">top</numIndex>
-									</numIndex>
-									<numIndex index="1" type="array">
-										<numIndex index="0">Left</numIndex>
-										<numIndex index="1">left</numIndex>
-									</numIndex>
-									<numIndex index="2" type="array">
-										<numIndex index="0">Right</numIndex>
-										<numIndex index="1">right</numIndex>
-									</numIndex>
-									<numIndex index="3" type="array">
-										<numIndex index="0">Bottom</numIndex>
-										<numIndex index="1">bottom</numIndex>
-									</numIndex>
-								</items>
-							</config>
-						</TCEforms>
-					</chart.legend.position>
-				</el>
-			</ROOT>
-		</legend>
-		<x-axis>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>X-Axis</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<chart.axis.x.label>
-						<TCEforms>
-							<label>Label</label>
-							<config>
-								<type>input</type>
-								<max>30</max>
-								<size>20</size>
-							</config>
-						</TCEforms>
-					</chart.axis.x.label>
-					<chart.axis.x.auto>
-						<TCEforms>
-							<label>Automatic calculation</label>
-							<onChange>reload</onChange>
-							<config>
-								<type>check</type>
-								<default>1</default>
-							</config>
-						</TCEforms>
-					</chart.axis.x.auto>
-					<chart.axis.x.min>
-						<TCEforms>
-							<label>Minimum</label>
-							<displayCond>FIELD:chart.axis.x.auto:REQ:false</displayCond>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.x.min>
-					<chart.axis.x.max>
-						<TCEforms>
-							<label>Maximum (auto calculated if value is zero)</label>
-							<displayCond>FIELD:chart.axis.x.auto:REQ:false</displayCond>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.x.max>
-					<chart.axis.x.step>
-						<TCEforms>
-							<label>Step-Size (auto calculated if value is zero)</label>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.x.step>
-				</el>
-			</ROOT>
-		</x-axis>
-		<y-axis>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Y-Axis</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<chart.axis.y.label>
-						<TCEforms>
-							<label>Label</label>
-							<config>
-								<type>input</type>
-								<max>30</max>
-								<size>20</size>
-							</config>
-						</TCEforms>
-					</chart.axis.y.label>
-					<chart.axis.y.auto>
-						<TCEforms>
-							<label>Automatic calculation</label>
-							<onChange>reload</onChange>
-							<config>
-								<type>check</type>
-								<default>1</default>
-							</config>
-						</TCEforms>
-					</chart.axis.y.auto>
-					<chart.axis.y.min>
-						<TCEforms>
-							<label>Minimum</label>
-							<displayCond>FIELD:chart.axis.y.auto:REQ:false</displayCond>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.y.min>
-					<chart.axis.y.max>
-						<TCEforms>
-							<label>Maximum (auto calculated if value is zero)</label>
-							<displayCond>FIELD:chart.axis.y.auto:REQ:false</displayCond>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.y.max>
-					<chart.axis.y.step>
-						<TCEforms>
-							<label>Step-Size (auto calculated if value is zero)</label>
-							<config>
-								<type>input</type>
-								<size>5</size>
-								<eval>int</eval>
-							</config>
-						</TCEforms>
-					</chart.axis.y.step>
-				</el>
-			</ROOT>
-		</y-axis>
-	</sheets>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <options>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Chart</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <chart.line.fill>
+                        <TCEforms>
+                            <label>Fill</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </chart.line.fill>
+                    <chart.line.stepped>
+                        <TCEforms>
+                            <label>Stepped</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">No Step Interpolation (default)</numIndex>
+                                        <numIndex index="1">0</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">Step-before Interpolation</numIndex>
+                                        <numIndex index="1">1</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">Step-after Interpolation</numIndex>
+                                        <numIndex index="1">after</numIndex>
+                                    </numIndex>
+                                </items>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </chart.line.stepped>
+                    <chart.line.interpolation>
+                        <TCEforms>
+                            <label>Interpolation</label>
+                            <displayCond>FIELD:options.chart.line.stepped:=:0</displayCond>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </chart.line.interpolation>
+                    <chart.line.stacked>
+                        <TCEforms>
+                            <label>Stacked (useful for multiple datasets)</label>
+                            <config>
+                                <type>check</type>
+                            </config>
+                        </TCEforms>
+                    </chart.line.stacked>
+                </el>
+            </ROOT>
+        </options>
+        <legend>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Legend</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <chart.legend.active>
+                        <TCEforms>
+                            <label>Activate</label>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </chart.legend.active>
+                    <chart.legend.position>
+                        <TCEforms>
+                            <label>Position</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items type="array">
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">Top</numIndex>
+                                        <numIndex index="1">top</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">Left</numIndex>
+                                        <numIndex index="1">left</numIndex>
+                                    </numIndex>
+                                    <numIndex index="2" type="array">
+                                        <numIndex index="0">Right</numIndex>
+                                        <numIndex index="1">right</numIndex>
+                                    </numIndex>
+                                    <numIndex index="3" type="array">
+                                        <numIndex index="0">Bottom</numIndex>
+                                        <numIndex index="1">bottom</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </chart.legend.position>
+                </el>
+            </ROOT>
+        </legend>
+        <x-axis>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>X-Axis</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <chart.axis.x.label>
+                        <TCEforms>
+                            <label>Label</label>
+                            <config>
+                                <type>input</type>
+                                <max>30</max>
+                                <size>20</size>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.x.label>
+                    <chart.axis.x.auto>
+                        <TCEforms>
+                            <label>Automatic calculation</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.x.auto>
+                    <chart.axis.x.min>
+                        <TCEforms>
+                            <label>Minimum</label>
+                            <displayCond>FIELD:chart.axis.x.auto:REQ:false</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.x.min>
+                    <chart.axis.x.max>
+                        <TCEforms>
+                            <label>Maximum (auto calculated if value is zero)</label>
+                            <displayCond>FIELD:chart.axis.x.auto:REQ:false</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.x.max>
+                    <chart.axis.x.step>
+                        <TCEforms>
+                            <label>Step-Size (auto calculated if value is zero)</label>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.x.step>
+                </el>
+            </ROOT>
+        </x-axis>
+        <y-axis>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Y-Axis</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <chart.axis.y.label>
+                        <TCEforms>
+                            <label>Label</label>
+                            <config>
+                                <type>input</type>
+                                <max>30</max>
+                                <size>20</size>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.y.label>
+                    <chart.axis.y.auto>
+                        <TCEforms>
+                            <label>Automatic calculation</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>check</type>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.y.auto>
+                    <chart.axis.y.min>
+                        <TCEforms>
+                            <label>Minimum</label>
+                            <displayCond>FIELD:chart.axis.y.auto:REQ:false</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.y.min>
+                    <chart.axis.y.max>
+                        <TCEforms>
+                            <label>Maximum (auto calculated if value is zero)</label>
+                            <displayCond>FIELD:chart.axis.y.auto:REQ:false</displayCond>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.y.max>
+                    <chart.axis.y.step>
+                        <TCEforms>
+                            <label>Step-Size (auto calculated if value is zero)</label>
+                            <config>
+                                <type>input</type>
+                                <size>5</size>
+                                <eval>int</eval>
+                            </config>
+                        </TCEforms>
+                    </chart.axis.y.step>
+                </el>
+            </ROOT>
+        </y-axis>
+    </sheets>
 </T3DataStructure>

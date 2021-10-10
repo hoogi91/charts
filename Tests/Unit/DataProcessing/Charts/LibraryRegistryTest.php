@@ -1,87 +1,33 @@
 <?php
 
-namespace Hoogi91\Charts\Tests\DataProcessing\Charts;
+namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts;
 
-use Hoogi91\Charts\ChartException;
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\RegisterChartLibraryException;
+use Hoogi91\Charts\Tests\Unit\CacheTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Cache\Backend\NullBackend;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class LibraryRegistryTest
- * @package Hoogi91\Charts\Tests\DataProcessing\Charts
+ * @package Hoogi91\Charts\Tests\Unit\DataProcessing\Charts
  */
 class LibraryRegistryTest extends UnitTestCase
 {
+
     /**
      * @var LibraryRegistry|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $registry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-
-        $cacheName = class_exists(Typo3Version::class) && (new Typo3Version())->getMajorVersion() >= 10
-            ? 'core'
-            : 'cache_core';
-
-        // disable extbase object caching to let object manager work in unit tests
-        /** @var CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->setCacheConfigurations(
-            [
-                $cacheName => [
-                    'backend' => NullBackend::class,
-                    'frontend' => VariableFrontend::class,
-                ],
-                'extbase_object' => [
-                    'backend' => NullBackend::class,
-                    'frontend' => VariableFrontend::class,
-                ],
-            ]
-        );
-
-        $this->registry = $this->getMockBuilder(LibraryRegistry::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['loadExtensionConfigurations'])
-            ->getMock();
-
-        $objectManager = $this->createMock(ObjectManager::class);
-        $objectManager->method('get')->willReturnCallback(
-            function ($name) {
-                switch ($name) {
-                    case Chartist::class:
-                        return $this->createMock(Chartist::class);
-                    case ChartJs::class:
-                        return $this->createMock(ChartJs::class);
-                }
-
-                return null;
-            }
-        );
-
-        \Closure::bind(
-            function () use ($objectManager) {
-                $this->objectManager = $objectManager;
-            },
-            $this->registry,
-            LibraryRegistry::class
-        )();
+        $this->registry = new LibraryRegistry();
     }
 
-    /**
-     * @test
-     */
-    public function testLibraryRegistration()
+    public function testLibraryRegistration(): void
     {
         $this->registry->register('chartist', Chartist::class);
         $this->registry->register('chartist123', Chartist::class);
@@ -89,19 +35,19 @@ class LibraryRegistryTest extends UnitTestCase
         $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist123'));
     }
 
-    /**
-     * @test
-     */
-    public function testLibraryRegistrationWithInvalidClass()
+    public function testLibraryRegistrationWithInvalidClass(): void
     {
         $this->expectException(RegisterChartLibraryException::class);
-        $this->registry->register('chartist', ChartException::class);
+        $this->registry->register('chartist', '\Vendor\Unknown\ClassName');
     }
 
-    /**
-     * @test
-     */
-    public function testLibraryRegistrationOverride()
+    public function testLibraryRegistrationWithInvalidLibraryClass(): void
+    {
+        $this->expectException(RegisterChartLibraryException::class);
+        $this->registry->register('chartist', RegisterChartLibraryException::class);
+    }
+
+    public function testLibraryRegistrationOverride(): void
     {
         // check if forcing override works
         $this->registry->register('chart.js', Chartist::class);
@@ -114,18 +60,12 @@ class LibraryRegistryTest extends UnitTestCase
         $this->registry->register('chartist', Chartist::class);
     }
 
-    /**
-     * @test
-     */
-    public function testUnknownLibraryGetter()
+    public function testUnknownLibraryGetter(): void
     {
         $this->assertNull($this->registry->getLibrary('loremIpsum'));
     }
 
-    /**
-     * @test
-     */
-    public function testLibrarySelectGenerator()
+    public function testLibrarySelectGenerator(): void
     {
         $this->registry->register('chartist', Chartist::class);
         $this->registry->register('chart.js', ChartJs::class);
@@ -138,7 +78,7 @@ class LibraryRegistryTest extends UnitTestCase
         );
 
         $this->assertNotEmpty($select);
-        $this->assertInternalType('string', $select);
+        $this->assertIsString($select);
         $this->assertContains(
             '<input type="hidden" name="html-fieldname" value="chart.js"/>',
             $select

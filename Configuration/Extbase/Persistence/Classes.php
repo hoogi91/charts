@@ -2,18 +2,22 @@
 
 declare(strict_types=1);
 
+use Hoogi91\Charts\Domain\Model\ChartData;
+use Hoogi91\Charts\Domain\Model\ChartDataPlain;
+use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+
 return [
-    \Hoogi91\Charts\Domain\Model\ChartData::class => [
+    ChartData::class => [
         'subclasses' => [
-            \Hoogi91\Charts\Domain\Model\ChartDataPlain::class,
-            \Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet::class,
+            ChartDataPlain::class,
+            ChartDataSpreadsheet::class,
         ]
     ],
-    \Hoogi91\Charts\Domain\Model\ChartDataPlain::class => [
+    ChartDataPlain::class => [
         'tableName' => 'tx_charts_domain_model_chartdata',
         'recordType' => 0,
     ],
-    \Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet::class => [
+    ChartDataSpreadsheet::class => [
         'tableName' => 'tx_charts_domain_model_chartdata',
         'recordType' => 1,
         'properties' => [

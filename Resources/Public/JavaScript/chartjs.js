@@ -32,16 +32,16 @@ Hoogi91.Charts = {
                 var datasets = chartData.datasets || [];
                 if (labels.length > 0 && datasets.length > 0) {
                     switch (type) {
-                        case 'bar':
+                        case 'chart_bar':
                             this.createBarChart(element, labels, datasets);
                             break;
-                        case 'line':
+                        case 'chart_line':
                             this.createLineChart(element, labels, datasets);
                             break;
-                        case 'pie':
+                        case 'chart_pie':
                             this.createPieChart(element, labels, datasets);
                             break;
-                        case 'doughnut':
+                        case 'chart_doughnut':
                             this.createDoughnutChart(element, labels, datasets);
                             break;
                     }

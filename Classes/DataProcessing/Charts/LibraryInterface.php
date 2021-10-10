@@ -20,21 +20,21 @@ interface LibraryInterface
      * return stylesheet file paths and render them inside pageRenderer if available
      *
      * @param string $chartType
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return array
      */
-    public function getStylesheetAssets($chartType, $pageRenderer = null): array;
+    public function getStylesheetAssets(string $chartType, PageRenderer $pageRenderer = null): array;
 
     /**
      * return javascript file paths and render them inside pageRenderer if available
      *
      * @param string $chartType
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return array
      */
-    public function getJavascriptAssets($chartType, $pageRenderer = null): array;
+    public function getJavascriptAssets(string $chartType, PageRenderer $pageRenderer = null): array;
 
     /**
      * return entity stylesheet and render it inside pageRenderer if available
@@ -42,11 +42,16 @@ interface LibraryInterface
      * @param string $chartIdentifier
      * @param string $chartType
      * @param ChartData $chartEntity
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return string
      */
-    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string;
+    public function getEntityStylesheet(
+        string $chartIdentifier,
+        string $chartType,
+        ChartData $chartEntity,
+        PageRenderer $pageRenderer = null
+    ): string;
 
     /**
      * return entity javascript and render it inside pageRenderer if available
@@ -54,9 +59,14 @@ interface LibraryInterface
      * @param string $chartIdentifier
      * @param string $chartType
      * @param ChartData $chartEntity
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return string
      */
-    public function getEntityJavascript($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string;
+    public function getEntityJavascript(
+        string $chartIdentifier,
+        string $chartType,
+        ChartData $chartEntity,
+        PageRenderer $pageRenderer = null
+    ): string;
 }

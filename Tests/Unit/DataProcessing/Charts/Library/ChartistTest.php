@@ -1,23 +1,19 @@
 <?php
 
-namespace Hoogi91\Charts\Tests\DataProcessing\Charts\Library;
+namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Hoogi91\Charts\Tests\Unit\LegacyTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
  * Class ChartistTest
- * @package Hoogi91\Charts\Tests\DataProcessing\Charts\Library
+ * @package Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library
  */
 class ChartistTest extends UnitTestCase
 {
-    use LegacyTrait;
 
     /**
      * @var Chartist
@@ -25,100 +21,94 @@ class ChartistTest extends UnitTestCase
     protected $library;
 
     /**
-     * @var ChartDataSpreadsheet|\PHPUnit_Framework_MockObject_MockObject
+     * @var ChartDataSpreadsheet|MockObject
      */
     protected $chartDataSpreadsheetModel;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->library = new Chartist();
-        $this->library->setPageRenderer($this->getMockBuilder(PageRenderer::class)->getMock());
-
-        $this->chartDataSpreadsheetModel = $this->getMockBuilder(ChartDataSpreadsheet::class)
-            ->setMethods(['getCellDataFromDatabaseString'])
-            ->getMock();
-        $this->chartDataSpreadsheetModel->setDatasets('file:10|0!A1:E1');
-
-        $this->chartDataSpreadsheetModel->method('getCellDataFromDatabaseString')->willReturnCallback(
-            $this->getDataCallbackForFixture('01_fixture.xlsx', 'A1:E1')
-        );
-
-        $fileRepositoryMock = $this->createMock(FileRepository::class);
-        $fileRepositoryMock->method('findFileReferenceByUid')->willReturn(
-            $this->createConfiguredMock(
-                FileReference::class,
-                [
-                    'getOriginalFile' => $this->createConfiguredMock(File::class, ['exists' => true]),
-                    'getExtension' => 'xlsx',
-                    'getForLocalProcessing' => dirname(__DIR__, 4) . '/Fixtures/01_fixture.xlsx'
+        $this->chartDataSpreadsheetModel = $this->createConfiguredMock(
+            ChartDataSpreadsheet::class,
+            [
+                'getUid' => 123456,
+                'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
+                'getDatasets' => [
+                    ['Data 1-1', 'Data 1-2', 'Data 1-3'],
+                    ['Data 2-1', 'Data 2-2', 'Data 2-3'],
+                    ['Data 3-1', 'Data 3-2', 'Data 3-3'],
                 ]
-            )
+            ]
         );
-        \Closure::bind(
-            static function () use ($fileRepositoryMock) {
-                self::$singletonInstances[FileRepository::class] = $fileRepositoryMock;
-            },
-            null,
-            GeneralUtility::class
-        )();
     }
 
-    /**
-     * @test
-     */
-    public function testProperReturnTypes()
+    public function testProperReturnTypes(): void
     {
         $this->assertEquals(Chartist::NAME, $this->library->getName());
-        $this->assertInternalType('array', $this->library->getDefaultColors());
-        $this->assertInternalType('array', $this->library->getDataStructures());
+        $this->assertIsArray($this->library->getDefaultColors());
+        $this->assertIsArray($this->library->getDataStructures());
     }
 
-    /**
-     * @test
-     */
-    public function testStylesheetAssetBuilding()
+    public function testStylesheetAssetBuilding(): void
     {
-        $stylesheets = $this->library->getStylesheetAssets('bar');
+        // chartist defines at least one css library to add
+        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer->expects(self::atLeastOnce())->method('addCssLibrary');
+
+        $stylesheets = $this->library->getStylesheetAssets('bar', $pageRenderer);
         $this->assertNotEmpty($stylesheets);
-        $this->assertInternalType('array', $stylesheets);
+        $this->assertIsArray($stylesheets);
     }
 
-    /**
-     * @test
-     */
-    public function testJavascriptAssetBuilding()
+    public function testJavascriptAssetBuilding(): void
     {
-        $javascripts = $this->library->getJavascriptAssets('line');
-        $this->assertInternalType('array', $javascripts);
+        // chartist defines at least one js library to add
+        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer->expects(self::atLeastOnce())->method('addJsFooterLibrary');
+
+        $javascripts = $this->library->getJavascriptAssets('line', $pageRenderer);
+        $this->assertIsArray($javascripts);
         $this->assertCount(2, $javascripts);
     }
 
-    /**
-     * @test
-     */
-    public function testStylesheetEntityBuilding()
+    public function testStylesheetEntityBuilding(): void
     {
+        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer->expects(self::once())->method('addCssInlineBlock')->with(
+            'test-identifier-123',
+            self::isType('string'),
+            true,
+            true
+        );
+
         $stylesheet = $this->library->getEntityStylesheet(
             'test-identifier-123',
             'pie',
-            $this->chartDataSpreadsheetModel
+            $this->chartDataSpreadsheetModel,
+            $pageRenderer
         );
         $this->assertNotEmpty($stylesheet);
-        $this->assertInternalType('string', $stylesheet);
+        $this->assertIsString($stylesheet);
     }
 
-    /**
-     * @test
-     */
-    public function testJavascriptEntityBuilding()
+    public function testJavascriptEntityBuilding(): void
     {
+        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer->expects(self::exactly(2))
+            ->method('addJsFooterInlineCode')
+            ->withConsecutive(
+                ['chartsInitialization', self::isType('string')],
+                ['chartsData123456', self::isType('string')]
+            );
+
         $javascript = $this->library->getEntityJavascript(
             'test-identifier-123',
             'doughnut',
-            $this->chartDataSpreadsheetModel
+            $this->chartDataSpreadsheetModel,
+            $pageRenderer
         );
         $this->assertNotEmpty($javascript);
-        $this->assertInternalType('string', $javascript);
+        $this->assertIsString($javascript);
     }
 }

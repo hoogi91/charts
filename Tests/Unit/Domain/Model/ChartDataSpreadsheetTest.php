@@ -2,9 +2,16 @@
 
 namespace Hoogi91\Charts\Tests\Domain\Model;
 
+use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Hoogi91\Charts\Tests\Unit\LegacyTrait;
+use Hoogi91\Spreadsheets\Domain\ValueObject\ExtractionValueObject;
+use Hoogi91\Spreadsheets\Service\ExtractorService;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Psr\Container\ContainerInterface;
+use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ChartDataSpreadsheetTest
@@ -12,100 +19,93 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
-    use LegacyTrait;
 
-    const LABEL_POSITION = 'file:label|0!A1:E1';
-    const DATASET_POSITION = 'file:dataset|0!A2:E7';
-    const DATASETLABEL_POSITION = 'file:datasetLabels|0!A7:C7';
+    public const LABEL_DSN = 'file:123|0!A1:E1';
+    public const DATASET_DSN = 'file:456|0!A2:E7';
+    public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
 
     /**
-     * @var ChartDataSpreadsheet|\PHPUnit_Framework_MockObject_MockObject
+     * @var ChartDataSpreadsheet
      */
-    protected $chartDataSpreadsheetModel;
+    private $chartData;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->chartDataSpreadsheetModel = $this->getMockBuilder(ChartDataSpreadsheet::class)
-            ->setMethods(['getCellDataFromDatabaseString'])
-            ->getMock();
+        // mock file repository
+        $filRepositoryMock = $this->getMockBuilder(FileRepository::class)->disableOriginalConstructor()->getMock();
+        $filRepositoryMock->method('findFileReferenceByUid')->willReturnCallback(
+            function (int $fileUid) {
+                $mock = $this->getMockBuilder(FileReference::class)->disableOriginalConstructor()->getMock();
+                $mock->method('getUid')->willReturn($fileUid);
+                return $mock;
+            }
+        );
+        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
+        $container->method('has')->willReturn(true);
+        $container->method('get')->willReturn($filRepositoryMock);
+        GeneralUtility::setContainer($container);
 
-        $this->chartDataSpreadsheetModel->method('getCellDataFromDatabaseString')->willReturnCallback(
-            $this->getDataCallbackForFixture(
-                '01_fixture.xlsx',
-                static function ($data) {
-                    return substr($data, strpos($data, '!') + 1);
-                }
+        // TODO: update spreadsheet extension first to v11 and tag new version which is min version for new version of charts
+        $extractorService = $this->createMock(ExtractorService::class);
+        $extractorService->method('getDataByDsnValueObject')->willReturn(
+            ExtractionValueObject::create(
+                $this->createMock(Spreadsheet::class),
+                [
+                    ['body-1-1', 'body-1-2', 'body-1-3'],
+                    ['body-2-1', 'body-2-2', 'body-2-3'],
+                    ['body-3-1', 'body-3-2', 'body-3-3'],
+                ]
             )
         );
+
+        $this->chartData = new ChartDataSpreadsheet();
+        $this->chartData->injectExtractorService($extractorService);
+        $this->chartData->initializeObject();
     }
 
-    /**
-     * @test
-     */
-    public function testTitleMethods()
+    public function testTitleMethods(): void
     {
-        $this->chartDataSpreadsheetModel->setTitle('Lorem Ipsum');
-        $this->assertEquals('Lorem Ipsum', $this->chartDataSpreadsheetModel->getTitle());
+        $this->chartData->setTitle('Lorem Ipsum');
+        $this->assertEquals('Lorem Ipsum', $this->chartData->getTitle());
     }
 
-    /**
-     * @test
-     */
-    public function testTypeMethods()
+    public function testTypeMethods(): void
     {
-        $this->chartDataSpreadsheetModel->setType(ChartDataSpreadsheet::TYPE_PLAIN);
-        $this->assertEquals(ChartDataSpreadsheet::TYPE_PLAIN, $this->chartDataSpreadsheetModel->getType());
+        $this->chartData->setType(ChartData::TYPE_PLAIN);
+        $this->assertEquals(ChartData::TYPE_PLAIN, $this->chartData->getType());
 
-        $this->chartDataSpreadsheetModel->setType(ChartDataSpreadsheet::TYPE_SPREADSHEET);
-        $this->assertEquals(ChartDataSpreadsheet::TYPE_SPREADSHEET, $this->chartDataSpreadsheetModel->getType());
+        $this->chartData->setType(ChartData::TYPE_SPREADSHEET);
+        $this->assertEquals(ChartData::TYPE_SPREADSHEET, $this->chartData->getType());
     }
 
-    /**
-     * @test
-     */
-    public function testLabelMethods()
+    public function testLabelMethods(): void
     {
-        $this->chartDataSpreadsheetModel->setLabels(static::LABEL_POSITION);
-        $labels = $this->chartDataSpreadsheetModel->getLabels();
-
-        $this->assertInternalType('array', $labels);
-        $this->assertCount(5, $labels); // first row A-E
-        $this->assertEquals('2015', $labels[1]);
+        $this->chartData->setLabels(static::LABEL_DSN);
+        $labels = $this->chartData->getLabels();
+        $this->assertIsArray($labels);
+        $this->assertCount(3, $labels);
+        $this->assertEquals('body-1-2', $labels[1]);
     }
 
-    /**
-     * @test
-     */
-    public function testDatasetMethods()
+    public function testDatasetMethods(): void
     {
-        $this->chartDataSpreadsheetModel->setDatasets(static::DATASET_POSITION);
-        $datasets = $this->chartDataSpreadsheetModel->getDatasets();
-
-        $this->assertInternalType('array', $datasets);
-        $this->assertCount(6, $datasets); // rows 2-7
-        $this->assertCount(4, $datasets[0]);  // row 2 is the first and has one colspan column
-        $this->assertCount(5, $datasets[4]); // row 6 has 5 columns
-
-        // check if textual cells are floated (original value should be "Test123")
-        $this->assertInternalType('float', $datasets[2][2]);
-        $this->assertEquals(0.0, $datasets[2][2]);
-
-        $this->assertInternalType('float', $datasets[0][2]);
-        $this->assertEquals(70.0, $datasets[0][2]);
+        $this->chartData->setDatasets(static::DATASET_DSN);
+        $datasets = $this->chartData->getDatasets();
+        $this->assertIsArray($datasets);
+        $this->assertCount(3, $datasets);
+        $this->assertEquals(['body-1-1', 'body-1-2', 'body-1-3'], $datasets[0]);
+        $this->assertEquals(['body-2-1', 'body-2-2', 'body-2-3'], $datasets[1]);
+        $this->assertEquals(['body-3-1', 'body-3-2', 'body-3-3'], $datasets[2]);
     }
 
-    /**
-     * @test
-     */
-    public function testDatasetLabelMethods()
+    public function testDatasetLabelMethods(): void
     {
-        $this->chartDataSpreadsheetModel->setDatasetsLabels(static::DATASETLABEL_POSITION);
-        $labels = $this->chartDataSpreadsheetModel->getDatasetsLabels();
-
-        $this->assertInternalType('array', $labels);
-        $this->assertCount(2, $labels); // last row 7 is selected from A-C (column B is a rowspan and not counted)
-        $this->assertEquals(70.0, $labels[1]);
+        $this->chartData->setDatasetsLabels(static::DATASET_LABEL_DSN);
+        $labels = $this->chartData->getDatasetsLabels();
+        $this->assertIsArray($labels);
+        $this->assertCount(3, $labels);
+        $this->assertEquals('body-1-2', $labels[1]);
     }
 }

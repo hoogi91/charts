@@ -29,7 +29,7 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
      *
      * @return array
      */
-    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity): array
+    protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
         // get processed datasets from above
         $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);

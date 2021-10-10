@@ -5,7 +5,9 @@ namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryFlexformInterface;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Hoogi91\Charts\Form\Types\Chart;
+use Hoogi91\Charts\Form\Types\BarChart;
+use Hoogi91\Charts\Form\Types\DoughnutChart;
+use Hoogi91\Charts\Form\Types\LineChart;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
@@ -29,7 +31,7 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
      *
      * @return array
      */
-    public function getDefaultColors($type = self::BACKGROUND): array
+    public function getDefaultColors(int $type = self::BACKGROUND): array
     {
         return [
             "rgba(255, 99, 132, 0.6)",
@@ -76,12 +78,16 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
      * @param string $chartIdentifier
      * @param string $chartType
      * @param ChartData $chartEntity
-     * @param PageRenderer $pageRenderer
+     * @param PageRenderer|null $pageRenderer
      *
      * @return string
      */
-    public function getEntityStylesheet($chartIdentifier, $chartType, $chartEntity, $pageRenderer = null): string
-    {
+    public function getEntityStylesheet(
+        string $chartIdentifier,
+        string $chartType,
+        ChartData $chartEntity,
+        PageRenderer $pageRenderer = null
+    ): string {
         $datasets = $chartEntity->getDatasets();
         $backgroundColorsByDataset = array_map(
             function ($dataKey) use ($datasets, $chartEntity) {
@@ -165,9 +171,9 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
     public function getDataStructures(): array
     {
         return [
-            Chart::TYPE_BAR => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Bar.xml',
-            Chart::TYPE_LINE => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Line.xml',
-            Chart::TYPE_DOUGHNUT => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Doughnut.xml',
+            BarChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Bar.xml',
+            LineChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Line.xml',
+            DoughnutChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/Chartist/Doughnut.xml',
         ];
     }
 }
