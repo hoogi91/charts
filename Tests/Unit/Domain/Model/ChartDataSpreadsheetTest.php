@@ -1,21 +1,23 @@
 <?php
 
-namespace Hoogi91\Charts\Tests\Domain\Model;
+namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+use Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject;
 use Hoogi91\Spreadsheets\Domain\ValueObject\ExtractionValueObject;
 use Hoogi91\Spreadsheets\Service\ExtractorService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Psr\Container\ContainerInterface;
+use PhpOffice\PhpSpreadsheet\Style;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\FileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ChartDataSpreadsheetTest
- * @package Hoogi91\Charts\Tests\Domain\Model
+ * @package Hoogi91\Charts\Tests\Unit\Domain\Model
  */
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
@@ -23,6 +25,8 @@ class ChartDataSpreadsheetTest extends UnitTestCase
     public const LABEL_DSN = 'file:123|0!A1:E1';
     public const DATASET_DSN = 'file:456|0!A2:E7';
     public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
+
+    protected $resetSingletonInstances = true;
 
     /**
      * @var ChartDataSpreadsheet
@@ -34,6 +38,7 @@ class ChartDataSpreadsheetTest extends UnitTestCase
         parent::setUp();
 
         // mock file repository
+        // TODO: this mock can be removed after spreadsheet upgrade for TYPO3 v11
         $filRepositoryMock = $this->getMockBuilder(FileRepository::class)->disableOriginalConstructor()->getMock();
         $filRepositoryMock->method('findFileReferenceByUid')->willReturnCallback(
             function (int $fileUid) {
@@ -42,27 +47,63 @@ class ChartDataSpreadsheetTest extends UnitTestCase
                 return $mock;
             }
         );
-        $container = $this->getMockBuilder(ContainerInterface::class)->getMock();
-        $container->method('has')->willReturn(true);
-        $container->method('get')->willReturn($filRepositoryMock);
-        GeneralUtility::setContainer($container);
+        GeneralUtility::setSingletonInstance(FileRepository::class, $filRepositoryMock);
 
-        // TODO: update spreadsheet extension first to v11 and tag new version which is min version for new version of charts
+        $createCellValue = function (float $value) {
+            return CellDataValueObject::create(
+                $this->createConfiguredMock(Cell::class, [
+                    'getCalculatedValue' => $value,
+                    'getFormattedValue' => '[formatted]' . $value,
+                    'getDataType' => 's',
+                    'getXfIndex' => 123,
+                    'getStyle' => $this->createConfiguredMock(Style\Style::class, [
+                        'getFont' => $this->createMock(Style\Font::class)
+                    ])
+                ]),
+                '[rendered]' . $value
+            );
+        };
+
+        $spreadsheetMock = $this->createConfiguredMock(Spreadsheet::class, [
+            'getCellXfByIndex' => $this->createConfiguredMock(Style\Style::class, [
+                'getBorders' => $this->createConfiguredMock(Style\Borders::class, [
+                    'getTop' => $this->createConfiguredMock(Style\Border::class, [
+                        'getBorderStyle' => Style\Border::BORDER_DOTTED,
+                        'getColor' => new Style\Color(Style\Color::COLOR_BLUE),
+                    ]),
+                    'getBottom' => $this->createConfiguredMock(Style\Border::class, [
+                        'getBorderStyle' => Style\Border::BORDER_NONE,
+                    ]),
+                    'getLeft' => $this->createConfiguredMock(Style\Border::class, [
+                        'getBorderStyle' => Style\Border::BORDER_THICK,
+                        'getColor' => new Style\Color(Style\Color::COLOR_DARKYELLOW),
+                    ]),
+                    'getRight' => $this->createConfiguredMock(Style\Border::class, [
+                        'getBorderStyle' => Style\Border::BORDER_DASHDOT,
+                        'getColor' => new Style\Color(Style\Color::COLOR_DARKYELLOW),
+                    ]),
+                ]),
+                'getFill' => $this->createConfiguredMock(Style\Fill::class, [
+                    'getFillType' => Style\Fill::FILL_SOLID,
+                    'getStartColor' => new Style\Color(Style\Color::COLOR_RED),
+                ])
+            ])
+        ]);
+
         $extractorService = $this->createMock(ExtractorService::class);
         $extractorService->method('getDataByDsnValueObject')->willReturn(
             ExtractionValueObject::create(
-                $this->createMock(Spreadsheet::class),
+                $spreadsheetMock,
                 [
-                    ['body-1-1', 'body-1-2', 'body-1-3'],
-                    ['body-2-1', 'body-2-2', 'body-2-3'],
-                    ['body-3-1', 'body-3-2', 'body-3-3'],
+                    [$createCellValue(1.1), $createCellValue(1.2), $createCellValue(1.3)],
+                    [$createCellValue(2.1), $createCellValue(2.2), $createCellValue(2.3)],
+                    [$createCellValue(3.1), $createCellValue(3.2), $createCellValue(3.3)],
                 ]
             )
         );
 
         $this->chartData = new ChartDataSpreadsheet();
         $this->chartData->injectExtractorService($extractorService);
-        $this->chartData->initializeObject();
     }
 
     public function testTitleMethods(): void
@@ -82,30 +123,50 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testLabelMethods(): void
     {
-        $this->chartData->setLabels(static::LABEL_DSN);
+        $this->chartData->setLabels(self::LABEL_DSN);
         $labels = $this->chartData->getLabels();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
-        $this->assertEquals('body-1-2', $labels[1]);
+        $this->assertEquals('[rendered]1.2', $labels[1]);
     }
 
     public function testDatasetMethods(): void
     {
-        $this->chartData->setDatasets(static::DATASET_DSN);
+        $this->chartData->setDatasets(self::DATASET_DSN);
         $datasets = $this->chartData->getDatasets();
         $this->assertIsArray($datasets);
         $this->assertCount(3, $datasets);
-        $this->assertEquals(['body-1-1', 'body-1-2', 'body-1-3'], $datasets[0]);
-        $this->assertEquals(['body-2-1', 'body-2-2', 'body-2-3'], $datasets[1]);
-        $this->assertEquals(['body-3-1', 'body-3-2', 'body-3-3'], $datasets[2]);
+        $this->assertEquals([1.1, 1.2, 1.3], $datasets[0]);
+        $this->assertEquals([2.1, 2.2, 2.3], $datasets[1]);
+        $this->assertEquals([3.1, 3.2, 3.3], $datasets[2]);
     }
 
     public function testDatasetLabelMethods(): void
     {
-        $this->chartData->setDatasetsLabels(static::DATASET_LABEL_DSN);
+        $this->chartData->setDatasetsLabels(self::DATASET_LABEL_DSN);
         $labels = $this->chartData->getDatasetsLabels();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
-        $this->assertEquals('body-1-2', $labels[1]);
+        $this->assertEquals('[rendered]1.2', $labels[1]);
+    }
+
+    public function testBackgroundColorMethods(): void
+    {
+        // TODO: add data provider to check edge cases
+        $this->chartData->setDatasets(self::DATASET_DSN);
+        $colors = $this->chartData->getBackgroundColors(1);
+        $this->assertIsArray($colors);
+        $this->assertCount(3, $colors);
+        $this->assertSame(['rgb(255, 0, 0)', 'rgb(255, 0, 0)', 'rgb(255, 0, 0)'], $colors);
+    }
+
+    public function testBorderColorMethods(): void
+    {
+        // TODO: add data provider to check edge cases
+        $this->chartData->setDatasets(self::DATASET_DSN);
+        $colors = $this->chartData->getBorderColors(1);
+        $this->assertIsArray($colors);
+        $this->assertCount(3, $colors);
+        $this->assertSame(['rgb(128, 128, 0)', 'rgb(128, 128, 0)', 'rgb(128, 128, 0)'], $colors);
     }
 }

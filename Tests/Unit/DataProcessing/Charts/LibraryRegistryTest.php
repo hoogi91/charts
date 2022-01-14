@@ -7,7 +7,7 @@ use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\RegisterChartLibraryException;
 use Hoogi91\Charts\Tests\Unit\CacheTrait;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class LibraryRegistryTest
@@ -15,16 +15,26 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class LibraryRegistryTest extends UnitTestCase
 {
+    use CacheTrait;
+
+    protected $resetSingletonInstances = true;
 
     /**
-     * @var LibraryRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var LibraryRegistry
      */
     protected $registry;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpCaches();
         $this->registry = new LibraryRegistry();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->resetPackageManager();
     }
 
     public function testLibraryRegistration(): void
@@ -79,15 +89,15 @@ class LibraryRegistryTest extends UnitTestCase
 
         $this->assertNotEmpty($select);
         $this->assertIsString($select);
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<input type="hidden" name="html-fieldname" value="chart.js"/>',
             $select
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<option value="chart.js" selected="selected">chart.js (' . ChartJs::class . ')</option>',
             $select
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<option value="chartist">chartist (' . Chartist::class . ')</option>',
             $select
         );

@@ -1,22 +1,29 @@
 <?php
 
-namespace Hoogi91\Charts\Tests\Domain\Model;
+namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Hoogi91\Charts\Tests\Unit\CacheTrait;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ChartDataPlainTest
- * @package Hoogi91\Charts\Tests\Domain\Model
+ * @package Hoogi91\Charts\Tests\Unit\Domain\Model
  */
 class ChartDataPlainTest extends UnitTestCase
 {
+
+    use CacheTrait;
+
+    protected $resetSingletonInstances = true;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpCaches();
 
         $packageManager = $this->createMock(PackageManager::class);
         $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
@@ -26,7 +33,7 @@ class ChartDataPlainTest extends UnitTestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-        ExtensionManagementUtility::setPackageManager(GeneralUtility::makeInstance(PackageManager::class));
+        $this->resetPackageManager();
     }
 
     public function testTitleMethods(): void
@@ -47,56 +54,26 @@ class ChartDataPlainTest extends UnitTestCase
     }
 
 
-    public function testLabelMethods(): void
+    /**
+     * @dataProvider labelProvider
+     */
+    public function testLabelMethods(string $content): void
     {
         $chartData = new ChartDataPlain();
-        $chartData->setLabels(
-            trim(
-                '
-            <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-            <T3TableWizard>
-                <numIndex index="2" type="array">
-                    <numIndex index="2">Germany</numIndex>
-                    <numIndex index="4">Europe</numIndex>
-                    <numIndex index="6">America</numIndex>
-                    <numIndex index="8">China</numIndex>
-                </numIndex>
-            </T3TableWizard>
-        '
-            )
-        );
+        $chartData->setLabels(trim($content));
         $labels = $chartData->getLabels();
         $this->assertIsArray($labels);
         $this->assertCount(4, $labels);
         $this->assertEquals('Europe', $labels[1]);
     }
 
-    public function testDatasetMethods(): void
+    /**
+     * @dataProvider datasetProvider
+     */
+    public function testDatasetMethods(string $content): void
     {
         $chartData = new ChartDataPlain();
-        $chartData->setDatasets(
-            trim(
-                '
-            <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-            <T3TableWizard>
-                <numIndex index="2" type="array">
-                    <numIndex index="2">16.7</numIndex>
-                    <numIndex index="4">15</numIndex>
-                    <numIndex index="6">31.2</numIndex>
-                    <numIndex index="8">29.8</numIndex>
-                    <numIndex index="10">7.3</numIndex>
-                </numIndex>
-                    <numIndex index="4" type="array">
-                    <numIndex index="2">27.5</numIndex>
-                    <numIndex index="4">14.5</numIndex>
-                    <numIndex index="6">27.9</numIndex>
-                    <numIndex index="8">23.1</numIndex>
-                    <numIndex index="10">6.9</numIndex>
-                </numIndex>
-            </T3TableWizard>
-        '
-            )
-        );
+        $chartData->setDatasets(trim($content));
         $datasets = $chartData->getDatasets();
         $this->assertIsArray($datasets);
         $this->assertCount(2, $datasets);
@@ -104,27 +81,64 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertEquals(29.8, $datasets[0][3]);
     }
 
-    public function testDatasetLabelMethods(): void
+    /**
+     * @dataProvider labelProvider
+     */
+    public function testDatasetLabelMethods(string $content): void
     {
         $chartData = new ChartDataPlain();
-        $chartData->setDatasetsLabels(
-            trim(
-                '
-            <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-            <T3TableWizard>
-                <numIndex index="2" type="array">
-                    <numIndex index="2">Germany</numIndex>
-                    <numIndex index="4">Europe</numIndex>
-                    <numIndex index="6">America</numIndex>
-                    <numIndex index="8">China</numIndex>
-                </numIndex>
-            </T3TableWizard>
-        '
-            )
-        );
+        $chartData->setDatasetsLabels(trim($content));
         $labels = $chartData->getDatasetsLabels();
         $this->assertIsArray($labels);
         $this->assertCount(4, $labels);
         $this->assertEquals('Europe', $labels[1]);
+    }
+
+    public function labelProvider(): array
+    {
+        return [
+            'as xml' => [
+                'content' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+                    <T3TableWizard>
+                        <numIndex index="2" type="array">
+                            <numIndex index="2">Germany</numIndex>
+                            <numIndex index="4">Europe</numIndex>
+                            <numIndex index="6">America</numIndex>
+                            <numIndex index="8">China</numIndex>
+                        </numIndex>
+                    </T3TableWizard>',
+            ],
+            'as typo3 format' => [
+                'content' => '|Germany|Europe|America|China|',
+            ],
+        ];
+    }
+
+    public function datasetProvider(): array
+    {
+        return [
+            'as xml' => [
+                'content' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+                    <T3TableWizard>
+                        <numIndex index="2" type="array">
+                            <numIndex index="2">16.7</numIndex>
+                            <numIndex index="4">15</numIndex>
+                            <numIndex index="6">31.2</numIndex>
+                            <numIndex index="8">29.8</numIndex>
+                            <numIndex index="10">7.3</numIndex>
+                        </numIndex>
+                            <numIndex index="4" type="array">
+                            <numIndex index="2">27.5</numIndex>
+                            <numIndex index="4">14.5</numIndex>
+                            <numIndex index="6">27.9</numIndex>
+                            <numIndex index="8">23.1</numIndex>
+                            <numIndex index="10">6.9</numIndex>
+                        </numIndex>
+                    </T3TableWizard>',
+            ],
+            'as typo3 format' => [
+                'content' => "|16.7|15|31.2|29.8|7.3|\n|27.5|14.5|27.9|23.1|6.9|",
+            ],
+        ];
     }
 }

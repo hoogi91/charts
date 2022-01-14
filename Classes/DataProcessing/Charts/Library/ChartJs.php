@@ -29,7 +29,7 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
      *
      * @return array
      */
-    public function getDefaultColors($type = self::BACKGROUND): array
+    public function getDefaultColors(int $type = self::BACKGROUND): array
     {
         if ($type === self::BACKGROUND) {
             return [

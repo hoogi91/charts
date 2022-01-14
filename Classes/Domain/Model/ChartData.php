@@ -60,7 +60,7 @@ abstract class ChartData extends AbstractEntity
      */
     public function getType(): int
     {
-        return in_array($this->type, $this->getAllowedTypes(), true) ? $this->type : static::TYPE_PLAIN;
+        return in_array($this->type, $this->getAllowedTypes(), true) ? $this->type : self::TYPE_PLAIN;
     }
 
     /**
@@ -130,10 +130,10 @@ abstract class ChartData extends AbstractEntity
      */
     protected function getAllowedTypes(): array
     {
-        $allowedTypes = [static::TYPE_PLAIN];
+        $allowedTypes = [self::TYPE_PLAIN];
         if (ExtensionManagementUtility::isLoaded('spreadsheets')) {
             // only allow spreadsheet type if required extension is loaded
-            $allowedTypes[] = static::TYPE_SPREADSHEET;
+            $allowedTypes[] = self::TYPE_SPREADSHEET;
         }
         return $allowedTypes;
     }

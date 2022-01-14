@@ -6,7 +6,7 @@ use Hoogi91\Charts\Form\Types\BarChart;
 use Hoogi91\Charts\Form\Types\DoughnutChart;
 use Hoogi91\Charts\Form\Types\LineChart;
 use Hoogi91\Charts\Form\Types\PieChart;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ChartTypesTest

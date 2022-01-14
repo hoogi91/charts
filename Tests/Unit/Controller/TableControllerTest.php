@@ -3,9 +3,10 @@
 namespace Hoogi91\Charts\Tests\Unit\Controller;
 
 use Hoogi91\Charts\Controller\Wizard\TableController;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Hoogi91\Charts\Tests\Unit\CacheTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class TableControllerTest
@@ -13,6 +14,22 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class TableControllerTest extends UnitTestCase
 {
+
+    use CacheTrait;
+
+    protected $resetSingletonInstances = true;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setUpCaches();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->resetPackageManager();
+    }
 
     /**
      * @dataProvider dataProvider
@@ -23,7 +40,7 @@ class TableControllerTest extends UnitTestCase
         self::assertEquals(
             $expected,
             $tableController->testProxy4GetConfiguration(
-                ['someField' => $fieldValue],
+                ['someField' => $fieldValue, 'table_enclosure' => null, 'table_delimiter' => null],
                 $this->createMock(ServerRequestInterface::class)
             )
         );

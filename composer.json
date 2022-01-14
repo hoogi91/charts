@@ -28,12 +28,12 @@
   },
   "require-dev": {
     "hoogi91/spreadsheets": "^2.0",
-    "nimut/testing-framework": "^5.0",
     "phpstan/phpstan": "^0.12.19",
-    "phpunit/phpunit": "^7.0",
+    "phpunit/phpunit": "^9.5",
     "roave/security-advisories": "dev-latest",
     "squizlabs/php_codesniffer": "^3.5",
-    "typo3/minimal": "^10.4 || ^11.5"
+    "typo3/minimal": "^10.4 || ^11.5",
+    "typo3/testing-framework": "^6.14"
   },
   "suggest": {
     "hoogi91/spreadsheets": "Allows datasets (values and colors) to be filled by spreadsheet files (XLSX, CSV, ODT, etc.)"

@@ -30,9 +30,6 @@ return [
             'datasetsLabels' => [
                 'fieldName' => 'spreadsheet_datasets_labels'
             ],
-            'assets' => [
-                'fieldName' => 'spreadsheet_assets'
-            ],
         ],
     ],
 ];

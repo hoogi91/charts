@@ -10,8 +10,6 @@ use PhpOffice\PhpSpreadsheet\Reader\Exception as SpreadsheetReaderException;
 use PhpOffice\PhpSpreadsheet\Style\Border as CellBorder;
 use PhpOffice\PhpSpreadsheet\Style\Color as CellColor;
 use PhpOffice\PhpSpreadsheet\Style\Fill as CellBackground;
-use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class ChartDataSpreadsheet
@@ -19,11 +17,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class ChartDataSpreadsheet extends ChartData
 {
-
-    /**
-     * @var ObjectStorage<FileReference>
-     */
-    protected $assets;
 
     /**
      * @var ExtractorService
@@ -39,30 +32,6 @@ class ChartDataSpreadsheet extends ChartData
     }
 
     /**
-     * ChartData constructor.
-     */
-    public function initializeObject(): void
-    {
-        $this->assets = new ObjectStorage();
-    }
-
-    /**
-     * @return ObjectStorage
-     */
-    public function getAssets(): ObjectStorage
-    {
-        return $this->assets;
-    }
-
-    /**
-     * @param ObjectStorage<FileReference> $assets
-     */
-    public function setAssets(ObjectStorage $assets): void
-    {
-        $this->assets = $assets;
-    }
-
-    /**
      * @param string $labelData
      *
      * @return array
@@ -71,8 +40,8 @@ class ChartDataSpreadsheet extends ChartData
     {
         try {
             $datasetExtraction = $this->extractByDSN($labelData);
-        } catch (SpreadsheetReaderException $e) {
-            $datasetExtraction = null;
+        } catch (SpreadsheetReaderException $e) { // @codeCoverageIgnoreStart
+            $datasetExtraction = null; // @codeCoverageIgnoreEnd
         }
 
         // label data should be a reference/selection of spreadsheet data of an external asset
@@ -97,8 +66,8 @@ class ChartDataSpreadsheet extends ChartData
     {
         try {
             $datasetExtraction = $this->extractByDSN($datasetData);
-        } catch (SpreadsheetReaderException $e) {
-            $datasetExtraction = null;
+        } catch (SpreadsheetReaderException $e) { // @codeCoverageIgnoreStart
+            $datasetExtraction = null; // @codeCoverageIgnoreEnd
         }
 
         // label data should be a reference/selection of spreadsheet data of an external asset
@@ -125,8 +94,8 @@ class ChartDataSpreadsheet extends ChartData
         try {
             $datasetExtraction = $this->extractByDSN($this->datasets);
             $spreadsheet = $datasetExtraction->getSpreadsheet();
-        } catch (SpreadsheetReaderException $e) {
-            $datasetExtraction = $spreadsheet = null;
+        } catch (SpreadsheetReaderException $e) { // @codeCoverageIgnoreStart
+            $datasetExtraction = $spreadsheet = null; // @codeCoverageIgnoreEnd
         }
 
         $spreadsheetData = array_slice($this->normalize($datasetExtraction), $dataKey, 1);
@@ -157,7 +126,7 @@ class ChartDataSpreadsheet extends ChartData
 
         // check if background colors have been found or only default color has been set
         $uniqueBackgroundColors = array_values(array_unique($spreadsheetData));
-        return count($uniqueBackgroundColors) !== 1 || $uniqueBackgroundColors[0] !== $defaultColor
+        return count($uniqueBackgroundColors) > 1 || $uniqueBackgroundColors[0] !== $defaultColor
             ? array_values($spreadsheetData)
             : [];
     }
@@ -173,8 +142,8 @@ class ChartDataSpreadsheet extends ChartData
         try {
             $datasetExtraction = $this->extractByDSN($this->datasets);
             $spreadsheet = $datasetExtraction->getSpreadsheet();
-        } catch (SpreadsheetReaderException $e) {
-            $datasetExtraction = $spreadsheet = null;
+        } catch (SpreadsheetReaderException $e) { // @codeCoverageIgnoreStart
+            $datasetExtraction = $spreadsheet = null; // @codeCoverageIgnoreEnd
         }
 
         $spreadsheetData = array_slice($this->normalize($datasetExtraction), $dataKey, 1);
@@ -232,7 +201,7 @@ class ChartDataSpreadsheet extends ChartData
 
         // check if border colors have been found or only default color has been set
         $uniqueBorderColors = array_values(array_unique($spreadsheetData));
-        return count($uniqueBorderColors) !== 1 || $uniqueBorderColors[0] !== $defaultColor
+        return count($uniqueBorderColors) > 1 || $uniqueBorderColors[0] !== $defaultColor
             ? array_values($spreadsheetData)
             : [];
     }

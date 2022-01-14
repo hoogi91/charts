@@ -4,7 +4,7 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
