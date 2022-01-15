@@ -3,6 +3,8 @@
 namespace Hoogi91\Charts\DataProcessing\Charts;
 
 use Hoogi91\Charts\RegisterChartLibraryException;
+use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -115,6 +117,12 @@ class LibraryRegistry implements SingletonInterface
      */
     protected function loadExtensionConfigurations(): void
     {
-        ExtensionManagementUtility::loadExtLocalconf();
+        // ensure loading of extension configuration before creating library select
+        if (defined('TYPO3_version') && version_compare(TYPO3_version, '10.0', '<') === true) {
+            ExtensionManagementUtility::loadExtLocalconf(false);
+        } else {
+            $typo3BackendPath = realpath(Environment::getBackendPath());
+            Bootstrap::init(require dirname($typo3BackendPath) . '/vendor/autoload.php');
+        }
     }
 }
