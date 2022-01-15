@@ -41,11 +41,15 @@ class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableControll
     /**
      * This will ensure to always return a filled array with empty values => otherwise wizard is not shown ;)
      *
-     * @param array $configuration
-     * @return array
+     * @param array|ResponseInterface $configuration
+     * @return array|ResponseInterface
      */
-    private function fixEmptyConfiguration(array $configuration): array
+    private function fixEmptyConfiguration($configuration)
     {
+        if(!is_array($configuration)){
+            return $configuration;
+        }
+
         // only fix empty configuration arrays if xml storage is active
         if ($this->xmlStorage) {
             // return default array => one row with 4 empty columns if config is completly empty
@@ -54,12 +58,10 @@ class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableControll
             }
 
             // if configuration is an array we equalize row value count ;)
-            if (is_array($configuration)) {
-                $largestRowCount = max(array_map('count', $configuration));
-                foreach ($configuration as $k => $row) {
-                    if (empty($row)) {
-                        $configuration[$k] = array_fill(0, $largestRowCount, '');
-                    }
+            $largestRowCount = max(array_map('count', $configuration));
+            foreach ($configuration as $k => $row) {
+                if (empty($row)) {
+                    $configuration[$k] = array_fill(0, $largestRowCount, '');
                 }
             }
         }

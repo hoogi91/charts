@@ -24,6 +24,7 @@
 							<onChange>reload</onChange>
 							<config>
 								<type>select</type>
+                                <renderType>selectSingle</renderType>
 								<items type="array">
 									<numIndex index="0" type="array">
 										<numIndex index="0">No Step Interpolation (default)</numIndex>
@@ -84,6 +85,7 @@
 							<label>Position</label>
 							<config>
 								<type>select</type>
+                                <renderType>selectSingle</renderType>
 								<items type="array">
 									<numIndex index="0" type="array">
 										<numIndex index="0">Top</numIndex>
