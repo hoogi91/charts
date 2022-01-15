@@ -10,6 +10,13 @@
  * - vendor/bin/phpunit -c vendor/nimut/testing-framework/res/Configuration/UnitTests.xml \
  *     typo3conf/ext/example_extension/Tests/Unit
  */
+
+use TYPO3\CMS\Core\Cache\Backend\NullBackend;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
     die('This script supports command line usage only. Please check your command.');
 }
@@ -24,6 +31,36 @@ call_user_func(
     static function () {
         $bootstrap = \Nimut\TestingFramework\Bootstrap\BootstrapFactory::createBootstrapInstance();
         $bootstrap->bootstrapUnitTestSystem();
+
+        $GLOBALS['TSFE'] = $GLOBALS['TSFE'] ?? new \stdClass();
+        $GLOBALS['TSFE']->config['config']['locale_all'] = 'de';
+
+        // if TYPO3 v10 is installed register typo3 version constants (legacy)
+        $coreCache = 'cache_core';
+        $runtimeCache = 'cache_runtime';
+        if (class_exists(Typo3Version::class) && (new Typo3Version())->getMajorVersion() >= 10) {
+            $coreCache = 'core';
+            $runtimeCache = 'runtime';
+        }
+
+        // disable extbase object caching to let object manager work in unit tests
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $cacheManager->setCacheConfigurations(
+            [
+                $coreCache => [
+                    'backend' => NullBackend::class,
+                    'frontend' => VariableFrontend::class,
+                ],
+                $runtimeCache => [
+                    'backend' => NullBackend::class,
+                    'frontend' => VariableFrontend::class,
+                ],
+                'extbase_object' => [
+                    'backend' => NullBackend::class,
+                    'frontend' => VariableFrontend::class,
+                ],
+            ]
+        );
 
         // if TYPO3 v10 is installed register typo3 version constants (legacy)
         if (class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)) {
