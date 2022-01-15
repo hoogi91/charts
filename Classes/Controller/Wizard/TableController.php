@@ -46,7 +46,7 @@ class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableControll
      */
     private function fixEmptyConfiguration($configuration)
     {
-        if(!is_array($configuration)){
+        if (!is_array($configuration)) {
             return $configuration;
         }
 
