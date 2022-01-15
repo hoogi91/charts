@@ -401,7 +401,7 @@ class ChartDataSpreadsheet extends ChartData
             $spreadsheetExtractor = GeneralUtility::makeInstance(ExtractorService::class);
             $dsnValue = \Hoogi91\Spreadsheets\Domain\ValueObject\DsnValueObject::createFromDSN($data);
             $extraction = $spreadsheetExtractor->getDataByDsnValueObject($dsnValue, false);
-            if ($extraction === null) {
+            if ($extraction === null) { // @phpstan-ignore-line
                 return [];
             }
 
@@ -428,11 +428,10 @@ class ChartDataSpreadsheet extends ChartData
 
         try {
             if (ExtensionUtility::hasSpreadsheetExtensionWithDirectionSupport() === true) {
-                // @phpstan-ignore-next-line
-                return $spreadsheetExtractor->rangeToCellArray(
+                return $spreadsheetExtractor->rangeToCellArray(// @phpstan-ignore-line
                     $spreadsheetValue->getSelection(),
-                    false,
-                    true,
+                    false, // @phpstan-ignore-line
+                    true, // @phpstan-ignore-line
                     false,
                     $spreadsheetValue->getDirectionOfSelection()
                 );
