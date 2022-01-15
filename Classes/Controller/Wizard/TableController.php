@@ -43,7 +43,7 @@ class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableControll
                 return [['', '', '', '']];
             }
 
-            // if configuration is an array => equalize row value count
+            // equalize row value count
             $largestRowCount = max(array_map('count', $configuration));
             foreach ($configuration as $k => $row) {
                 $configuration[$k] = array_replace(array_fill(0, $largestRowCount, ''), array_values($row));

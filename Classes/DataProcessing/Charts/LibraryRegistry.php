@@ -76,6 +76,7 @@ class LibraryRegistry implements SingletonInterface
     public function getLibrarySelect(array $data): string
     {
         // ensure loading of extension configuration before creating library select
+        // TODO: validate loading and context check!
         if (getenv('TYPO3_CONTEXT') !== 'Testing') {
             ExtensionManagementUtility::loadExtLocalconf(); // @codeCoverageIgnore
         }

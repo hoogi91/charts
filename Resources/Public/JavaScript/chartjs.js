@@ -282,7 +282,8 @@ Hoogi91.Charts = {
     getTicksConfig: function (config, axis) {
         var calculateAutomatic = this.getKeyOfObject(config, 'axis.' + axis + '.auto', 0) === '1';
         if (calculateAutomatic === true) {
-            return {};
+            var stepSize = this.getKeyOfObject(config, 'axis.' + axis + '.step', null);
+            return stepSize !== null && stepSize > 0 ? {stepSize: parseInt(stepSize, 10)} : {};
         }
 
         var ticksConf = {};

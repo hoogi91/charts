@@ -58,7 +58,7 @@
       "mkdir -p .Build/web/typo3conf/ext/",
       "[ -L .Build/web/typo3conf/ext/charts ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/charts"
     ],
-    "extension-cleanup-for-release": [
+    "prepare-release": [
       "rm -rf Tests/",
       "rm -f .gitattributes",
       "rm -f .gitignore",
