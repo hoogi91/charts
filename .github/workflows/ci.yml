@@ -25,17 +25,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php_version: [ '7.3', '7.4', '8.0' ]
+        php_version: [ '7.4', '8.0', '8.1' ]
         typo3_version: [ '^10.4', '^11.5' ]
         experimental: [ false ]
         exclude:
           - php_version: '8.0'
             typo3_version: '^10.4'
-          - php_version: '7.3'
-            typo3_version: '^11.5'
+          - php_version: '8.1'
+            typo3_version: '^10.4'
         include:
-          # add experimental dev-master for PHP 8.0
-          - php_version: '8.0'
+          # add experimental dev-master for PHP 8.1
+          - php_version: '8.1'
             typo3_version: 'dev-master'
             experimental: true
 
