@@ -16,10 +16,10 @@ class LibraryRegistry
     {
         if ($libraries === null) {
             // TODO: this is just a bad hack for install tool requests!
-            //      Install tool is loaded with FailsafeContainer see install.php => "Bootstrap::init($classLoader, true)"
-            //      Currently there is no official way to define DI based classes (like the usage of service locator here)
-            //      inside of these requests. The only way is to bootstrap without failsafe container, getting this
-            //      service again and retrieving its libraries property by closure.
+            //  Install tool is loaded with FailsafeContainer see install.php => "Bootstrap::init($classLoader, true)"
+            //  Currently there is no official way to define DI based classes (like the usage of service locator here)
+            //  inside of these requests. The only way is to bootstrap without failsafe container, getting this
+            //  service again and retrieving its libraries property by closure.
             $autoloader = require dirname(realpath(Environment::getBackendPath())) . '/vendor/autoload.php';
             $libraries = \Closure::fromCallable(fn() => $this->libraries)
                 ->call(Bootstrap::init($autoloader)->get(self::class));

@@ -4,14 +4,10 @@ namespace Hoogi91\Charts\Tests\Unit\Controller;
 
 use Hoogi91\Charts\Controller\Wizard\TableController;
 use Hoogi91\Charts\Tests\Unit\CacheTrait;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class TableControllerTest
- * @package Hoogi91\Charts\Tests\Unit\Controller
- */
 class TableControllerTest extends UnitTestCase
 {
 
@@ -21,14 +17,12 @@ class TableControllerTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        if (class_exists(Typo3Version::class) === true
+            && version_compare((new Typo3Version())->getVersion(), '11.4', '>=') === true) {
+            $this->markTestSkipped('TableController does not exists anymore in TYPO3 version >= 11.4');
+        }
         parent::setUp();
         $this->setUpCaches();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this->resetPackageManager();
     }
 
     /**
@@ -36,13 +30,19 @@ class TableControllerTest extends UnitTestCase
      */
     public function testConfigurationFix(string $fieldValue, array $expected): void
     {
-        $tableController = new StubXmlConfigTableController();
+        $request = $this->createMock(ServerRequestInterface::class);
         self::assertEquals(
             $expected,
-            $tableController->testProxy4GetConfiguration(
-                ['someField' => $fieldValue, 'table_enclosure' => null, 'table_delimiter' => null],
-                $this->createMock(ServerRequestInterface::class)
-            )
+            \Closure::fromCallable(
+                function () use ($fieldValue, $request) {
+                    $this->xmlStorage = 1;
+                    $this->P = ['field' => 'someField'];
+                    return $this->getConfiguration(
+                        ['someField' => $fieldValue, 'table_enclosure' => null, 'table_delimiter' => null],
+                        $request
+                    );
+                }
+            )->call(new TableController())
         );
     }
 
@@ -86,19 +86,5 @@ class TableControllerTest extends UnitTestCase
                 ],
             ],
         ];
-    }
-}
-
-class StubXmlConfigTableController extends TableController
-{
-    protected $xmlStorage = 1;
-    protected $P = ['field' => 'someField'];
-
-    /**
-     * @return array|ResponseInterface
-     */
-    public function testProxy4GetConfiguration($row, $request)
-    {
-        return $this->getConfiguration($row, $request);
     }
 }

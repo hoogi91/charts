@@ -27,7 +27,7 @@
     "typo3/cms-frontend": "^10.4 || ^11.5"
   },
   "require-dev": {
-    "hoogi91/spreadsheets": "^2.0 || ^3.0",
+    "hoogi91/spreadsheets": "^3.0",
     "phpstan/phpstan": "^0.12.19",
     "phpunit/phpunit": "^9.5",
     "roave/security-advisories": "dev-latest",

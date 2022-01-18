@@ -6,29 +6,36 @@ use Hoogi91\Charts\Controller\Wizard\TextTableElement;
 use Hoogi91\Charts\Tests\Unit\CacheTrait;
 use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class TextTableElementTest
- * @package Hoogi91\Charts\Tests\Unit\Controller
- */
 class TextTableElementTest extends UnitTestCase
 {
 
     use CacheTrait;
 
+    protected $resetSingletonInstances = true;
+
     protected function setUp(): void
     {
+        if (class_exists(Typo3Version::class) === false
+            || version_compare((new Typo3Version())->getVersion(), '11.4', '<') === true) {
+            $this->markTestSkipped('TextTableElement does not exists in TYPO3 version < 11.4');
+        }
         parent::setUp();
         $this->setUpCaches();
+
+        $GLOBALS['BE_USER'] = $this->createMock(BackendUserAuthentication::class);
+        $GLOBALS['BE_USER']->uc['resizeTextareas_MaxHeight'] = 0;
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->resetPackageManager();
+        unset($GLOBALS['BE_USER']);
     }
 
     /**
@@ -40,12 +47,13 @@ class TextTableElementTest extends UnitTestCase
 
         $nodeFactory = $this->createConfiguredMock(
             NodeFactory::class,
-            ['create' => $this->createConfiguredMock(AbstractNode::class, ['render' => []])]
+            ['create' => $this->createConfiguredMock(AbstractNode::class, ['render' => ['html' => '']])]
         );
         $element = new TextTableElement($nodeFactory, [
             'parameterArray' => [
+                'itemFormElName' => 'field-name',
                 'itemFormElValue' => $formValue,
-                'fieldConf' => ['config' => []],
+                'fieldConf' => ['config' => ['rows' => 5]],
                 'fieldChangeFunc' => [],
             ],
         ]);

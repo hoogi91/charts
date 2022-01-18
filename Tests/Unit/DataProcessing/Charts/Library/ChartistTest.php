@@ -4,26 +4,17 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ChartistTest
- * @package Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library
- */
 class ChartistTest extends UnitTestCase
 {
 
-    /**
-     * @var Chartist
-     */
-    protected $library;
+    /** @var ChartDataSpreadsheet|MockObject */
+    protected MockObject $chartDataSpreadsheetModel;
 
-    /**
-     * @var ChartDataSpreadsheet|MockObject
-     */
-    protected $chartDataSpreadsheetModel;
+    protected Chartist $library;
 
     protected function setUp(): void
     {

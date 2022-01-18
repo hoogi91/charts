@@ -9,10 +9,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ChartDataPlainTest
- * @package Hoogi91\Charts\Tests\Unit\Domain\Model
- */
 class ChartDataPlainTest extends UnitTestCase
 {
 

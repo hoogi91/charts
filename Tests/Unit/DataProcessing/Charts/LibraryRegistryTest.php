@@ -5,13 +5,9 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts;
 use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
-use Hoogi91\Charts\RegisterChartLibraryException;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class LibraryRegistryTest
- * @package Hoogi91\Charts\Tests\Unit\DataProcessing\Charts
- */
 class LibraryRegistryTest extends UnitTestCase
 {
 
@@ -20,26 +16,29 @@ class LibraryRegistryTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->registry = new LibraryRegistry();
+        $this->registry = new LibraryRegistry(
+            new ServiceLocator(
+                [
+                    ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs(),
+                    Chartist::getServiceIndex() => static fn(): Chartist => new Chartist(),
+                ]
+            )
+        );
     }
 
     public function testLibraryRegistration(): void
     {
-        $this->registry->register('chartist', Chartist::class);
-        $this->registry->register('chartist123', Chartist::class);
+        $this->assertInstanceOf(ChartJs::class, $this->registry->getLibrary('chart.js'));
         $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist'));
-        $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist123'));
+        $this->assertNull($this->registry->getLibrary('unknown-identifier'));
     }
 
     public function testLibrarySelectGenerator(): void
     {
-        $this->registry->register('chartist', Chartist::class);
-        $this->registry->register('chart.js', ChartJs::class);
-
         $select = $this->registry->getLibrarySelect(
             [
                 'fieldName' => 'html-fieldname',
-                'fieldValue' => 'chart.js',
+                'fieldValue' => ChartJs::getServiceIndex(),
             ]
         );
 

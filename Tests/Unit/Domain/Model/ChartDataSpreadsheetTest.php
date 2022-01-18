@@ -10,15 +10,8 @@ use Hoogi91\Spreadsheets\Service\ExtractorService;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style;
-use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Resource\FileRepository;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ChartDataSpreadsheetTest
- * @package Hoogi91\Charts\Tests\Unit\Domain\Model
- */
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
 
@@ -28,26 +21,11 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     protected $resetSingletonInstances = true;
 
-    /**
-     * @var ChartDataSpreadsheet
-     */
-    private $chartData;
+    private ChartDataSpreadsheet $chartData;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        // mock file repository
-        // TODO: this mock can be removed after spreadsheet upgrade for TYPO3 v11
-        $filRepositoryMock = $this->getMockBuilder(FileRepository::class)->disableOriginalConstructor()->getMock();
-        $filRepositoryMock->method('findFileReferenceByUid')->willReturnCallback(
-            function (int $fileUid) {
-                $mock = $this->getMockBuilder(FileReference::class)->disableOriginalConstructor()->getMock();
-                $mock->method('getUid')->willReturn($fileUid);
-                return $mock;
-            }
-        );
-        GeneralUtility::setSingletonInstance(FileRepository::class, $filRepositoryMock);
 
         $createCellValue = function (float $value) {
             return CellDataValueObject::create(

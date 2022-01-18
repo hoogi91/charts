@@ -8,10 +8,6 @@ use Hoogi91\Charts\Form\Types\LineChart;
 use Hoogi91\Charts\Form\Types\PieChart;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class ChartTypesTest
- * @package Hoogi91\Charts\Tests\Unit\Form
- */
 class ChartTypesTest extends UnitTestCase
 {
     public function testBarChart(): void
