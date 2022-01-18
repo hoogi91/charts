@@ -5,67 +5,36 @@ namespace Hoogi91\Charts\Domain\Model;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class ChartData
- * @package Hoogi91\Charts\Domain\Model
- */
 abstract class ChartData extends AbstractEntity
 {
     public const TYPE_PLAIN = 0;
     public const TYPE_SPREADSHEET = 1;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
 
-    /**
-     * @var int
-     */
-    protected $type;
+    protected int $type;
 
-    /**
-     * @var string
-     */
-    protected $labels;
+    protected string $labels;
 
-    /**
-     * @var string
-     */
-    protected $datasets;
+    protected string $datasets;
 
-    /**
-     * @var string
-     */
-    protected $datasetsLabels;
+    protected string $datasetsLabels;
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return in_array($this->type, $this->getAllowedTypes(), true) ? $this->type : self::TYPE_PLAIN;
     }
 
-    /**
-     * @param int $type
-     */
     public function setType(int $type = self::TYPE_PLAIN): void
     {
         if (in_array($type, $this->getAllowedTypes(), true)) {
@@ -73,9 +42,6 @@ abstract class ChartData extends AbstractEntity
         }
     }
 
-    /**
-     * @return array
-     */
     public function getLabels(): array
     {
         // only get first row of labels and ignore multiple column/row selections
@@ -83,33 +49,21 @@ abstract class ChartData extends AbstractEntity
         return array_shift($labels) ?? [];
     }
 
-    /**
-     * @param string $labels
-     */
     public function setLabels(string $labels): void
     {
         $this->labels = $labels;
     }
 
-    /**
-     * @return array
-     */
     public function getDatasets(): array
     {
         return $this->extractDatasetList($this->datasets);
     }
 
-    /**
-     * @param string $datasets
-     */
     public function setDatasets(string $datasets): void
     {
         $this->datasets = $datasets;
     }
 
-    /**
-     * @return array
-     */
     public function getDatasetsLabels(): array
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
@@ -117,17 +71,11 @@ abstract class ChartData extends AbstractEntity
         return array_shift($labels) ?? [];
     }
 
-    /**
-     * @param string $datasetsLabels
-     */
     public function setDatasetsLabels(string $datasetsLabels): void
     {
         $this->datasetsLabels = $datasetsLabels;
     }
 
-    /**
-     * @return array
-     */
     protected function getAllowedTypes(): array
     {
         $allowedTypes = [self::TYPE_PLAIN];
@@ -138,17 +86,7 @@ abstract class ChartData extends AbstractEntity
         return $allowedTypes;
     }
 
-    /**
-     * @param string $labelData
-     *
-     * @return array
-     */
     abstract protected function extractLabelList(string $labelData): array;
 
-    /**
-     * @param string $datasetData
-     *
-     * @return array
-     */
     abstract protected function extractDatasetList(string $datasetData): array;
 }

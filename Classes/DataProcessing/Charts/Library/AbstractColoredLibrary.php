@@ -5,30 +5,13 @@ namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 
-/**
- * Class AbstractColoredLibrary
- * @package Hoogi91\Charts\DataProcessing\Charts\Library
- */
 abstract class AbstractColoredLibrary extends AbstractLibrary
 {
     protected const BACKGROUND = 1;
     protected const BORDER = 2;
 
-    /**
-     * @param int $type
-     *
-     * @return array
-     */
     abstract public function getDefaultColors(int $type = self::BACKGROUND): array;
 
-    /**
-     * map chart entities to short arrays with data for javascript processing
-     *
-     * @param array $datasets
-     * @param ChartData $chartEntity
-     *
-     * @return array
-     */
     protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
         // get processed datasets from above
@@ -73,32 +56,16 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
         );
     }
 
-    /**
-     * @param int $count
-     *
-     * @return array
-     */
     protected function getBackgroundColors(int $count = 1): array
     {
         return $this->getColor(self::BACKGROUND, $count);
     }
 
-    /**
-     * @param int $count
-     *
-     * @return array
-     */
     protected function getBorderColors(int $count = 1): array
     {
         return $this->getColor(self::BORDER, $count);
     }
 
-    /**
-     * @param int $colorType
-     * @param int $count
-     *
-     * @return array
-     */
     private function getColor(int $colorType, int $count = 1): array
     {
         $defaultColors = $this->getDefaultColors($colorType);

@@ -6,8 +6,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class TableController
- * @package Hoogi91\Charts\Controller\Wizard
  * @deprecated Remove fix after TYPO3 v10 support ends
  */
 class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableController

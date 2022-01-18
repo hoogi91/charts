@@ -4,10 +4,6 @@ namespace Hoogi91\Charts\Controller\Wizard;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class TextTableElement
- * @package Hoogi91\Charts\Controller\Wizard
- */
 class TextTableElement extends \TYPO3\CMS\Backend\Form\Element\TextTableElement
 {
 

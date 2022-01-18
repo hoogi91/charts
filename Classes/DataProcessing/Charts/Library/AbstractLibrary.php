@@ -6,19 +6,9 @@ use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
-/**
- * Class AbstractLibrary
- * @package Hoogi91\Charts\DataProcessing\Charts\Library
- */
 abstract class AbstractLibrary implements LibraryInterface
 {
 
-    /**
-     * @param string $chartType
-     * @param PageRenderer|null $pageRenderer
-     *
-     * @return array
-     */
     public function getStylesheetAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
         $assets = $this->getStylesheetAssetsToLoad();
@@ -42,20 +32,11 @@ abstract class AbstractLibrary implements LibraryInterface
         return array_keys($assets);
     }
 
-    /**
-     * @return array
-     */
     protected function getStylesheetAssetsToLoad(): array
     {
         return [];
     }
 
-    /**
-     * @param string $chartType
-     * @param PageRenderer|null $pageRenderer
-     *
-     * @return array
-     */
     public function getJavascriptAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
         $assets = $this->getJavascriptAssetsToLoad();
@@ -80,23 +61,11 @@ abstract class AbstractLibrary implements LibraryInterface
         return array_keys($assets);
     }
 
-    /**
-     * @return array
-     * @codeCoverageIgnore
-     */
     protected function getJavascriptAssetsToLoad(): array
     {
         return [];
     }
 
-    /**
-     * @param string $chartIdentifier
-     * @param string $chartType
-     * @param ChartData $chartEntity
-     * @param PageRenderer|null $pageRenderer
-     *
-     * @return string
-     */
     public function getEntityStylesheet(
         string $chartIdentifier,
         string $chartType,
@@ -106,14 +75,6 @@ abstract class AbstractLibrary implements LibraryInterface
         return '';
     }
 
-    /**
-     * @param string $chartIdentifier
-     * @param string $chartType
-     * @param ChartData $chartEntity
-     * @param PageRenderer|null $pageRenderer
-     *
-     * @return string
-     */
     public function getEntityJavascript(
         string $chartIdentifier,
         string $chartType,
@@ -151,12 +112,6 @@ abstract class AbstractLibrary implements LibraryInterface
         return $initCode . $code;
     }
 
-    /**
-     * @param array $datasets
-     * @param ChartData $chartEntity
-     *
-     * @return array
-     */
     protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
         $datasetsLabels = $chartEntity->getDatasetsLabels();

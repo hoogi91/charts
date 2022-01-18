@@ -7,16 +7,10 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
 
-/**
- * Class LibraryRegistry
- * @package Hoogi91\Charts\DataProcessing\Charts
- */
 class LibraryRegistry
 {
-    /**
-     * @var ServiceLocator
-     */
-    private $libraries;
+
+    private ServiceLocator $libraries;
 
     public function __construct(ServiceLocator $libraries = null)
     {
@@ -33,11 +27,6 @@ class LibraryRegistry
         $this->libraries = $libraries;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return LibraryInterface|null
-     */
     public function getLibrary(string $name): ?LibraryInterface
     {
         try {
@@ -47,10 +36,6 @@ class LibraryRegistry
         }
     }
 
-    /**
-     * @param array $data
-     * @return string
-     */
     public function getLibrarySelect(array $data): string
     {
         $html = '<div class="form-inline">';

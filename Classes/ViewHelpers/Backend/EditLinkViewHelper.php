@@ -2,20 +2,12 @@
 
 namespace Hoogi91\Charts\ViewHelpers\Backend;
 
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * ViewHelper to create a link to edit a record of a specific table
- *
- * Class EditLinkViewHelper
- * @package Hoogi91\Charts\ViewHelpers\Backend
- */
 class EditLinkViewHelper extends AbstractLinkViewHelper
 {
 
-    /**
-     * Initializes the arguments
-     */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
@@ -23,11 +15,6 @@ class EditLinkViewHelper extends AbstractLinkViewHelper
         $this->registerTagAttribute('returnPid', 'int', 'pid of the record to edit for returnUrl', false);
     }
 
-    /**
-     * @param array $arguments
-     *
-     * @return string
-     */
     protected function renderModuleUrl(array $arguments = []): string
     {
         if (isset($arguments['returnPid'])) {
@@ -45,15 +32,8 @@ class EditLinkViewHelper extends AbstractLinkViewHelper
         return $this->getModuleUrl('record_edit', $urlParameters);
     }
 
-    /**
-     * @param string $module
-     * @param array $params
-     * @return string
-     */
     private function getModuleUrl(string $module, array $params): string
     {
-        /** @var \TYPO3\CMS\Backend\Routing\UriBuilder $uriBuilder */
-        $uriBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Routing\UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute($module, $params);
+        return (string)GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute($module, $params);
     }
 }

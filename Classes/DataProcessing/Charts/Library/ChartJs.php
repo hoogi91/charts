@@ -8,36 +8,20 @@ use Hoogi91\Charts\Form\Types\DoughnutChart;
 use Hoogi91\Charts\Form\Types\LineChart;
 use Hoogi91\Charts\Form\Types\PieChart;
 
-/**
- * Class ChartJs
- * @package Hoogi91\Charts\DataProcessing\Charts\Library
- */
 class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
 {
     public const NAME = 'ChartJS';
 
-    /**
-     * Get service index name for DI
-     * @return string
-     */
     public static function getServiceIndex(): string
     {
         return 'chart.js';
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return self::NAME;
     }
 
-    /**
-     * @param int $type
-     *
-     * @return array
-     */
     public function getDefaultColors(int $type = self::BACKGROUND): array
     {
         if ($type === self::BACKGROUND) {
@@ -63,9 +47,6 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getJavascriptAssetsToLoad(): array
     {
         return [
@@ -78,14 +59,6 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
         ];
     }
 
-    /**
-     * please note that this is related to pointerField value:
-     * https://docs.typo3.org/typo3cms/TCAReference/6.2/Reference/Columns/Flex/Index.html#ds
-     *
-     * this array should always contain the key 'default' which points to default data structure
-     *
-     * @return array
-     */
     public function getDataStructures(): array
     {
         return [

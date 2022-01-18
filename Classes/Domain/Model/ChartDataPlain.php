@@ -4,17 +4,9 @@ namespace Hoogi91\Charts\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class ChartDataPlain
- * @package Hoogi91\Charts\Domain\Model
- */
 class ChartDataPlain extends ChartData
 {
-    /**
-     * @param string $labelData
-     *
-     * @return array
-     */
+
     protected function extractLabelList(string $labelData): array
     {
         // @todo call to xml2array fixes only old elements and should be removed in further versions
@@ -29,11 +21,6 @@ class ChartDataPlain extends ChartData
         return array_values(array_map('array_values', $data));
     }
 
-    /**
-     * @param string $datasetData
-     *
-     * @return array
-     */
     protected function extractDatasetList(string $datasetData): array
     {
         // @todo call to xml2array fixes only old elements and should be removed in further versions

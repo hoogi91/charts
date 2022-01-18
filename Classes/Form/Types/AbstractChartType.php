@@ -5,9 +5,6 @@ namespace Hoogi91\Charts\Form\Types;
 abstract class AbstractChartType implements ChartTypeInterface
 {
 
-    /**
-     * Register chart type
-     */
     public static function register(array $columnOverrides = []): void
     {
         $identifier = static::getIdentifier();
@@ -38,21 +35,10 @@ abstract class AbstractChartType implements ChartTypeInterface
         $GLOBALS['TCA']['tt_content']['types'][$identifier] += $typeConfig;
     }
 
-    /**
-     * @return string
-     */
     abstract public static function getIdentifier(): string;
 
-    /**
-     * @return string
-     */
     abstract public static function getIconIdentifier(): string;
 
-    /**
-     * @param bool $addFlexFormField
-     *
-     * @return string
-     */
     private static function getDefaultShowItems(bool $addFlexFormField = false): string
     {
         // phpcs:disable

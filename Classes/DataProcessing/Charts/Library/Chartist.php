@@ -10,36 +10,20 @@ use Hoogi91\Charts\Form\Types\DoughnutChart;
 use Hoogi91\Charts\Form\Types\LineChart;
 use TYPO3\CMS\Core\Page\PageRenderer;
 
-/**
- * Class Chartist
- * @package Hoogi91\Charts\DataProcessing\Charts\Library
- */
 class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterface
 {
     public const NAME = 'Chartist';
 
-    /**
-     * Get service index name for DI
-     * @return string
-     */
     public static function getServiceIndex(): string
     {
         return 'chartist';
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return self::NAME;
     }
 
-    /**
-     * @param int $type
-     *
-     * @return array
-     */
     public function getDefaultColors(int $type = self::BACKGROUND): array
     {
         return [
@@ -53,9 +37,6 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getStylesheetAssetsToLoad(): array
     {
         return [
@@ -68,9 +49,6 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getJavascriptAssetsToLoad(): array
     {
         return [
@@ -83,14 +61,6 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
         ];
     }
 
-    /**
-     * @param string $chartIdentifier
-     * @param string $chartType
-     * @param ChartData $chartEntity
-     * @param PageRenderer|null $pageRenderer
-     *
-     * @return string
-     */
     public function getEntityStylesheet(
         string $chartIdentifier,
         string $chartType,
@@ -169,14 +139,6 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
         return $stylesheet;
     }
 
-    /**
-     * please note that this is related to pointerField value:
-     * https://docs.typo3.org/typo3cms/TCAReference/6.2/Reference/Columns/Flex/Index.html#ds
-     *
-     * this array should always contain the key 'default' which points to default data structure
-     *
-     * @return array
-     */
     public function getDataStructures(): array
     {
         return [

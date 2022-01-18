@@ -7,83 +7,33 @@ use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Repository\ChartDataRepository;
-use Hoogi91\Charts\RegisterChartLibraryException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
-/**
- * Class ChartsProcessor
- * @package Hoogi91\Charts\DataProcessing
- */
 class ChartsProcessor implements DataProcessorInterface
 {
 
-    /**
-     * @var PageRenderer
-     */
-    private $pageRenderer;
+    private PageRenderer $pageRenderer;
 
-    /**
-     * @var ChartDataRepository
-     */
-    private $chartDataRepository;
+    private ChartDataRepository $chartDataRepository;
 
-    /**
-     * @var LibraryInterface
-     */
-    private $chartLibrary;
+    private LibraryInterface $chartLibrary;
 
-    /**
-     * ChartsProcessor constructor.
-     * @throws RegisterChartLibraryException
-     */
-    public function __construct(PageRenderer $pageRenderer, ChartDataRepository $repository, LibraryRegistry $registry)
-    {
+    public function __construct(
+        PageRenderer $pageRenderer,
+        ChartDataRepository $repository,
+        ExtensionConfiguration $extConf,
+        LibraryRegistry $registry
+    ) {
         $this->pageRenderer = $pageRenderer;
         $this->chartDataRepository = $repository;
-
-        $this->chartLibrary = $registry->getLibrary($this->getChartLibrary());
-        if (!$this->chartLibrary instanceof LibraryInterface) {
-            throw new RegisterChartLibraryException(
-                sprintf(
-                    'Evaluated Chart Library "%s" doesn\'t exist or doesn\'t implement "%s"',
-                    $this->getChartLibrary(),
-                    LibraryInterface::class
-                ),
-                1522167560
-            );
-        }
+        $this->chartLibrary = $registry->getLibrary(
+            (string)($extConf->get('charts', 'library') ?: ChartJsLibrary::getServiceIndex())
+        );
     }
 
-    /**
-     * Get currently configured chart library
-     *
-     * @return string
-     */
-    private function getChartLibrary(): string
-    {
-        $chartConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['charts'] ?? null;
-        if ($chartConfig === null) {
-            $chartConfig = unserialize(
-                $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts'],
-                ['allowed_classes' => false]
-            );
-        }
-        return $chartConfig['library'] ?? ChartJsLibrary::class;
-    }
-
-    /**
-     * Process content object data
-     *
-     * @param ContentObjectRenderer $cObj The data of the content element or page
-     * @param array $contentObjectConfiguration The configuration of Content Object
-     * @param array $processorConfiguration The configuration of this processor
-     * @param array $processedData Key/value store of processed data
-     *                                                          (e.g. to be passed to a Fluid View)
-     *
-     * @return array the processed data as key/value store
-     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
