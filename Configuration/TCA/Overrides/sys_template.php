@@ -1,7 +1,6 @@
 <?php
+defined('TYPO3') or die();
 
-defined('TYPO3_MODE') or die();
-
-(static function ($extKey = 'charts') {
+(static function (string $extKey) {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript/', 'Charts');
-})();
+})('charts');

@@ -1,6 +1,7 @@
 <?php
+defined('TYPO3') or die();
 
-return (static function ($extKey = 'charts') {
+return (static function (string $extKey) {
     $ll = 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:tx_charts_domain_model_chartdata';
 
     // default chartdata tca configuration
@@ -305,5 +306,5 @@ return (static function ($extKey = 'charts') {
     }
 
     return $chartDataTcaConfig;
-})();
+})('charts');
 
