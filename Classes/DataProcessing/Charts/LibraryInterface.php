@@ -12,6 +12,12 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 interface LibraryInterface
 {
     /**
+     * Get service index name for DI
+     * @return string
+     */
+    public static function getServiceIndex(): string;
+
+    /**
      * @return string
      */
     public function getName(): string;

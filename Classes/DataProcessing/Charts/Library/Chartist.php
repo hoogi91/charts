@@ -19,6 +19,15 @@ class Chartist extends AbstractColoredLibrary implements LibraryFlexformInterfac
     public const NAME = 'Chartist';
 
     /**
+     * Get service index name for DI
+     * @return string
+     */
+    public static function getServiceIndex(): string
+    {
+        return 'chartist';
+    }
+
+    /**
      * @return string
      */
     public function getName(): string

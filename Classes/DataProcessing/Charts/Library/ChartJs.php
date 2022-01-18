@@ -17,6 +17,15 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
     public const NAME = 'ChartJS';
 
     /**
+     * Get service index name for DI
+     * @return string
+     */
+    public static function getServiceIndex(): string
+    {
+        return 'chart.js';
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
