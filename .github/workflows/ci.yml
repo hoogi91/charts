@@ -91,7 +91,6 @@ jobs:
           if [ -d "Tests/Unit" ]; then
             .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php Tests/Unit/ --coverage-clover=./coverage/unit/clover.xml --whitelist=./Classes/
           fi
-          fi
 
       - name: Running unit tests with coverage report
         if: matrix.php_version == '7.4' && matrix.typo3_version == '^10.4'
