@@ -18,24 +18,13 @@ use PhpOffice\PhpSpreadsheet\Style\Fill as CellBackground;
 class ChartDataSpreadsheet extends ChartData
 {
 
-    /**
-     * @var ExtractorService
-     */
-    private $extractorService;
+    private ExtractorService $extractorService;
 
-    /**
-     * @param ExtractorService $extractorService
-     */
     public function injectExtractorService(ExtractorService $extractorService): void
     {
         $this->extractorService = $extractorService;
     }
 
-    /**
-     * @param string $labelData
-     *
-     * @return array
-     */
     protected function extractLabelList(string $labelData): array
     {
         try {
@@ -57,11 +46,6 @@ class ChartDataSpreadsheet extends ChartData
         return $spreadsheetData;
     }
 
-    /**
-     * @param string $datasetData
-     *
-     * @return array
-     */
     protected function extractDatasetList(string $datasetData): array
     {
         try {
@@ -83,12 +67,6 @@ class ChartDataSpreadsheet extends ChartData
         return $spreadsheetData;
     }
 
-    /**
-     * @param int $dataKey index of dataset to output
-     * @param string $defaultColor
-     *
-     * @return array
-     */
     public function getBackgroundColors(int $dataKey, string $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
     {
         try {
@@ -131,12 +109,6 @@ class ChartDataSpreadsheet extends ChartData
             : [];
     }
 
-    /**
-     * @param int $dataKey index of dataset to output
-     * @param string $defaultColor
-     *
-     * @return array
-     */
     public function getBorderColors(int $dataKey, string $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
     {
         try {
@@ -207,8 +179,6 @@ class ChartDataSpreadsheet extends ChartData
     }
 
     /**
-     * @param ExtractionValueObject|null $extraction
-     *
      * @return CellDataValueObject[][]
      */
     private function normalize(?ExtractionValueObject $extraction): array
@@ -220,11 +190,6 @@ class ChartDataSpreadsheet extends ChartData
         return is_array($cellData) ? array_values(array_map('array_values', $cellData)) : [];
     }
 
-    /**
-     * @param string $dsn DSN to extract
-     * @return ExtractionValueObject
-     * @throws SpreadsheetReaderException
-     */
     private function extractByDSN(string $dsn): ExtractionValueObject
     {
         return $this->extractorService->getDataByDsnValueObject(DsnValueObject::createFromDSN($dsn));

@@ -10,15 +10,15 @@ abstract class ChartData extends AbstractEntity
     public const TYPE_PLAIN = 0;
     public const TYPE_SPREADSHEET = 1;
 
-    protected string $title;
+    protected string $title = '';
 
-    protected int $type;
+    protected int $type = self::TYPE_PLAIN;
 
-    protected string $labels;
+    protected string $labels = '';
 
-    protected string $datasets;
+    protected string $datasets = '';
 
-    protected string $datasetsLabels;
+    protected string $datasetsLabels = '';
 
     public function getTitle(): string
     {

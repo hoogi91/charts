@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @deprecated Remove fix after TYPO3 v10 support ends
+ * @codeCoverageIgnore
  */
 class TableController extends \TYPO3\CMS\Backend\Controller\Wizard\TableController
 {

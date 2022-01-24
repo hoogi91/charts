@@ -14,6 +14,7 @@ class LibraryRegistry
 
     public function __construct(ServiceLocator $libraries = null)
     {
+        // @codeCoverageIgnoreStart
         if ($libraries === null) {
             // TODO: this is just a bad hack for install tool requests!
             //  Install tool is loaded with FailsafeContainer see install.php => "Bootstrap::init($classLoader, true)"
@@ -24,6 +25,7 @@ class LibraryRegistry
             $libraries = \Closure::fromCallable(fn() => $this->libraries)
                 ->call(Bootstrap::init($autoloader)->get(self::class));
         }
+        // @codeCoverageIgnoreEnd
         $this->libraries = $libraries;
     }
 
