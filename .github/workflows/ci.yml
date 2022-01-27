@@ -24,7 +24,7 @@ jobs:
         include:
           # add experimental dev-master for PHP 7.4
           - php_version: '7.4'
-            typo3_version: 'dev-master'
+            typo3_version: 'dev-main'
             experimental: true
 
     steps:

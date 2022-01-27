@@ -2,6 +2,7 @@ var Hoogi91 = Hoogi91 || {};
 Hoogi91.Charts = {
     chartsData: null,
     chartsContainer: null,
+    isChartJsV3: false,
 
     /**
      * initialize all charts that can be found if available options are filled
@@ -10,6 +11,8 @@ Hoogi91.Charts = {
         if (typeof Hoogi91.chartsData === 'object') {
             this.chartsData = Hoogi91.chartsData;
         }
+
+        this.isChartJsV3 = 'registry' in Chart;
 
         this.chartsContainer = document.querySelectorAll('.chart-container > .chart');
         if (this.chartsContainer.length > 0 && this.chartsData !== null && Object.keys(this.chartsData).length > 0) {
@@ -64,6 +67,46 @@ Hoogi91.Charts = {
     },
 
     /**
+     * @deprecated drop when finally switching to chart.js v3, dropping v2 compatibility
+     * @param chartOptions
+     * @return {{scales}|*}
+     */
+    migrateChartOptions: function (chartOptions) {
+        if (!this.isChartJsV3) {
+            return chartOptions;
+        }
+
+        // rename xAxes to x and yAxes to y
+        var migrateScale = function (scaleSettings) {
+
+            scaleSettings = scaleSettings[0];
+            if ('scaleLabel' in scaleSettings && !('title' in scaleSettings)) {
+                scaleSettings.title = scaleSettings.scaleLabel;
+                delete scaleSettings.scaleLabel;
+            }
+
+            if ('ticks' in scaleSettings && !('title' in scaleSettings)) {
+                Object.assign(scaleSettings, scaleSettings.ticks);
+                delete scaleSettings.ticks;
+            }
+
+            return scaleSettings;
+        }
+        if ('scales' in chartOptions) {
+            if ('xAxes' in chartOptions.scales && !('x' in chartOptions.scales)) {
+                chartOptions.scales.x = migrateScale(chartOptions.scales.xAxes);
+                delete chartOptions.scales.xAxes;
+            }
+            if ('yAxes' in chartOptions.scales && !('y' in chartOptions.scales)) {
+                chartOptions.scales.y = migrateScale(chartOptions.scales.yAxes);
+                delete chartOptions.scales.yAxes;
+            }
+        }
+
+        return chartOptions;
+    },
+
+    /**
      * build bar chart on element with labels and datasets
      *
      * @param element
@@ -73,8 +116,36 @@ Hoogi91.Charts = {
     createBarChart: function (element, labels, datasets) {
         var _this = this;
         var options = _this.getChartOptions(element);
+
+        var chartType = 'bar';
+        var chartOptions = {
+            legend: {
+                display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                position: _this.getKeyOfObject(options, 'legend.position', 'top')
+            },
+            scales: {
+                xAxes: [{
+                    stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
+                    ticks: _this.getTicksConfig(options, 'x'),
+                    scaleLabel: _this.getAxisLabelConfig(options, 'x'),
+                }],
+                yAxes: [{
+                    stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
+                    ticks: _this.getTicksConfig(options, 'y'),
+                    scaleLabel: _this.getAxisLabelConfig(options, 'y'),
+                }]
+            }
+        }
+        if (this.getKeyOfObject(options, 'bar.horizontal', 0) === '1') {
+            if (!this.isChartJsV3) {
+                chartType = 'horizontalBar'; // horizontalBar is removed in chart.js v3 so we check if it is a registered controller first.
+            } else {
+                chartOptions.indexAxis = 'y';
+            }
+        }
+
         return new Chart(element.getContext('2d'), {
-            type: _this.getKeyOfObject(options, 'bar.horizontal', 0) === '1' ? 'horizontalBar' : 'bar',
+            type: chartType,
             data: {
                 labels: labels,
                 datasets: _this.createDatasets(datasets, function (set) {
@@ -87,24 +158,7 @@ Hoogi91.Charts = {
                     }
                 })
             },
-            options: {
-                legend: {
-                    display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
-                    position: _this.getKeyOfObject(options, 'legend.position', 'top')
-                },
-                scales: {
-                    xAxes: [{
-                        stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
-                        ticks: _this.getTicksConfig(options, 'x'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'x'),
-                    }],
-                    yAxes: [{
-                        stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
-                        ticks: _this.getTicksConfig(options, 'y'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'y'),
-                    }]
-                }
-            }
+            options: this.migrateChartOptions(chartOptions)
         });
     },
 
@@ -142,7 +196,7 @@ Hoogi91.Charts = {
                     }
                 })
             },
-            options: {
+            options: this.migrateChartOptions({
                 legend: {
                     display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
                     position: _this.getKeyOfObject(options, 'legend.position', 'top')
@@ -164,7 +218,7 @@ Hoogi91.Charts = {
                         tension: tensionValue
                     }
                 }
-            }
+            })
         });
     },
 
@@ -191,12 +245,12 @@ Hoogi91.Charts = {
                     }
                 })
             },
-            options: {
+            options: this.migrateChartOptions({
                 legend: {
                     display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
                     position: _this.getKeyOfObject(options, 'legend.position', 'top')
                 },
-            }
+            })
         });
     },
 
@@ -226,13 +280,13 @@ Hoogi91.Charts = {
                     }
                 })
             },
-            options: {
+            options: this.migrateChartOptions({
                 legend: {
                     display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
                     position: _this.getKeyOfObject(options, 'legend.position', 'top')
                 },
                 cutoutPercentage: cutoutValue
-            }
+            })
         });
     },
 
