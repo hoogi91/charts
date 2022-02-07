@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die();
 
 return (static function (string $extKey) {
@@ -27,9 +28,6 @@ return (static function (string $extKey) {
             'searchFields' => 'title',
             'dynamicConfigFile' => '',
             'iconfile' => 'EXT:' . $extKey . '/Resources/Public/Icons/Extension.svg',
-        ],
-        'interface' => [
-            'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, type, assets, labels, datasets',
         ],
         'types' => [
             0 => [
@@ -73,7 +71,6 @@ return (static function (string $extKey) {
             ],
             'l10n_parent' => [
                 'displayCond' => 'FIELD:sys_language_uid:>:0',
-                'exclude' => 1,
                 'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
                 'config' => [
                     'type' => 'select',
@@ -299,6 +296,11 @@ return (static function (string $extKey) {
         ],
     ];
 
+    if (class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+        && version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion(), '11.2', '>=') === true) {
+        $chartDataTcaConfig['columns']['sys_language_uid']['config']['type'] = 'language';
+    }
+
     // if spreadsheet extension is loaded we enable visibility of type and set default to "spreadsheet based" ;)
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('spreadsheets')) {
         $chartDataTcaConfig['columns']['type']['config']['renderType'] = '';
@@ -306,5 +308,7 @@ return (static function (string $extKey) {
     }
 
     return $chartDataTcaConfig;
-})('charts');
+})(
+    'charts'
+);
 
