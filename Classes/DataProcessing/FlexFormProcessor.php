@@ -35,11 +35,13 @@ class FlexFormProcessor implements DataProcessorInterface
 
         // parse flexform
         $processedData[$targetVariableName] = $this->flexFormService->convertFlexFormContentToArray(
-            $cObj->data[$fieldName]
+            $cObj->data[$fieldName] ?? ''
         );
 
         // if target variable is settings, try to merge it with contentObjectConfiguration['settings.']
-        if ($targetVariableName === 'settings' && is_array($contentObjectConfiguration['settings.'])) {
+        if ($targetVariableName === 'settings'
+            && isset($contentObjectConfiguration['settings.'])
+            && is_array($contentObjectConfiguration['settings.'])) {
             $convertedConf = GeneralUtility::removeDotsFromTS($contentObjectConfiguration['settings.']);
             foreach ($convertedConf as $key => $value) {
                 if (!isset($processedData['settings'][$key]) || $processedData['settings'][$key] === false) {

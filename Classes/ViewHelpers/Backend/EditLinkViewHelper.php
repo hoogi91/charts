@@ -17,19 +17,15 @@ class EditLinkViewHelper extends AbstractLinkViewHelper
 
     protected function renderModuleUrl(array $arguments = []): string
     {
-        if (isset($arguments['returnPid'])) {
-            $returnUrl = $this->getModuleUrl('web_layout', ['id' => $arguments['returnPid']]);
-        } else {
-            $returnUrl = GeneralUtility::getIndpEnv('REQUEST_URI');
-        }
-
         $editParamName = sprintf('edit[%s][%d]', $arguments['recordTable'], $arguments['recordId']);
-        $urlParameters = [
+        $returnUrl = isset($arguments['returnPid'])
+            ? $this->getModuleUrl('web_layout', ['id' => $arguments['returnPid']])
+            : GeneralUtility::getIndpEnv('REQUEST_URI');
+
+        return $this->getModuleUrl('record_edit', [
             $editParamName => 'edit',
             'returnUrl' => $returnUrl,
-        ];
-
-        return $this->getModuleUrl('record_edit', $urlParameters);
+        ]);
     }
 
     private function getModuleUrl(string $module, array $params): string

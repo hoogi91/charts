@@ -86,6 +86,9 @@ class ChartsProcessor implements DataProcessorInterface
                 $chartType,
                 $chartEntity
             );
+
+            $chartData['assets']['css']['entity'] = array_filter($chartData['assets']['css']['entity']);
+            $chartData['assets']['js']['entity'] = array_filter($chartData['assets']['js']['entity']);
         }
 
         // assign to current processed data and return
