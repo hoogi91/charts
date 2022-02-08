@@ -127,24 +127,4 @@ class ChartDataSpreadsheetTest extends UnitTestCase
         $this->assertCount(3, $labels);
         $this->assertEquals('[rendered]1.2', $labels[1]);
     }
-
-    public function testBackgroundColorMethods(): void
-    {
-        // TODO: add data provider to check edge cases
-        $this->chartData->setDatasets(self::DATASET_DSN);
-        $colors = $this->chartData->getBackgroundColors(1);
-        $this->assertIsArray($colors);
-        $this->assertCount(3, $colors);
-        $this->assertSame(['rgb(255, 0, 0)', 'rgb(255, 0, 0)', 'rgb(255, 0, 0)'], $colors);
-    }
-
-    public function testBorderColorMethods(): void
-    {
-        // TODO: add data provider to check edge cases
-        $this->chartData->setDatasets(self::DATASET_DSN);
-        $colors = $this->chartData->getBorderColors(1);
-        $this->assertIsArray($colors);
-        $this->assertCount(3, $colors);
-        $this->assertSame(['rgb(128, 128, 0)', 'rgb(128, 128, 0)', 'rgb(128, 128, 0)'], $colors);
-    }
 }
