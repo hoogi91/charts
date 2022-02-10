@@ -2,7 +2,7 @@
 
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts;
 
-use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
+use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -20,7 +20,7 @@ class LibraryRegistryTest extends UnitTestCase
             new ServiceLocator(
                 [
                     ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs(),
-                    Chartist::getServiceIndex() => static fn(): Chartist => new Chartist(),
+                    ApexCharts::getServiceIndex() => static fn(): ApexCharts => new ApexCharts(),
                 ]
             )
         );
@@ -29,7 +29,7 @@ class LibraryRegistryTest extends UnitTestCase
     public function testLibraryRegistration(): void
     {
         $this->assertInstanceOf(ChartJs::class, $this->registry->getLibrary('chart.js'));
-        $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist'));
+        $this->assertInstanceOf(ApexCharts::class, $this->registry->getLibrary('apexcharts.js'));
         $this->assertNull($this->registry->getLibrary('unknown-identifier'));
     }
 
@@ -53,7 +53,7 @@ class LibraryRegistryTest extends UnitTestCase
             $select
         );
         $this->assertStringContainsString(
-            '<option value="chartist">chartist (' . Chartist::class . ')</option>',
+            '<option value="apexcharts.js">apexcharts.js (' . ApexCharts::class . ')</option>',
             $select
         );
     }

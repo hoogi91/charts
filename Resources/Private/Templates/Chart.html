@@ -5,19 +5,6 @@
 
 <f:section name="Main">
     <f:if condition="{data_chart.type} && {data_chart.library} && {data_chart.entity}">
-        <f:switch expression="{data_chart.type}">
-            <f:case value="chart_line">
-                <f:render partial="{data_chart.library}/Line" section="Main" arguments="{data_chart}"/>
-            </f:case>
-            <f:case value="chart_pie">
-                <f:render partial="{data_chart.library}/Pie" section="Main" arguments="{data_chart}"/>
-            </f:case>
-            <f:case value="chart_doughnut">
-                <f:render partial="{data_chart.library}/Doughnut" section="Main" arguments="{data_chart}"/>
-            </f:case>
-            <f:defaultCase>
-                <f:render partial="{data_chart.library}/Bar" section="Main" arguments="{data_chart}"/>
-            </f:defaultCase>
-        </f:switch>
+        <f:render partial="{data_chart.library}" section="Main" arguments="{data_chart}"/>
     </f:if>
 </f:section>

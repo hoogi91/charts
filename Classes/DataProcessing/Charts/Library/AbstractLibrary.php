@@ -32,10 +32,7 @@ abstract class AbstractLibrary implements LibraryInterface
         return array_keys($assets);
     }
 
-    protected function getStylesheetAssetsToLoad(): array
-    {
-        return [];
-    }
+    abstract protected function getStylesheetAssetsToLoad(): array;
 
     public function getJavascriptAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
@@ -61,10 +58,7 @@ abstract class AbstractLibrary implements LibraryInterface
         return array_keys($assets);
     }
 
-    protected function getJavascriptAssetsToLoad(): array
-    {
-        return [];
-    }
+    abstract protected function getJavascriptAssetsToLoad(): array;
 
     public function getEntityStylesheet(
         string $chartIdentifier,

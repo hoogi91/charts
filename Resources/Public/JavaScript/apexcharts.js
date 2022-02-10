@@ -73,15 +73,41 @@ Hoogi91.Charts = {
     createBarChart: function (element, labels, datasets) {
         var _this = this;
         var options = _this.getChartOptions(element);
-        return new Chartist.Bar(element, {
-            labels: labels,
+        var chart = new ApexCharts(element, {
+            chart: {
+                type: 'bar',
+                stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
+            },
             series: _this.createDatasets(datasets, function (set) {
-                return set['data']
-            })
-        }, {
-            stackBars: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
-            horizontalBars: _this.getKeyOfObject(options, 'bar.horizontal', 0) === '1'
+                var dataset = _this.createDatasets(set['data'], function (value, index) {
+                    var dataRow = {x: labels[index] || '', y: value};
+                    if (datasets.length === 1) {
+                        dataRow['fillColor'] = set['background'][index] || '';
+                        dataRow['strokeColor'] = set['border'][index] || '';
+                    }
+                    return dataRow;
+                });
+                return {name: set['label'], data: dataset}
+            }),
+            labels: labels,
+            colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
+            dataLabels: {enabled: false},
+            stroke: {width: 1},
+            plotOptions: {
+                bar: {
+                    horizontal: _this.getKeyOfObject(options, 'bar.horizontal', 0) === '1',
+                }
+            },
+            xaxis: _this.getTicksConfig(options, 'x'),
+            yaxis: _this.getTicksConfig(options, 'y'),
+            legend: {
+                show: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                position: _this.getKeyOfObject(options, 'legend.position', 'top'),
+            },
         });
+        chart.render();
+
+        return chart;
     },
 
     /**
@@ -94,29 +120,38 @@ Hoogi91.Charts = {
     createLineChart: function (element, labels, datasets) {
         var _this = this;
         var options = _this.getChartOptions(element);
-        var steppedValue = _this.getKeyOfObject(options, 'line.stepped', false);
-
-        var lineSmootheValue = _this.getKeyOfObject(options, 'line.interpolation', 0) === '1';
-        if (steppedValue === '1' || steppedValue === 'after') {
-            lineSmootheValue = Chartist.Interpolation.step({
-                postpone: steppedValue === 'after',
-                fillHoles: true
-            });
-        }
-
-        return new Chartist.Line(element, {
-            labels: labels,
-            series: _this.createDatasets(datasets, function (set) {
-                return set['data']
-            })
-        }, {
-            fullWidth: true,
-            chartPadding: {
-                right: 40
+        var chart = new ApexCharts(element, {
+            chart: {
+                type: _this.getKeyOfObject(options, 'line.fill', 0) === '1' ? 'area' : 'line',
+                stacked: _this.getKeyOfObject(options, 'line.stacked', 0) === '1',
             },
-            showArea: _this.getKeyOfObject(options, 'line.fill', 0) === '1',
-            lineSmooth: lineSmootheValue
+            series: _this.createDatasets(datasets, function (set) {
+                return {name: set['label'], data: set['data']};
+            }),
+            labels: labels,
+            colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
+            fill: {
+                colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
+            },
+            dataLabels: {enabled: false},
+            stroke: {
+                colors: datasets[0]['background'] || undefined,
+                curve: _this.getKeyOfObject(options, 'line.stepped', 'smooth'),
+            },
+            markers: {
+                size: [5, 7],
+                colors: datasets[0]['border'] || undefined,
+            },
+            xaxis: _this.getTicksConfig(options, 'x'),
+            yaxis: _this.getTicksConfig(options, 'y'),
+            legend: {
+                show: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                position: _this.getKeyOfObject(options, 'legend.position', 'top'),
+            },
         });
+        chart.render();
+
+        return chart;
     },
 
     /**
@@ -128,13 +163,22 @@ Hoogi91.Charts = {
      */
     createPieChart: function (element, labels, datasets) {
         var _this = this;
-        var series = _this.createDatasets(datasets, function (set) {
-            return set['data']
-        });
-        return new Chartist.Pie(element, {
+        var options = _this.getChartOptions(element);
+        console.log(labels)
+        var chart = new ApexCharts(element, {
+            chart: {type: 'pie'},
+            colors: datasets[0]['background'] || datasets[0]['border'] || [],
+            series: datasets[0]['data'] || [],
             labels: labels,
-            series: series[0]
-        }, {});
+            dataLabels: {enabled: false},
+            legend: {
+                show: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                position: _this.getKeyOfObject(options, 'legend.position', 'top'),
+            },
+        });
+        chart.render();
+
+        return chart;
     },
 
     /**
@@ -147,20 +191,24 @@ Hoogi91.Charts = {
     createDoughnutChart: function (element, labels, datasets) {
         var _this = this;
         var options = _this.getChartOptions(element);
-        var series = _this.createDatasets(datasets, function (set) {
-            return set['data']
-        });
-        var cutoutValue = parseInt(_this.getKeyOfObject(options, 'doughnut.cutoutPercentage', 60), 10);
-        cutoutValue = 100 - (cutoutValue <= 0 ? 60 : cutoutValue);
-
-        return new Chartist.Pie(element, {
+        var cutoutValue = parseInt(_this.getKeyOfObject(options, 'doughnut.cutoutPercentage', 75), 10);
+        var chart = new ApexCharts(element, {
+            chart: {type: 'donut'},
+            colors: datasets[0]['background'] || datasets[0]['border'] || [],
+            series: datasets[0]['data'] || [],
             labels: labels,
-            series: series[0]
-        }, {
-            donut: true,
-            donutWidth: cutoutValue + '%',
-            donutSolid: true
+            dataLabels: {enabled: false},
+            plotOptions: {
+                pie: {donut: {size: cutoutValue <= 0 ? 75 : cutoutValue}}
+            },
+            legend: {
+                show: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                position: _this.getKeyOfObject(options, 'legend.position', 'top'),
+            },
         });
+        chart.render();
+
+        return chart;
     },
 
     /**
@@ -180,7 +228,7 @@ Hoogi91.Charts = {
 
         if (typeof datasets === 'object' && datasets.length > 0) {
             for (var i = 0; i < datasets.length; ++i) {
-                var set = keyValueMapping(datasets[i]);
+                var set = keyValueMapping(datasets[i], i);
                 processedDatasets.push(set);
             }
         }
@@ -193,6 +241,26 @@ Hoogi91.Charts = {
         }, object);
 
         return typeof returnVal !== 'undefined' ? returnVal : defaultValue;
+    },
+
+    getTicksConfig: function (config, axis) {
+        var ticksConf = {
+            title: {text: this.getKeyOfObject(config, 'axis.' + axis + '.label', undefined)}
+        };
+        var calculateAutomatic = this.getKeyOfObject(config, 'axis.' + axis + '.auto', 0) === '1';
+        if (calculateAutomatic === true) {
+            return ticksConf;
+        }
+
+        var min = this.getKeyOfObject(config, 'axis.' + axis + '.min', null);
+        if (min !== null) {
+            ticksConf.min = parseInt(min, 10);
+        }
+        var max = this.getKeyOfObject(config, 'axis.' + axis + '.max', null);
+        if (max !== null && max > min) {
+            ticksConf.max = parseInt(max, 10);
+        }
+        return ticksConf;
     },
 
     getChartOptions: function (element) {

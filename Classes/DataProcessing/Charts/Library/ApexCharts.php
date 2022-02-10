@@ -8,11 +8,11 @@ use Hoogi91\Charts\Form\Types\DoughnutChart;
 use Hoogi91\Charts\Form\Types\LineChart;
 use Hoogi91\Charts\Form\Types\PieChart;
 
-class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
+class ApexCharts extends AbstractColoredLibrary implements LibraryFlexformInterface
 {
 
-    public const TECHNICAL_NAME = 'ChartJS';
-    public const SERVICE_INDEX = 'chart.js';
+    public const TECHNICAL_NAME = 'ApexCharts';
+    public const SERVICE_INDEX = 'apexcharts.js';
 
     public static function getServiceIndex(): string
     {
@@ -27,10 +27,10 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
     public function getDataStructures(): array
     {
         return [
-            BarChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Bar.xml',
-            LineChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/Line.xml',
-            PieChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
-            DoughnutChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ChartJS/DoughnutAndPie.xml',
+            BarChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ApexCharts/Bar.xml',
+            LineChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ApexCharts/Line.xml',
+            PieChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ApexCharts/DoughnutAndPie.xml',
+            DoughnutChart::getIdentifier() => 'FILE:EXT:charts/Configuration/FlexForms/ApexCharts/DoughnutAndPie.xml',
         ];
     }
 
@@ -63,7 +63,12 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
 
     protected function getStylesheetAssetsToLoad(): array
     {
-        return [];
+        // TODO: add option to define cdn url
+        return [
+            'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.css' => [
+                'noConcat' => true,
+            ],
+        ];
     }
 
     protected function getJavascriptAssetsToLoad(): array
@@ -71,10 +76,10 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
         // TODO: add option to define cdn url
         // TODO: add option if library assets should be loaded
         return [
-            'https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js' => [
+            'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.js' => [
                 'noConcat' => true,
             ],
-            'typo3conf/ext/charts/Resources/Public/JavaScript/chartjs.js' => [
+            'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js' => [
                 'compress' => true,
             ],
         ];

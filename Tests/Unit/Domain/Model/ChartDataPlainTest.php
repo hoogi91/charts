@@ -6,7 +6,6 @@ use Hoogi91\Charts\Domain\Model\ChartDataPlain;
 use Hoogi91\Charts\Tests\Unit\CacheTrait;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainTest extends UnitTestCase

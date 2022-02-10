@@ -74,35 +74,42 @@ Hoogi91.Charts = {
         var _this = this;
         var options = _this.getChartOptions(element);
         return new Chart(element.getContext('2d'), {
-            type: _this.getKeyOfObject(options, 'bar.horizontal', 0) === '1' ? 'horizontalBar' : 'bar',
+            type: 'bar',
             data: {
                 labels: labels,
-                datasets: _this.createDatasets(datasets, function (set) {
+                datasets: _this.createDatasets(datasets, function (set, index) {
                     return {
                         label: set['label'],
                         data: set['data'],
-                        backgroundColor: typeof set['background'] === 'object' ? set['background'] : [],
-                        borderColor: typeof set['border'] === 'object' ? set['border'] : [],
+                        backgroundColor: datasets.length === 1
+                            ? set['background'] || []
+                            : set['background'][index] || [],
+                        borderColor: datasets.length === 1
+                            ? set['border'] || []
+                            : set['border'][index] || [],
                         borderWidth: 1
                     }
                 })
             },
             options: {
-                legend: {
-                    display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
-                    position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                plugins: {
+                    legend: {
+                        display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                        position: _this.getKeyOfObject(options, 'legend.position', 'top'),
+                    },
                 },
+                indexAxis: _this.getKeyOfObject(options, 'bar.horizontal', 0) === '1' ? 'y' : 'x',
                 scales: {
-                    xAxes: [{
+                    x: {
                         stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
                         ticks: _this.getTicksConfig(options, 'x'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'x'),
-                    }],
-                    yAxes: [{
+                        title: _this.getAxisLabelConfig(options, 'x'),
+                    },
+                    y: {
                         stacked: _this.getKeyOfObject(options, 'bar.stacked', 0) === '1',
                         ticks: _this.getTicksConfig(options, 'y'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'y'),
-                    }]
+                        title: _this.getAxisLabelConfig(options, 'y'),
+                    }
                 }
             }
         });
@@ -132,31 +139,37 @@ Hoogi91.Charts = {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: _this.createDatasets(datasets, function (set) {
+                datasets: _this.createDatasets(datasets, function (set, index) {
                     return {
                         label: set['label'],
                         data: set['data'],
-                        backgroundColor: typeof set['border'] === 'object' ? set['border'][0] : '',
-                        borderColor: typeof set['background'] === 'object' ? set['background'][0] : '',
                         fill: _this.getKeyOfObject(options, 'line.fill', 0) === '1',
+                        backgroundColor: datasets.length === 1
+                            ? set['border'] || []
+                            : set['border'][index] || [],
+                        borderColor: datasets.length === 1
+                            ? set['background'] || []
+                            : set['background'][index] || [],
                     }
                 })
             },
             options: {
-                legend: {
-                    display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
-                    position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                plugins: {
+                    legend: {
+                        display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                        position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                    },
                 },
                 scales: {
-                    xAxes: [{
+                    x: {
                         ticks: _this.getTicksConfig(options, 'x'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'x'),
-                    }],
-                    yAxes: [{
+                        title: _this.getAxisLabelConfig(options, 'x'),
+                    },
+                    y: {
                         stacked: _this.getKeyOfObject(options, 'line.stacked', 0) === '1',
                         ticks: _this.getTicksConfig(options, 'y'),
-                        scaleLabel: _this.getAxisLabelConfig(options, 'y'),
-                    }]
+                        title: _this.getAxisLabelConfig(options, 'y'),
+                    }
                 },
                 elements: {
                     line: {
@@ -192,9 +205,11 @@ Hoogi91.Charts = {
                 })
             },
             options: {
-                legend: {
-                    display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
-                    position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                plugins: {
+                    legend: {
+                        display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                        position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                    },
                 },
             }
         });
@@ -227,11 +242,13 @@ Hoogi91.Charts = {
                 })
             },
             options: {
-                legend: {
-                    display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
-                    position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                cutout: cutoutValue,
+                plugins: {
+                    legend: {
+                        display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',
+                        position: _this.getKeyOfObject(options, 'legend.position', 'top')
+                    },
                 },
-                cutoutPercentage: cutoutValue
             }
         });
     },
@@ -253,7 +270,7 @@ Hoogi91.Charts = {
 
         if (typeof datasets === 'object' && datasets.length > 0) {
             for (var i = 0; i < datasets.length; ++i) {
-                var set = keyValueMapping(datasets[i]);
+                var set = keyValueMapping(datasets[i], i);
                 processedDatasets.push(set);
             }
         }

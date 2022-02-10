@@ -10,8 +10,6 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
     protected const BACKGROUND = 1;
     protected const BORDER = 2;
 
-    abstract public function getDefaultColors(int $type = self::BACKGROUND): array;
-
     protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
         // get processed datasets from above
@@ -24,13 +22,13 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
                     // try to get background colors from spreadsheet
                     $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
                     if (empty($backgroundColors)) {
-                        $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
+                        $backgroundColors = $this->getColor(self::BACKGROUND, count($datasets[$dataKey]));
                     }
 
                     // try to get border colors from spreadsheet
                     $borderColors = $chartEntity->getBorderColors($dataKey);
                     if (empty($borderColors)) {
-                        $borderColors = $this->getBorderColors(count($datasets[$dataKey]));
+                        $borderColors = $this->getColor(self::BORDER, count($datasets[$dataKey]));
                     }
 
                     $additionalDatasetData = [
@@ -47,8 +45,8 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
         return array_map(
             function ($dataKey) use ($datasets, $processedDatasets) {
                 $additionalDatasetData = [
-                    'background' => $this->getBackgroundColors(count($datasets[$dataKey])),
-                    'border' => $this->getBorderColors(count($datasets[$dataKey])),
+                    'background' => $this->getColor(self::BACKGROUND, count($datasets[$dataKey])),
+                    'border' => $this->getColor(self::BORDER, count($datasets[$dataKey])),
                 ];
                 return $additionalDatasetData + $processedDatasets[$dataKey];
             },
@@ -56,34 +54,18 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
         );
     }
 
-    protected function getBackgroundColors(int $count = 1): array
-    {
-        return $this->getColor(self::BACKGROUND, $count);
-    }
+    abstract protected function getDefaultColors(int $type = self::BACKGROUND): array;
 
-    protected function getBorderColors(int $count = 1): array
+    protected function getColor(int $colorType, int $count = 1): array
     {
-        return $this->getColor(self::BORDER, $count);
-    }
+        $colorPalette = $this->getDefaultColors($colorType);
+        $paletteSize = count($colorPalette);
 
-    private function getColor(int $colorType, int $count = 1): array
-    {
-        $defaultColors = $this->getDefaultColors($colorType);
-        if (count($defaultColors) >= $count) {
-            return array_slice($defaultColors, 0, $count);
+        for ($i = 0; $i < $count; $i++) {
+            $paletteIndex = $i >= $paletteSize ? ($i % $paletteSize) : $i;
+            $colors[] = $colorPalette[$paletteIndex];
         }
 
-        $colors = $defaultColors;
-        while (count($colors) < $count) {
-            // get first color of default colors and remove it from there
-            $firstItemOfDefaultColors = array_shift($defaultColors);
-
-            // (re-)add first item to our default color and result array
-            $defaultColors[] = $firstItemOfDefaultColors;
-            $colors[] = $firstItemOfDefaultColors;
-        }
-
-        // final result should be a repeating array of our default colors
-        return $colors;
+        return $colors ?? [];
     }
 }

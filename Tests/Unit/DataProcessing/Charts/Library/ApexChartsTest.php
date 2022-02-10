@@ -2,22 +2,22 @@
 
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
-use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
+use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-class ChartJsTest extends UnitTestCase
+class ApexChartsTest extends UnitTestCase
 {
 
-    private ChartJs $library;
+    private ApexCharts $library;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ChartJs();
+        $this->library = new ApexCharts();
     }
 
     public function chartDataProvider(): array
@@ -44,16 +44,16 @@ class ChartJsTest extends UnitTestCase
 
     public function testProperReturnTypes(): void
     {
-        $this->assertEquals(ChartJs::TECHNICAL_NAME, $this->library->getName());
+        $this->assertEquals(ApexCharts::TECHNICAL_NAME, $this->library->getName());
         $this->assertNotEmpty($this->library->getDataStructures());
     }
 
     public function testStylesheetAssetBuilding(): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
-        $pageRenderer->expects(self::never())->method('addCssLibrary');
+        $pageRenderer->expects(self::atLeastOnce())->method('addCssLibrary');
 
-        $this->assertEmpty($this->library->getStylesheetAssets('bar', $pageRenderer));
+        $this->assertCount(1, $this->library->getStylesheetAssets('bar', $pageRenderer));
     }
 
     public function testJavascriptAssetBuilding(): void
@@ -106,7 +106,7 @@ class ChartJsTest extends UnitTestCase
         );
         // dataset 3
         $this->assertStringContainsString(
-            '{"background":["rgba(255, 99, 132, 0.4)","rgba(255, 159, 64, 0.4)","rgba(255, 205, 86, 0.4)"],"border":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)"],"data":["Data 3-1","Data 3-2","Data 3-3"],"label":""}',
+            '{"background":["rgba(255, 99, 132, 0.4)","rgba(255, 159, 64, 0.4)","rgba(255, 205, 86, 0.4)"],"border":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)"],"data":["Data 3-1","Data 3-2","Data 3-3"],"label":""}]};',
             $javascript
         );
     }
