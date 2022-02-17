@@ -2,7 +2,7 @@
 
 defined('TYPO3') or die();
 
-(static function (string $extKey) {
+(static function (string $extKey = 'charts') {
     // add content element to insert tables in content element wizard
     // and register template for backend preview rendering
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
@@ -23,6 +23,13 @@ defined('TYPO3') or die();
         ];
     }
 
+    // add field type to form engine
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1644609317993] = [
+        'nodeName' => 'colorPalette',
+        'priority' => 30,
+        'class' => \Hoogi91\Charts\Form\Element\ColorPaletteInputElement::class,
+    ];
+
     // register extension relevant icons
     $icons = [
         'chart' => 'Extension',
@@ -41,6 +48,4 @@ defined('TYPO3') or die();
             ['source' => sprintf('EXT:%s/Resources/Public/Icons/%s.svg', $extKey, $icon)]
         );
     }
-})(
-    'charts'
-);
+})();

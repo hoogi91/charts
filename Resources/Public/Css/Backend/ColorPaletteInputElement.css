@@ -1,0 +1,12 @@
+.color-palette-modal {
+    position: relative;
+    width: calc(100% + 2rem);
+    height: calc(100% + 1rem);
+    margin: -1rem;
+}
+
+.color-palette-modal > color-picker {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
