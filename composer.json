@@ -28,6 +28,7 @@
   },
   "require-dev": {
     "hoogi91/spreadsheets": "^3.0",
+    "mck89/peast": "^1.13",
     "phpstan/phpstan": "^0.12.19",
     "phpunit/phpunit": "^9.5",
     "roave/security-advisories": "dev-latest",

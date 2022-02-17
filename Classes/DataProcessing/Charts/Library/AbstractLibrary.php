@@ -92,8 +92,8 @@ abstract class AbstractLibrary implements LibraryInterface
             "Hoogi91.chartsData['%s'] = {labels: %s, datasets: %s};",
             [
                 $codeIdentifier,
-                json_encode($labels),
-                json_encode($datasets),
+                json_encode($labels, JSON_THROW_ON_ERROR),
+                json_encode($datasets, JSON_THROW_ON_ERROR),
             ]
         );
 
@@ -108,15 +108,10 @@ abstract class AbstractLibrary implements LibraryInterface
 
     protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
-        $datasetsLabels = $chartEntity->getDatasetsLabels();
+        $labels = $chartEntity->getDatasetsLabels();
         return array_map(
-            static function ($dataKey) use ($datasets, $datasetsLabels) {
-                return [
-                    'data' => $datasets[$dataKey],
-                    'label' => $datasetsLabels[$dataKey] ?? '',
-                ];
-            },
-            array_keys($datasets)
+            static fn(int $key) => ['data' => $datasets[$key], 'label' => $labels[$key] ?? ''],
+            array_keys($datasets),
         );
     }
 }

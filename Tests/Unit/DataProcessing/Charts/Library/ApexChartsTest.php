@@ -5,12 +5,15 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+use Hoogi91\Charts\Tests\Unit\JavascriptCompareTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ApexChartsTest extends UnitTestCase
 {
+
+    use JavascriptCompareTrait;
 
     private ApexCharts $library;
 
@@ -35,9 +38,11 @@ class ApexChartsTest extends UnitTestCase
         return [
             'plain chart data' => [
                 'chartData' => $this->createConfiguredMock(ChartData::class, $mockConfig),
+                'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
             'spreadsheet chart data' => [
                 'chartData' => $this->createConfiguredMock(ChartDataSpreadsheet::class, $mockConfig),
+                'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
         ];
     }
@@ -81,8 +86,9 @@ class ApexChartsTest extends UnitTestCase
     /**
      * @dataProvider chartDataProvider
      * @param MockObject|ChartData $model
+     * @param string $expectedFile
      */
-    public function testJavascriptEntityBuilding(MockObject $model): void
+    public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
         $pageRenderer->expects(self::exactly(2))
@@ -93,22 +99,7 @@ class ApexChartsTest extends UnitTestCase
             );
 
         $javascript = $this->library->getEntityJavascript('test-identifier-123', 'doughnut', $model, $pageRenderer);
-        $this->assertStringContainsString('labels: ["Label 1","Label 2","Label 3"]', $javascript);
-        // dataset 1
-        $this->assertStringContainsString(
-            '{"background":["rgba(255, 99, 132, 0.4)","rgba(255, 159, 64, 0.4)","rgba(255, 205, 86, 0.4)"],"border":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)"],"data":["Data 1-1","Data 1-2","Data 1-3"],"label":""}',
-            $javascript
-        );
-        // dataset 2
-        $this->assertStringContainsString(
-            '{"background":["rgba(255, 99, 132, 0.4)","rgba(255, 159, 64, 0.4)","rgba(255, 205, 86, 0.4)"],"border":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)"],"data":["Data 2-1","Data 2-2","Data 2-3"],"label":""}',
-            $javascript
-        );
-        // dataset 3
-        $this->assertStringContainsString(
-            '{"background":["rgba(255, 99, 132, 0.4)","rgba(255, 159, 64, 0.4)","rgba(255, 205, 86, 0.4)"],"border":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)"],"data":["Data 3-1","Data 3-2","Data 3-3"],"label":""}]};',
-            $javascript
-        );
+        $this->assertStringEqualsJavascriptFile($expectedFile, $javascript);
     }
 
     /**
