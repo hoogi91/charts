@@ -59,11 +59,9 @@
       "[ -L .Build/web/typo3conf/ext/charts ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/charts"
     ],
     "prepare-release": [
-      "rm -rf Tests/",
-      "rm -f .gitattributes",
-      "rm -f .gitignore",
-      "rm -f .travis.yml",
-      "rm -f composer.lock"
+      "rm -rf .github/ Tests/",
+      "rm -f .gitattributes .gitignore .editorconfig composer.lock",
+      "rm -f .babelrc .eslintignore .eslintrc.js package.json package-lock.json webpack.config.js"
     ]
   },
   "extra": {
