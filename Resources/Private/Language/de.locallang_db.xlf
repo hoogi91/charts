@@ -73,6 +73,26 @@
 				<source>Spreadsheet Assets</source>
 				<target>Kalkulationstabellen</target>
 			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.tab_colors" xml:space="preserve">
+				<source>Colors</source>
+				<target>Farben</target>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.background_colors" xml:space="preserve">
+				<source>Background Colors</source>
+				<target>Hintergrundfarben</target>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.background_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell backgrounds if available</source>
+                <target>Standardmäßig werden die Hintergrundfarben aus der Kalkulationstabelle genutzt sofern diese Farbpalette leer ist</target>
+             </trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.border_colors" xml:space="preserve">
+				<source>Border Colors</source>
+				<target>Randfarben</target>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.border_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell border colors if available</source>
+                <target>Standardmäßig werden die Randfarben aus der Kalkulationstabelle genutzt sofern diese Farbpalette leer ist</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

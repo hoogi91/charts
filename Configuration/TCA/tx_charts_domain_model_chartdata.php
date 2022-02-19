@@ -2,7 +2,7 @@
 
 defined('TYPO3') or die();
 
-return (static function (string $extKey) {
+return (static function (string $extKey = 'charts') {
     $ll = 'LLL:EXT:' . $extKey . '/Resources/Private/Language/locallang_db.xlf:tx_charts_domain_model_chartdata';
 
     // default chartdata tca configuration
@@ -31,10 +31,21 @@ return (static function (string $extKey) {
         ],
         'types' => [
             0 => [
-                'showitem' => '--palette--;;corePalette,--palette--;;spreadsheetOptionPalette,labels,--palette--;;datasetPalette,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime',
+                'showitem' => implode(
+                    [
+                        '--palette--;;corePalette,type,labels,--palette--;;datasetPalette,',
+                        '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime'
+                    ]
+                ),
             ],
             1 => [
-                'showitem' => '--palette--;;corePalette,--palette--;;spreadsheetOptionPalette,spreadsheet_assets,spreadsheet_labels,--palette--;;spreadsheetDatasetPalette,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime',
+                'showitem' => implode(
+                    [
+                        '--palette--;;corePalette,type,spreadsheet_assets,spreadsheet_labels,--palette--;;spreadsheetDatasetPalette,',
+                        '--div--;' . $ll . '.tab_colors,background_colors, border_colors,',
+                        '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime'
+                    ]
+                ),
             ],
         ],
         'palettes' => [
@@ -47,113 +58,14 @@ return (static function (string $extKey) {
             'spreadsheetDatasetPalette' => [
                 'showitem' => 'spreadsheet_datasets, spreadsheet_datasets_labels',
             ],
-            'spreadsheetOptionPalette' => [
-                'showitem' => 'type',
-            ],
         ],
         'columns' => [
-            'sys_language_uid' => [
-                'exclude' => 1,
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-                'config' => [
-                    'type' => 'select',
-                    'renderType' => 'selectSingle',
-                    'special' => 'languages',
-                    'items' => [
-                        [
-                            'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                            -1,
-                            'flags-multiple',
-                        ],
-                    ],
-                    'default' => 0,
-                ],
-            ],
-            'l10n_parent' => [
-                'displayCond' => 'FIELD:sys_language_uid:>:0',
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-                'config' => [
-                    'type' => 'select',
-                    'renderType' => 'selectSingle',
-                    'items' => [
-                        0 => [
-                            0 => '',
-                            1 => 0,
-                        ],
-                    ],
-                    'foreign_table' => 'tx_charts_domain_model_chartdata',
-                    'foreign_table_where' => 'AND tx_charts_domain_model_chartdata.pid=###CURRENT_PID### AND tx_charts_domain_model_chartdata.sys_language_uid IN (-1,0)',
-                ],
-            ],
-            'l10n_diffsource' => [
-                'config' => [
-                    'type' => 'passthrough',
-                ],
-            ],
-            't3ver_label' => [
-                'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-                'config' => [
-                    'type' => 'input',
-                    'size' => 30,
-                    'max' => 255,
-                ],
-            ],
-            'hidden' => [
-                'exclude' => 1,
-                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
-                'config' => [
-                    'type' => 'check',
-                ],
-            ],
-            'starttime' => [
-                'exclude' => 1,
-                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-                'config' => [
-                    'behaviour' => [
-                        'allowLanguageSynchronization' => true,
-                    ],
-                    'renderType' => 'inputDateTime',
-                    'type' => 'input',
-                    'size' => 13,
-                    'eval' => 'datetime',
-                    'checkbox' => 0,
-                    'default' => 0,
-                ],
-            ],
-            'endtime' => [
-                'exclude' => 1,
-                'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-                'config' => [
-                    'behaviour' => [
-                        'allowLanguageSynchronization' => true,
-                    ],
-                    'renderType' => 'inputDateTime',
-                    'type' => 'input',
-                    'size' => 13,
-                    'eval' => 'datetime',
-                    'checkbox' => 0,
-                    'default' => 0,
-                ],
-            ],
-            'parentid' => [
-                'config' => [
-                    'type' => 'select',
-                    'renderType' => 'selectSingle',
-                    'items' => [
-                        0 => [
-                            0 => '',
-                            1 => 0,
-                        ],
-                    ],
-                    'foreign_table' => 'tt_content',
-                    'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,###REC_FIELD_sys_language_uid###)',
-                ],
-            ],
-            'parenttable' => [
-                'config' => [
-                    'type' => 'passthrough',
-                ],
-            ],
+            'sys_language_uid' => $GLOBALS['TCA']['tt_content']['columns']['sys_language_uid'],
+            'l10n_parent' => $GLOBALS['TCA']['tt_content']['columns']['l18n_parent'],
+            'l10n_diffsource' => $GLOBALS['TCA']['tt_content']['columns']['l18n_diffsource'],
+            'hidden' => $GLOBALS['TCA']['tt_content']['columns']['hidden'],
+            'starttime' => $GLOBALS['TCA']['tt_content']['columns']['starttime'],
+            'endtime' => $GLOBALS['TCA']['tt_content']['columns']['endtime'],
             'title' => [
                 'exclude' => true,
                 'label' => $ll . '.title',
@@ -293,13 +205,32 @@ return (static function (string $extKey) {
                     'xls,xlsx,ods'
                 ),
             ],
+            'background_colors' => [
+                'exclude' => true,
+                'label' => $ll . '.background_colors',
+                'description' => $ll . '.background_colors.description',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'colorPalette',
+                    'behaviour' => [
+                        'allowLanguageSynchronization' => true,
+                    ],
+                ],
+            ],
+            'border_colors' => [
+                'exclude' => true,
+                'label' => $ll . '.border_colors',
+                'description' => $ll . '.border_colors.description',
+                'config' => [
+                    'type' => 'text',
+                    'renderType' => 'colorPalette',
+                    'behaviour' => [
+                        'allowLanguageSynchronization' => true,
+                    ],
+                ],
+            ],
         ],
     ];
-
-    if (class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-        && version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion(), '11.2', '>=') === true) {
-        $chartDataTcaConfig['columns']['sys_language_uid']['config']['type'] = 'language';
-    }
 
     // if spreadsheet extension is loaded we enable visibility of type and set default to "spreadsheet based" ;)
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('spreadsheets')) {
@@ -308,7 +239,5 @@ return (static function (string $extKey) {
     }
 
     return $chartDataTcaConfig;
-})(
-    'charts'
-);
+})();
 
