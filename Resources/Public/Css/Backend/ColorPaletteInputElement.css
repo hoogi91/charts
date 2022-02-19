@@ -5,8 +5,6 @@
     margin: -1rem;
 }
 
-.color-palette-modal > color-picker {
-    position: absolute;
-    top: 0;
-    left: 0;
+color-palette:not(:defined) {
+    display: none
 }

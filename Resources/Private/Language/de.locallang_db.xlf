@@ -29,6 +29,15 @@
 				<target>Donut-Diagramm</target>
 			</trans-unit>
 
+             <trans-unit id="color_palette.empty">
+                <source>Create new Palette</source>
+                <target>neue Farbpalette erstellen</target>
+             </trans-unit>
+             <trans-unit id="color_palette.newButton">
+                <source>Start</source>
+                <target>Starten</target>
+             </trans-unit>
+
 			<trans-unit id="tx_charts_domain_model_chartdata" xml:space="preserve">
 				<source>Chart Dataset</source>
 				<target>Diagrammdaten</target>

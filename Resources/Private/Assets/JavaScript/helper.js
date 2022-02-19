@@ -1,12 +1,20 @@
 export function createElement(tagName, attributes = {}) {
     const element = document.createElement(tagName);
     Object.entries(attributes).forEach(entry => {
-        const [name, value] = entry;
+        let [name, value] = entry;
         if (name === 'textContent') {
             element.textContent = value;
         } else if (name === 'innerHTML') {
             element.innerHTML = value;
         } else if (name === 'append') {
+            if (value instanceof NodeList) {
+                const childCopy = [];
+                value.forEach(function (item) {
+                    childCopy.push(item.cloneNode(true));
+                });
+                value = childCopy;
+            }
+
             element.append(...value);
         } else {
             element.setAttribute(name, value);
@@ -45,4 +53,19 @@ export function getHexValue(color) {
 
 export function isLightColor(color) {
     return color.luminosity() > 0.6;
+}
+
+export function debounce(wait, func, immediate) {
+    let timeout;
+    return function () {
+        const context = this, args = arguments;
+        const later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
 }

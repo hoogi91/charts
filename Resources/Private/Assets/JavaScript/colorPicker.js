@@ -1,4 +1,4 @@
-import {createElement} from "./helper";
+import {createElement, debounce} from "./helper";
 import css from './colorPicker.css';
 import Color from "color";
 
@@ -91,7 +91,7 @@ export class ColorPickerElement extends HTMLElement {
             // if clicking outside close picker and dispatch event
             if (this.pickerWrapper.contains(event.target) === false) {
                 this.style.display = 'none';
-                this.dispatchEvent(new CustomEvent("colorChanged", {detail: {color: this.color}}));
+                this.triggerColorChanged();
             }
         });
     }
@@ -131,6 +131,9 @@ export class ColorPickerElement extends HTMLElement {
         this.colorPicker.style.left = (newColor.saturationv() / 100) * this.colorArea.getBoundingClientRect().width - halfPickerWidth + 'px';
         this.huePicker.style.left = Math.max((newColor.hue() / 359) * this.hueArea.getBoundingClientRect().width - 2, -1) + 'px';
         this.alphaPicker.style.left = Math.max(newColor.alpha() * this.alphaArea.getBoundingClientRect().width - 2, -1) + 'px';
+
+        // always dispatch color changed event
+        this.triggerColorChanged();
     }
 
     createPickerArea(area, callback) {
@@ -159,5 +162,15 @@ export class ColorPickerElement extends HTMLElement {
             this.shadowRoot.removeEventListener('mousemove', callback);
             this.isMoving = false;
         });
+    }
+
+    get triggerColorChanged() {
+        if (typeof this._colorChangedDispatcher === 'undefined') {
+            this._colorChangedDispatcher = debounce(250, () => {
+                this.dispatchEvent(new CustomEvent("colorChanged", {detail: {color: this.color}}));
+            });
+        }
+
+        return this._colorChangedDispatcher;
     }
 }

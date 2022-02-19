@@ -123,11 +123,18 @@ color-picker {
     height: 200px;
     background: transparent;
     border: 0;
+    cursor: pointer;
+}
+
+.start-button > slot[name=newButtonIcon] {
     fill: #ff8700;
+    color: #ff8700;
+}
+
+.start-button > slot[name=newButtonText] {
     font-size: 20px;
     text-transform: uppercase;
     font-family: monospace;
-    cursor: pointer;
 }
 
 .color-palette.editor > .color {

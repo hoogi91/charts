@@ -22,6 +22,13 @@
 				<source>Doughnut Chart</source>
 			</trans-unit>
 
+             <trans-unit id="color_palette.empty">
+                <source>Create new Palette</source>
+             </trans-unit>
+             <trans-unit id="color_palette.newButton">
+                <source>Start</source>
+             </trans-unit>
+
 			<trans-unit id="tx_charts_domain_model_chartdata" xml:space="preserve">
 				<source>Chart Dataset</source>
 			</trans-unit>
