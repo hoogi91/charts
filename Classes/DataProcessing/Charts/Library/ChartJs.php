@@ -41,15 +41,17 @@ class ChartJs extends AbstractColoredLibrary implements LibraryFlexformInterface
 
     protected function getJavascriptAssetsToLoad(): array
     {
-        // TODO: add option to define cdn url
-        // TODO: add option if library assets should be loaded
-        return [
-            'https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js' => [
-                'noConcat' => true,
+        $cdnUrl = (string)$this->getLibraryConfig(
+            'javascript',
+            'https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js'
+        );
+        return array_filter(
+            [
+                $cdnUrl => ['noConcat' => true],
+                'typo3conf/ext/charts/Resources/Public/JavaScript/chartjs.js' => ['compress' => true],
             ],
-            'typo3conf/ext/charts/Resources/Public/JavaScript/chartjs.js' => [
-                'compress' => true,
-            ],
-        ];
+            static fn($key) => empty($key) === false,
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }

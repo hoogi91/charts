@@ -1,2 +1,14 @@
 # cat=basic/enable; type=user[Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry->getLibrarySelect]; label=Chart Library to use
 library =
+
+# cat=ChartJS/enable; type=boolean; label=Use packed assets:If disabled the defined CDN and library related assets are not injected into the rendered page
+chart_js_assets = 1
+
+# cat=ChartJS/enable; type=string; label=Javascript CDN:Script URL to include into rendered page or empty if you want to inject it by your own configurations
+chart_js_javascript = https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js
+
+# cat=ApexCharts/enable; type=boolean; label=Use packed assets:If disabled the defined CDN and library related assets are not injected into the rendered page
+apexcharts_js_assets = 1
+
+# cat=ApexCharts/enable; type=string; label=Javascript CDN:Script URL to include into rendered page or empty if you want to inject it by your own configurations
+apexcharts_js_javascript = https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.js

@@ -4,13 +4,33 @@ namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\Domain\Model\ChartData;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractLibrary implements LibraryInterface
 {
 
+    protected function getLibraryConfig(string $path, $default = null)
+    {
+        try {
+            return GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(
+                'charts',
+                str_replace('.', '_', static::getServiceIndex()) . '_' . $path
+            );
+        } catch (Exception $exception) {
+            return $default;
+        }
+    }
+
     public function getStylesheetAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
+        $useAssets = (bool)$this->getLibraryConfig('assets', true);
+        if ($useAssets === false) {
+            return [];
+        }
+
         $assets = $this->getStylesheetAssetsToLoad();
 
         // directly include when pageRenderer is given
@@ -36,6 +56,11 @@ abstract class AbstractLibrary implements LibraryInterface
 
     public function getJavascriptAssets(string $chartType, PageRenderer $pageRenderer = null): array
     {
+        $useAssets = (bool)$this->getLibraryConfig('assets', true);
+        if ($useAssets === false) {
+            return [];
+        }
+
         $assets = $this->getJavascriptAssetsToLoad();
 
         // directly include when pageRenderer is given

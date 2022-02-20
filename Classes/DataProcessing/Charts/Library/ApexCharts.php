@@ -36,25 +36,22 @@ class ApexCharts extends AbstractColoredLibrary implements LibraryFlexformInterf
 
     protected function getStylesheetAssetsToLoad(): array
     {
-        // TODO: add option to define cdn url
-        return [
-            'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.css' => [
-                'noConcat' => true,
-            ],
-        ];
+        return [];
     }
 
     protected function getJavascriptAssetsToLoad(): array
     {
-        // TODO: add option to define cdn url
-        // TODO: add option if library assets should be loaded
-        return [
-            'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.js' => [
-                'noConcat' => true,
+        $cdnUrl = (string)$this->getLibraryConfig(
+            'javascript',
+            'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.js'
+        );
+        return array_filter(
+            [
+                $cdnUrl => ['noConcat' => true],
+                'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js' => ['compress' => true],
             ],
-            'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js' => [
-                'compress' => true,
-            ],
-        ];
+            static fn($key) => empty($key) === false,
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
