@@ -11,14 +11,16 @@ abstract class ChartData extends AbstractEntity
     public const TYPE_SPREADSHEET = 1;
 
     protected string $title = '';
-
     protected int $type = self::TYPE_PLAIN;
 
     protected string $labels = '';
-
     protected string $datasets = '';
-
     protected string $datasetsLabels = '';
+
+    // TODO: update these fallback properties when TYPO3 supports array types in data mapper
+    // see TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::thawProperties
+    protected string $databaseBackground = '';
+    protected string $databaseBorder = '';
 
     public function getTitle(): string
     {
@@ -74,6 +76,26 @@ abstract class ChartData extends AbstractEntity
     public function setDatasetsLabels(string $datasetsLabels): void
     {
         $this->datasetsLabels = $datasetsLabels;
+    }
+
+    public function getBackgroundColors(): array
+    {
+        return array_filter(explode('|', $this->databaseBackground) ?: []);
+    }
+
+    public function setBackgroundColors(array $backgroundColors): void
+    {
+        $this->databaseBackground = implode('|', array_map('trim', $backgroundColors));
+    }
+
+    public function getBorderColors(): array
+    {
+        return array_filter(explode('|', $this->databaseBorder) ?: []);
+    }
+
+    public function setBorderColors(array $borderColors): void
+    {
+        $this->databaseBorder = implode('|', array_map('trim', $borderColors));
     }
 
     protected function getAllowedTypes(): array

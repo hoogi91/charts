@@ -3,7 +3,6 @@
 namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\Domain\Model\ChartData;
-use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 
 abstract class AbstractColoredLibrary extends AbstractLibrary
 {
@@ -12,44 +11,40 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
     {
         $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);
         return array_map(
-            fn($key) => [
-                    'background' => $this->getBackgroundColors($chartEntity, $key, count($datasets[$key])),
-                    'border' => $this->getBorderColors($chartEntity, $key, count($datasets[$key])),
-                ] + $processedDatasets[$key],
+            static function (int $key) use ($chartEntity, $datasets, $processedDatasets) {
+                $paletteSize = count($datasets[$key]);
+                $backgroundColors = self::getColorListByPalette(
+                    $chartEntity->getBackgroundColors($key),
+                    $paletteSize,
+                );
+                $borderColors = self::getColorListByPalette(
+                    $chartEntity->getBorderColors($key),
+                    $paletteSize,
+                    'rgba(0, 0, 0, 0.3)'
+                );
+
+                return ['background' => $backgroundColors, 'border' => $borderColors] + $processedDatasets[$key];
+            },
             array_keys($datasets)
         );
     }
 
-    private function getBackgroundColors(ChartData $chartEntity, int $dataKey, int $count = 1): array
-    {
-        $colors = $chartEntity instanceof ChartDataSpreadsheet
-            ? $chartEntity->getBackgroundColors($dataKey)
-            // TODO: implement palette
-            //$chartEntity->getColorCollection()->getBackgroundPalette(),
-            : [];
-
-        return self::getColorListByPalette($colors, $count);
-    }
-
-    private function getBorderColors(ChartData $chartEntity, int $dataKey, int $count = 1): array
-    {
-        $colors = $chartEntity instanceof ChartDataSpreadsheet
-            ? $chartEntity->getBorderColors($dataKey)
-            // TODO: implement palette
-            //$chartEntity->getColorCollection()->getBorderPalette(),
-            : [];
-
-        return self::getColorListByPalette($colors, $count);
-    }
-
-    protected static function getColorListByPalette(array $colorPalette, int $count = 1): array
-    {
-        $paletteSize = count($colorPalette);
-        for ($i = 0; $i < $count; $i++) {
-            $paletteIndex = ($paletteSize !== 0 && $i >= $paletteSize) ? ($i % $paletteSize) : $i;
-            $colors[] = $colorPalette[$paletteIndex] ?? 'rgba(0, 0, 0, 0.1)';
+    protected static function getColorListByPalette(
+        array $colorPalette,
+        int $size = 1,
+        ?string $defaultColor = 'rgba(0, 0, 0, 0.1)'
+    ): array {
+        // return single color if palette does not define at least two colors
+        if (count($colorPalette) < 2) {
+            return array_filter($colorPalette ?: [$defaultColor]);
         }
 
-        return $colors ?? [];
+        $paletteSize = count($colorPalette);
+        for ($i = 0; $i < $size; $i++) {
+            $paletteIndex = ($paletteSize !== 0 && $i >= $paletteSize) ? ($i % $paletteSize) : $i;
+            $colors[] = $colorPalette[$paletteIndex] ?? $defaultColor;
+        }
+
+        return array_filter($colors ?? []);
     }
 }

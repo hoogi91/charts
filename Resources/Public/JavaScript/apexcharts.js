@@ -81,9 +81,11 @@ Hoogi91.Charts = {
             series: _this.createDatasets(datasets, function (set) {
                 var dataset = _this.createDatasets(set['data'], function (value, index) {
                     var dataRow = {x: labels[index] || '', y: value};
-                    if (datasets.length === 1) {
-                        dataRow['fillColor'] = set['background'][index] || '';
-                        dataRow['strokeColor'] = set['border'][index] || '';
+                    if (datasets.length === 1 && set['background'].length > 1) {
+                        dataRow['fillColor'] = set['background'][index] || null;
+                    }
+                    if (datasets.length === 1 && set['border'].length > 1) {
+                        dataRow['strokeColor'] = set['border'][index] || null;
                     }
                     return dataRow;
                 });
@@ -91,6 +93,9 @@ Hoogi91.Charts = {
             }),
             labels: labels,
             colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
+            fill: {
+                colors: datasets[0]['background'] || datasets[0]['border'] || undefined,
+            },
             dataLabels: {enabled: false},
             stroke: {width: 1},
             plotOptions: {
@@ -131,7 +136,7 @@ Hoogi91.Charts = {
             labels: labels,
             colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
             fill: {
-                colors: datasets[0]['border'] || datasets[0]['background'] || undefined,
+                colors: datasets[0]['background'] || datasets[0]['border'] || undefined,
             },
             dataLabels: {enabled: false},
             stroke: {

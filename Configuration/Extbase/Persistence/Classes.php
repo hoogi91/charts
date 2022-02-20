@@ -11,7 +11,17 @@ return [
         'subclasses' => [
             ChartDataPlain::class,
             ChartDataSpreadsheet::class,
-        ]
+        ],
+        'properties' => [
+            // TODO: update these fallback properties when TYPO3 supports array types in data mapper
+            // see TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::thawProperties
+            'databaseBackground' => [
+                'fieldName' => 'background_colors'
+            ],
+            'databaseBorder' => [
+                'fieldName' => 'border_colors'
+            ],
+        ],
     ],
     ChartDataPlain::class => [
         'tableName' => 'tx_charts_domain_model_chartdata',

@@ -290,7 +290,7 @@ Hoogi91.Charts = {
         if (axisLabel.length > 0) {
             return {
                 display: true,
-                labelString: axisLabel,
+                text: axisLabel,
             };
         }
         return {};

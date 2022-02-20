@@ -67,7 +67,7 @@ class ChartDataSpreadsheet extends ChartData
         return $spreadsheetData;
     }
 
-    public function getBackgroundColors(int $dataKey, string $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
+    public function getBackgroundColors(int $dataKey = 0): array
     {
         try {
             $datasetExtraction = $this->extractByDSN($this->datasets);
@@ -80,12 +80,12 @@ class ChartDataSpreadsheet extends ChartData
         $spreadsheetData = array_shift($spreadsheetData);
         array_walk_recursive(
             $spreadsheetData,
-            static function (&$item) use ($spreadsheet, $defaultColor) {
+            static function (&$item) use ($spreadsheet) {
                 $style = $spreadsheet !== null && $item instanceof CellDataValueObject
                     ? $spreadsheet->getCellXfByIndex($item->getStyleIndex())
                     : null;
                 if ($style === null || $style->getFill()->getFillType() === CellBackground::FILL_NONE) {
-                    $item = $defaultColor;
+                    $item = null;
                     return;
                 }
 
@@ -104,12 +104,12 @@ class ChartDataSpreadsheet extends ChartData
 
         // check if background colors have been found or only default color has been set
         $uniqueBackgroundColors = array_values(array_unique($spreadsheetData));
-        return count($uniqueBackgroundColors) > 1 || $uniqueBackgroundColors[0] !== $defaultColor
-            ? array_values($spreadsheetData)
-            : [];
+        return count($uniqueBackgroundColors) > 1 || isset($uniqueBackgroundColors[0])
+            ? array_values(array_filter($spreadsheetData))
+            : parent::getBackgroundColors();
     }
 
-    public function getBorderColors(int $dataKey, string $defaultColor = 'rgba(0, 0, 0, 0.1)'): array
+    public function getBorderColors(int $dataKey = 0): array
     {
         try {
             $datasetExtraction = $this->extractByDSN($this->datasets);
@@ -122,12 +122,12 @@ class ChartDataSpreadsheet extends ChartData
         $spreadsheetData = array_shift($spreadsheetData);
         array_walk_recursive(
             $spreadsheetData,
-            static function (&$item) use ($spreadsheet, $defaultColor) {
+            static function (&$item) use ($spreadsheet) {
                 $style = $spreadsheet !== null && $item instanceof CellDataValueObject
                     ? $spreadsheet->getCellXfByIndex($item->getStyleIndex())
                     : null;
                 if ($style === null) {
-                    $item = $defaultColor;
+                    $item = null;
                     return;
                 }
 
@@ -149,8 +149,7 @@ class ChartDataSpreadsheet extends ChartData
                     )
                 );
                 if (empty($borders)) {
-                    // return default if no valid borders are given
-                    $item = $defaultColor;
+                    $item = null;
                     return;
                 }
 
@@ -173,9 +172,9 @@ class ChartDataSpreadsheet extends ChartData
 
         // check if border colors have been found or only default color has been set
         $uniqueBorderColors = array_values(array_unique($spreadsheetData));
-        return count($uniqueBorderColors) > 1 || $uniqueBorderColors[0] !== $defaultColor
-            ? array_values($spreadsheetData)
-            : [];
+        return count($uniqueBorderColors) > 1 || isset($uniqueBorderColors[0])
+            ? array_values(array_filter($spreadsheetData))
+            : parent::getBorderColors();
     }
 
     /**
