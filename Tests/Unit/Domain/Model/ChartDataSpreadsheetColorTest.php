@@ -74,8 +74,8 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
                     [Style\Fill::FILL_NONE => null], // will be filled with default color
                     [Style\Fill::FILL_PATTERN_LIGHTDOWN => Style\Color::COLOR_DARKGREEN],
                 ],
-                'expectedCount' => 3,
-                'expectedColors' => ['rgb(0, 0, 255)', 'rgba(0, 0, 0, 0.1)', 'rgb(0, 128, 0)'],
+                'expectedCount' => 2,
+                'expectedColors' => ['rgb(0, 0, 255)', 'rgb(0, 128, 0)'],
             ],
             'with background gradient' => [
                 'consecutiveBackground' => [
