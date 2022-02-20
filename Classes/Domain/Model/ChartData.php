@@ -80,7 +80,7 @@ abstract class ChartData extends AbstractEntity
 
     public function getBackgroundColors(): array
     {
-        return array_filter(explode('|', $this->databaseBackground) ?: []);
+        return array_values(array_filter(explode('|', $this->databaseBackground) ?: []));
     }
 
     public function setBackgroundColors(array $backgroundColors): void
@@ -90,7 +90,7 @@ abstract class ChartData extends AbstractEntity
 
     public function getBorderColors(): array
     {
-        return array_filter(explode('|', $this->databaseBorder) ?: []);
+        return array_values(array_filter(explode('|', $this->databaseBorder) ?: []));
     }
 
     public function setBorderColors(array $borderColors): void

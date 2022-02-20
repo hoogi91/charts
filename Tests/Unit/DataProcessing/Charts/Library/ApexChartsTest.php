@@ -32,7 +32,12 @@ class ApexChartsTest extends UnitTestCase
                 ['Data 1-1', 'Data 1-2', 'Data 1-3'],
                 ['Data 2-1', 'Data 2-2', 'Data 2-3'],
                 ['Data 3-1', 'Data 3-2', 'Data 3-3'],
-            ]
+            ],
+            'getBorderColors' => [
+                'rgb(0, 0, 255)',
+                'rgb(0, 255, 255)',
+                'rgb(255, 255, 0)',
+            ],
         ];
 
         return [

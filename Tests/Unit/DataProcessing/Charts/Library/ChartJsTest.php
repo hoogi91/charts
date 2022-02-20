@@ -32,7 +32,12 @@ class ChartJsTest extends UnitTestCase
                 ['Data 1-1', 'Data 1-2', 'Data 1-3'],
                 ['Data 2-1', 'Data 2-2', 'Data 2-3'],
                 ['Data 3-1', 'Data 3-2', 'Data 3-3'],
-            ]
+            ],
+            'getBackgroundColors' => [
+                'rgb(255, 0, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 0, 255)',
+            ],
         ];
 
         return [
