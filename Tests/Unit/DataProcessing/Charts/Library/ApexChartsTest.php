@@ -5,6 +5,7 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+use Hoogi91\Charts\Tests\Unit\ExtConfigTrait;
 use Hoogi91\Charts\Tests\Unit\JavascriptCompareTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -13,6 +14,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class ApexChartsTest extends UnitTestCase
 {
 
+    use ExtConfigTrait;
     use JavascriptCompareTrait;
 
     private ApexCharts $library;
@@ -20,7 +22,7 @@ class ApexChartsTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ApexCharts();
+        $this->library = new ApexCharts($this->getExtensionConfig('apexcharts_js'));
     }
 
     public function chartDataProvider(): array
@@ -61,9 +63,9 @@ class ApexChartsTest extends UnitTestCase
     public function testStylesheetAssetBuilding(): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
-        $pageRenderer->expects(self::atLeastOnce())->method('addCssLibrary');
+        $pageRenderer->expects(self::never())->method('addCssLibrary');
 
-        $this->assertCount(1, $this->library->getStylesheetAssets('bar', $pageRenderer));
+        $this->assertEmpty($this->library->getStylesheetAssets('bar', $pageRenderer));
     }
 
     public function testJavascriptAssetBuilding(): void

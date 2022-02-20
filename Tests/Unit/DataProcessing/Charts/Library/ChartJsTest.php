@@ -5,6 +5,7 @@ namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+use Hoogi91\Charts\Tests\Unit\ExtConfigTrait;
 use Hoogi91\Charts\Tests\Unit\JavascriptCompareTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -13,6 +14,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class ChartJsTest extends UnitTestCase
 {
 
+    use ExtConfigTrait;
     use JavascriptCompareTrait;
 
     private ChartJs $library;
@@ -20,7 +22,7 @@ class ChartJsTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ChartJs();
+        $this->library = new ChartJs($this->getExtensionConfig('chart_js'));
     }
 
     public function chartDataProvider(): array

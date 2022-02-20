@@ -7,18 +7,22 @@ use Hoogi91\Charts\Domain\Model\ChartData;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractLibrary implements LibraryInterface
 {
 
+    private ExtensionConfiguration $extensionConfiguration;
+
+    public function __construct(ExtensionConfiguration $extensionConfiguration)
+    {
+        $this->extensionConfiguration = $extensionConfiguration;
+    }
+
     protected function getLibraryConfig(string $path, $default = null)
     {
         try {
-            return GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(
-                'charts',
-                str_replace('.', '_', static::getServiceIndex()) . '_' . $path
-            );
+            $path = str_replace('.', '_', static::getServiceIndex()) . '_' . $path;
+            return $this->extensionConfiguration->get('charts', $path);
         } catch (Exception $exception) {
             return $default;
         }

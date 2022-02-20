@@ -6,6 +6,7 @@ use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class LibraryRegistryTest extends UnitTestCase
@@ -16,11 +17,12 @@ class LibraryRegistryTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $extConf = $this->createMock(ExtensionConfiguration::class);
         $this->registry = new LibraryRegistry(
             new ServiceLocator(
                 [
-                    ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs(),
-                    ApexCharts::getServiceIndex() => static fn(): ApexCharts => new ApexCharts(),
+                    ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs($extConf),
+                    ApexCharts::getServiceIndex() => static fn(): ApexCharts => new ApexCharts($extConf),
                 ]
             )
         );

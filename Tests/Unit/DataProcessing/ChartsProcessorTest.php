@@ -9,6 +9,7 @@ use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\DataProcessing\ChartsProcessor;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Repository\ChartDataRepository;
+use Hoogi91\Charts\Tests\Unit\ExtConfigTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Page\PageRenderer;
@@ -17,6 +18,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartsProcessorTest extends UnitTestCase
 {
+    use ExtConfigTrait;
 
     /**
      * @dataProvider chartDataProvider
@@ -32,7 +34,10 @@ class ChartsProcessorTest extends UnitTestCase
             $this->createConfiguredMock(PageRenderer::class, []),
             $this->createConfiguredMock(ChartDataRepository::class, ['findByUid' => $chartEntity]),
             $this->createConfiguredMock(ExtensionConfiguration::class, []),
-            $this->createConfiguredMock(LibraryRegistry::class, ['getLibrary' => $library ?? new ChartJs()]),
+            $this->createConfiguredMock(
+                LibraryRegistry::class,
+                ['getLibrary' => $library ?? new ChartJs($this->getExtensionConfig('chart_js'))]
+            ),
         );
         $result = $unit->process(new ContentObjectRenderer(), [], $processorConfig, $processedData);
 
@@ -99,15 +104,11 @@ class ChartsProcessorTest extends UnitTestCase
                     'data' => ['CType' => 'chart_bar'],
                     'chart' => array_merge_recursive(
                         $expectedResult($chartEntity, 'chart_bar', ApexCharts::TECHNICAL_NAME),
+                        $expectedCss([]),
                         $expectedJs(
                             [
-                                'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.js',
+                                'https://cdn.example.com/apexcharts_js.js',
                                 'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js',
-                            ]
-                        ),
-                        $expectedCss(
-                            [
-                                'https://cdn.jsdelivr.net/npm/apexcharts@3/dist/apexcharts.min.css',
                             ]
                         ),
                     ),
@@ -120,7 +121,7 @@ class ChartsProcessorTest extends UnitTestCase
                     'data' => ['CType' => 'chart_bar'],
                 ],
                 'chartEntity' => $chartEntity,
-                'chartLibrary' => new ApexCharts()
+                'chartLibrary' => new ApexCharts($this->getExtensionConfig('apexcharts_js'))
             ],
         ];
     }

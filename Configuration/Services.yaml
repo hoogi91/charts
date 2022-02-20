@@ -6,6 +6,7 @@ services:
 
   _instanceof:
     Hoogi91\Charts\DataProcessing\Charts\LibraryInterface:
+      public: true
       tags: [ 'charts.libraries' ]
 
   Hoogi91\Charts\:
