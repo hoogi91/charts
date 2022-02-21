@@ -115,10 +115,11 @@ abstract class AbstractLibrary implements LibraryInterface
         $datasets = $this->buildEntityDatasetsForJavascript($datasets, $chartEntity);
 
         // create standardized initialization and dataset/labels code
-        $initCode = 'var Hoogi91 = Hoogi91 || {}; Hoogi91.chartsData = {};';
+        $initCode = "document.addEventListener('DOMContentLoaded', () => window['Hoogi91.Charts'].init());";
+        $initCode .= "window['Hoogi91.chartsData'] = {};";
         $codeIdentifier = sprintf('chartsData%d', $chartEntity->getUid());
         $code = vsprintf(
-            "Hoogi91.chartsData['%s'] = {labels: %s, datasets: %s};",
+            "window['Hoogi91.chartsData']['%s'] = {labels: %s, datasets: %s};",
             [
                 $codeIdentifier,
                 json_encode($labels, JSON_THROW_ON_ERROR),

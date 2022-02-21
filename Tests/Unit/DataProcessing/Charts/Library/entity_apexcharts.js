@@ -1,6 +1,6 @@
-var Hoogi91 = Hoogi91 || {};
-Hoogi91.chartsData = {};
-Hoogi91.chartsData['chartsData123456'] = {
+document.addEventListener('DOMContentLoaded', () => window['Hoogi91.Charts'].init());
+window['Hoogi91.chartsData'] = {};
+window['Hoogi91.chartsData']['chartsData123456'] = {
     labels: ["Label 1", "Label 2", "Label 3"],
     datasets: [
         {

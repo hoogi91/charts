@@ -1,8 +1,9 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
-module.exports = (env, argv) => ({
+const config = {
     optimization: {
+        minimize: true,
         minimizer: [
             new TerserPlugin({
                 parallel: true,
@@ -14,9 +15,6 @@ module.exports = (env, argv) => ({
                 extractComments: false,
             }),
         ],
-    },
-    entry: {
-        "ColorPaletteInputElement": path.join(__dirname, "/Resources/Private/Assets/JavaScript/main.js"),
     },
     module: {
         rules: [
@@ -34,14 +32,38 @@ module.exports = (env, argv) => ({
             },
         ]
     },
-    output: {
-        filename: "[name].js",
-        libraryTarget: "amd",
-        path: path.join(__dirname, "/Resources/Public/JavaScript"),
-        publicPath: argv.mode !== "production" ? "/" : "../dist/"
-    },
-    externals: {
-        "DocumentService": "TYPO3/CMS/Core/DocumentService",
-        "Modal": "TYPO3/CMS/Backend/Modal",
-    }
-});
+};
+
+module.exports = [
+    Object.assign({}, config, {
+        name: "ColorPaletteInputElement",
+        entry: path.join(__dirname, "/Resources/Private/Assets/JavaScript/main.js"),
+        output: {
+            filename: "ColorPaletteInputElement.js",
+            library: {type: 'amd-require'},
+            path: path.join(__dirname, "/Resources/Public/JavaScript"),
+            publicPath: "/",
+        },
+        externals: {
+            "DocumentService": "TYPO3/CMS/Core/DocumentService",
+            "Modal": "TYPO3/CMS/Backend/Modal",
+        },
+    }),
+
+    Object.assign({}, config, {
+        entry: {
+            apexcharts: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/apexcharts.js"),
+            chartjs: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/chartjs.js"),
+        },
+        output: {
+            filename: "[name].js",
+            library: {
+                name: 'Hoogi91.Charts',
+                type: 'window',
+                export: 'default',
+            },
+            path: path.join(__dirname, "/Resources/Public/JavaScript"),
+            publicPath: "/",
+        },
+    })
+];

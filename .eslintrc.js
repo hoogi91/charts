@@ -18,5 +18,9 @@ module.exports = {
         "no-unused-vars": [1, {"vars": "all", "args": "after-used", "ignoreRestSiblings": false}],
         "indent": [2, 4],
         "semi": [2, "always"],
+    },
+    globals: {
+        "ApexCharts": "readonly",
+        "Chart": "readonly",
     }
 };
