@@ -34,7 +34,8 @@ class ColorPaletteInputElement extends AbstractFormElement
         $resultArray = $this->initializeResultArray();
         $inputName = (string)($this->data['parameterArray']['itemFormElName'] ?? '');
         if (empty($inputName) === true) {
-            $resultArray['html'] = '<div class="alert alert-danger">Input form name not set. Please inform administrator!</div>';
+            $resultArray['html'] = '<div class="alert alert-danger">';
+            $resultArray['html'] .= 'Input form name not set. Please inform administrator!</div>';
             return $resultArray;
         }
 
@@ -48,6 +49,7 @@ class ColorPaletteInputElement extends AbstractFormElement
             'LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf:color_palette.newButton'
         );
 
+        // phpcs:disable Generic.Files.LineLength
         $resultArray['requireJsModules'] = ['TYPO3/CMS/Charts/ColorPaletteInputElement'];
         $resultArray['html'] = <<<HTML
 <div class="formengine-field-item t3js-formengine-field-item">
@@ -70,6 +72,7 @@ class ColorPaletteInputElement extends AbstractFormElement
     </div>
 </div>
 HTML;
+        // phpcs:enable
 
         return $resultArray;
     }

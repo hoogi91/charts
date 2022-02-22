@@ -3,6 +3,7 @@
 namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\Domain\Model\ChartData;
+use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 
 abstract class AbstractColoredLibrary extends AbstractLibrary
 {
@@ -12,16 +13,17 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
         $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);
         return array_map(
             static function (int $key) use ($chartEntity, $datasets, $processedDatasets) {
+                $backgroundColors = $chartEntity instanceof ChartDataSpreadsheet
+                    ? $chartEntity->getBackgroundColors($key)
+                    : $chartEntity->getBackgroundColors();
+
+                $borderColors = $chartEntity instanceof ChartDataSpreadsheet
+                    ? $chartEntity->getBorderColors($key)
+                    : $chartEntity->getBorderColors();
+
                 $paletteSize = count($datasets[$key]);
-                $backgroundColors = self::getColorListByPalette(
-                    $chartEntity->getBackgroundColors($key),
-                    $paletteSize,
-                );
-                $borderColors = self::getColorListByPalette(
-                    $chartEntity->getBorderColors($key),
-                    $paletteSize,
-                    'rgba(0, 0, 0, 0.3)'
-                );
+                $backgroundColors = self::getColorListByPalette($backgroundColors, $paletteSize);
+                $borderColors = self::getColorListByPalette($borderColors, $paletteSize, 'rgba(0, 0, 0, 0.3)');
 
                 return ['background' => $backgroundColors, 'border' => $borderColors] + $processedDatasets[$key];
             },

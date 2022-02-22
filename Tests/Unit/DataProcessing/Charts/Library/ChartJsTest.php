@@ -8,6 +8,9 @@ use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 use Hoogi91\Charts\Tests\Unit\ExtConfigTrait;
 use Hoogi91\Charts\Tests\Unit\JavascriptCompareTrait;
 use PHPUnit\Framework\MockObject\MockObject;
+use Traversable;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -139,6 +142,67 @@ class ChartJsTest extends UnitTestCase
                 'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
                 'getDatasets' => []
             ],
+        ];
+    }
+
+    public function testDisableUseOfAssets(): void
+    {
+        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn(false);
+
+        $library = $this->getAccessibleMock(
+            ChartJs::class,
+            ['getStylesheetAssetsToLoad', 'getJavascriptAssetsToLoad'],
+            ['extensionConfiguration' => $extConf]
+        );
+        $library->expects(self::never())->method('getStylesheetAssetsToLoad');
+        $library->expects(self::never())->method('getJavascriptAssetsToLoad');
+
+        self::assertEmpty($library->getStylesheetAssets('chart-type'));
+        self::assertEmpty($library->getJavascriptAssets('chart-type'));
+    }
+
+    /**
+     * @dataProvider renderingDataProvider
+     * @param MockObject|ExtensionConfiguration $extConf
+     * @param MockObject|PageRenderer|null $pageRenderer
+     * @return void
+     */
+    public function testAssetRendering(MockObject $extConf, ?MockObject $pageRenderer): void
+    {
+        $library = $this->getAccessibleMock(
+            ChartJs::class,
+            ['getStylesheetAssetsToLoad', 'getJavascriptAssetsToLoad'],
+            ['extensionConfiguration' => $extConf]
+        );
+        $library->expects(self::once())->method('getStylesheetAssetsToLoad')->willReturn(
+            ['folder/chart.css' => ['compress' => true]],
+        );
+        self::assertSame(['folder/chart.css'], $library->getStylesheetAssets('chart-type', $pageRenderer));
+
+        $library->expects(self::once())->method('getJavascriptAssetsToLoad')->willReturn(
+            ['folder/chart.js' => ['compress' => true]],
+        );
+        self::assertSame(['folder/chart.js'], $library->getJavascriptAssets('chart-type', $pageRenderer));
+    }
+
+    public function renderingDataProvider(): Traversable
+    {
+        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $extConf->method('get')->willThrowException(new ExtensionConfigurationPathDoesNotExistException());
+        yield 'exception is caught and assets are returned' => [
+            'extConf' => $extConf,
+            'pageRenderer' => null,
+        ];
+
+        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn(true);
+        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer->expects(self::once())->method('addCssLibrary');
+        $pageRenderer->expects(self::once())->method('addJsFooterLibrary');
+        yield 'page renderer is called and assets are returned' => [
+            'extConf' => $extConf,
+            'pageRenderer' => $pageRenderer,
         ];
     }
 }
