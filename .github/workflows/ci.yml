@@ -33,7 +33,7 @@ jobs:
             typo3_version: '^10.4'
             experimental: false
           - php_version: '8.1'
-            typo3_version: 'dev-master'
+            typo3_version: 'dev-main'
             experimental: true
 
     services:
