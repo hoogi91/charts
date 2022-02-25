@@ -7,7 +7,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
 {
 
-    /** @var string */
     protected $tagName = 'a';
 
     public function initializeArguments(): void

@@ -9,17 +9,6 @@ use PHPUnit\Framework\Constraint\IsEqual;
 
 trait JavascriptCompareTrait
 {
-    private string $tempReplaceCharacter = '';
-
-    private array $replacements = [
-        '[' => "\n[\n",
-        ']' => "\n]\n",
-        '{' => "\n{\n",
-        '}' => "\n}\n",
-        ';' => "\n;\n",
-        ',' => "\n,\n",
-//        "\n;\n" => ";",
-    ];
 
     public function assertStringEqualsJavascriptFile(
         string $expectedFile,

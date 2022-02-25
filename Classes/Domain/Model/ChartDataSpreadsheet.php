@@ -11,10 +11,6 @@ use PhpOffice\PhpSpreadsheet\Style\Border as CellBorder;
 use PhpOffice\PhpSpreadsheet\Style\Color as CellColor;
 use PhpOffice\PhpSpreadsheet\Style\Fill as CellBackground;
 
-/**
- * Class ChartDataSpreadsheet
- * @package Hoogi91\Charts\Domain\Model
- */
 class ChartDataSpreadsheet extends ChartData
 {
 

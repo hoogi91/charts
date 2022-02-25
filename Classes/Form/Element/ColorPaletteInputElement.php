@@ -6,29 +6,16 @@ namespace Hoogi91\Charts\Form\Element;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 
-/**
- * Class ColorPaletteInputElement
- * @package Hoogi91\Charts\Form\Element
- */
 class ColorPaletteInputElement extends AbstractFormElement
 {
 
-    /**
-     * Default field information enabled for this element.
-     *
-     * @var array
-     */
+    /** @var array */
     protected $defaultFieldInformation = [
         'tcaDescription' => [
             'renderType' => 'tcaDescription',
         ],
     ];
 
-    /**
-     * Renders input field to select multiple colors with picker to create a palette
-     *
-     * @return array
-     */
     public function render(): array
     {
         $resultArray = $this->initializeResultArray();
