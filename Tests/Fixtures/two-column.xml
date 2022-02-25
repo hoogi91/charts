@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3TableWizard>
+    <numIndex index="2" type="array">
+        <numIndex index="2">Field1</numIndex>
+        <numIndex index="4">Field2</numIndex>
+    </numIndex>
+</T3TableWizard>

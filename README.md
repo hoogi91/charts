@@ -38,10 +38,11 @@ Download and install the [extension][3] with the extension manager module.
 
 ### Versions and support
 
-| Charts       | TYPO3       | PHP       | Support / Development                     |
-| ------------ | ----------- | ----------|------------------------------------------ |
-| dev-master   | 8.7 - 10.4  | 7.0 - 7.4 | unstable development branch, new features |
-| 1.x          | 8.7 - 10.4  | 7.0 - 7.4 | bugfixes, security updates                |
+| Charts       | TYPO3       | PHP       | Support / Development                   |
+| ------------ | ----------- |-----------|---------------------------------------- |
+| dev-master   | 10.4 - 11.5 | 8.1       | unstable development branch             |
+| 2.x          | 10.4 - 11.5 | 7.4 - 8.1 | features, bugfixes, security updates    |
+| 1.x          | 8.7 - 10.4  | 7.0 - 7.4 | none                                    |
 
 ### Release Management
 

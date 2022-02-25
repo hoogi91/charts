@@ -4,21 +4,11 @@ namespace Hoogi91\Charts\ViewHelpers\Backend;
 
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-/**
- * Class AbstractLinkViewHelper
- * @package Hoogi91\Charts\ViewHelpers\Backend
- */
 abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
 {
 
-    /**
-     * @var string
-     */
     protected $tagName = 'a';
 
-    /**
-     * Initializes the arguments
-     */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
@@ -27,9 +17,6 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
         $this->registerTagAttribute('recordTable', 'string', 'string of the table record', true);
     }
 
-    /**
-     * @return string
-     */
     public function render(): string
     {
         $classes = trim($this->arguments['class']);
@@ -41,10 +28,5 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
         return $this->tag->render();
     }
 
-    /**
-     * @param array $arguments
-     *
-     * @return string
-     */
     abstract protected function renderModuleUrl(array $arguments = []): string;
 }

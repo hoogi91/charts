@@ -29,6 +29,15 @@
 				<target>Donut-Diagramm</target>
 			</trans-unit>
 
+             <trans-unit id="color_palette.empty">
+                <source>Create new Palette</source>
+                <target>neue Farbpalette erstellen</target>
+             </trans-unit>
+             <trans-unit id="color_palette.newButton">
+                <source>Start</source>
+                <target>Starten</target>
+             </trans-unit>
+
 			<trans-unit id="tx_charts_domain_model_chartdata" xml:space="preserve">
 				<source>Chart Dataset</source>
 				<target>Diagrammdaten</target>
@@ -40,10 +49,6 @@
 			<trans-unit id="tx_charts_domain_model_chartdata.type" xml:space="preserve">
 				<source>Spreadsheet based?</source>
 				<target>basierend auf Kalkulationstabellen?</target>
-			</trans-unit>
-			<trans-unit id="tx_charts_domain_model_chartdata.alignment" xml:space="preserve">
-				<source>Is Data vertical aligned?</source>
-				<target>Sind die Daten vertikal angeordnet?</target>
 			</trans-unit>
 			<trans-unit id="tx_charts_domain_model_chartdata.type.activate" xml:space="preserve">
 				<source>Activate</source>
@@ -77,6 +82,26 @@
 				<source>Spreadsheet Assets</source>
 				<target>Kalkulationstabellen</target>
 			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.tab_colors" xml:space="preserve">
+				<source>Colors</source>
+				<target>Farben</target>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.background_colors" xml:space="preserve">
+				<source>Background Colors</source>
+				<target>Hintergrundfarben</target>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.background_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell backgrounds if available</source>
+                <target>Standardmäßig werden die Hintergrundfarben aus der Kalkulationstabelle genutzt sofern diese Farbpalette leer ist</target>
+             </trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.border_colors" xml:space="preserve">
+				<source>Border Colors</source>
+				<target>Randfarben</target>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.border_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell border colors if available</source>
+                <target>Standardmäßig werden die Randfarben aus der Kalkulationstabelle genutzt sofern diese Farbpalette leer ist</target>
+             </trans-unit>
         </body>
     </file>
 </xliff>

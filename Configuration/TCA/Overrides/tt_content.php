@@ -1,11 +1,15 @@
 <?php
+defined('TYPO3') or die();
 
-defined('TYPO3_MODE') or die();
+(static function (string $extKey) {
+    $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    );
+    $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class
+    );
 
-(static function ($extConfig = [], $extKey = 'charts') {
     $ll = sprintf('LLL:EXT:%s/Resources/Private/Language/locallang_db.xlf:', $extKey);
-
-    // add new columns to tt_content to filter contacts from tt_address
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
         'tt_content',
         [
@@ -28,35 +32,20 @@ defined('TYPO3_MODE') or die();
 
     // IMPORTANT! add this before type configuration so it's possible to check if pi_flexform field is needed
     // get current chart library and add flexform data structures if library supports them
-    if (is_array($extConfig)) {
-        /** @var \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry $libraryRegistry */
-        $libraryRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry::class
-        );
-        $chartLibrary = $libraryRegistry->getLibrary($extConfig['library']);
-
-        // add all data structures of library to tt_content TCA
-        if ($chartLibrary instanceof \Hoogi91\Charts\DataProcessing\Charts\LibraryFlexformInterface) {
-            foreach ($chartLibrary->getDataStructures() as $type => $structure) {
-                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('*', $structure, $type);
-            }
+    $chartLibrary = $libraryRegistry->getLibrary((string)$extConf->get($extKey, 'library'));
+    if ($chartLibrary instanceof \Hoogi91\Charts\DataProcessing\Charts\LibraryFlexformInterface) {
+        foreach ($chartLibrary->getDataStructures() as $type => $structure) {
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue('*', $structure, $type);
         }
     }
 
-    // add new CType items to render different chart types
-    \Hoogi91\Charts\Form\Types\Chart::addCTypeSelectItems();
-
-    // add new CType showitem configuration to existing type configuration
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_BAR);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_LINE);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_PIE);
-    \Hoogi91\Charts\Form\Types\Chart::addTypeConfiguration(\Hoogi91\Charts\Form\Types\Chart::TYPE_DOUGHNUT);
-
-    // register typoscript path of this extension
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extKey, 'Configuration/TypoScript/', $extKey);
-})(
-    $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['charts'] ?? unserialize(
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['charts'],
-        ['allowed_classes' => false]
-    )
-);
+    // configure all chart types in TCA
+    $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
+        sprintf('%s:tt_content.CType.div._charts_', \Hoogi91\Charts\Form\Types\ChartTypeInterface::LANGUAGE_FILE),
+        '--div--',
+    ];
+    \Hoogi91\Charts\Form\Types\BarChart::register();
+    \Hoogi91\Charts\Form\Types\LineChart::register();
+    \Hoogi91\Charts\Form\Types\PieChart::register();
+    \Hoogi91\Charts\Form\Types\DoughnutChart::register();
+})('charts');

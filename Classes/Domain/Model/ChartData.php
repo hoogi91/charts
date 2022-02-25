@@ -5,153 +5,110 @@ namespace Hoogi91\Charts\Domain\Model;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- * Class ChartData
- * @package Hoogi91\Charts\Domain\Model
- */
 abstract class ChartData extends AbstractEntity
 {
     public const TYPE_PLAIN = 0;
     public const TYPE_SPREADSHEET = 1;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title = '';
+    protected int $type = self::TYPE_PLAIN;
 
-    /**
-     * @var int
-     */
-    protected $type;
+    protected string $labels = '';
+    protected string $datasets = '';
+    protected string $datasetsLabels = '';
 
-    /**
-     * @var string
-     */
-    protected $labels;
+    // TODO: update these fallback properties when TYPO3 supports array types in data mapper
+    // see TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::thawProperties
+    protected string $databaseBackground = '';
+    protected string $databaseBorder = '';
 
-    /**
-     * @var string
-     */
-    protected $datasets;
-
-    /**
-     * @var string
-     */
-    protected $datasetsLabels;
-
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
-        if (!in_array($this->type, $this->getAllowedTypes(), true)) {
-            return static::TYPE_PLAIN;
-        }
-        return (int)$this->type;
+        return in_array($this->type, $this->getAllowedTypes(), true) ? $this->type : self::TYPE_PLAIN;
     }
 
-    /**
-     * @param int $type
-     */
-    public function setType($type = self::TYPE_PLAIN): void
+    public function setType(int $type = self::TYPE_PLAIN): void
     {
         if (in_array($type, $this->getAllowedTypes(), true)) {
             $this->type = $type;
         }
     }
 
-    /**
-     * @return array
-     */
     public function getLabels(): array
     {
         // only get first row of labels and ignore multiple column/row selections
         $labels = $this->extractLabelList($this->labels);
-        return array_shift($labels);
+        return array_shift($labels) ?? [];
     }
 
-    /**
-     * @param string $labels
-     */
-    public function setLabels($labels): void
+    public function setLabels(string $labels): void
     {
         $this->labels = $labels;
     }
 
-    /**
-     * @return array
-     */
     public function getDatasets(): array
     {
         return $this->extractDatasetList($this->datasets);
     }
 
-    /**
-     * @param string $datasets
-     */
-    public function setDatasets($datasets): void
+    public function setDatasets(string $datasets): void
     {
         $this->datasets = $datasets;
     }
 
-    /**
-     * @return array
-     */
     public function getDatasetsLabels(): array
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);
-        return array_shift($labels);
+        return array_shift($labels) ?? [];
     }
 
-    /**
-     * @param string $datasetsLabels
-     */
-    public function setDatasetsLabels($datasetsLabels): void
+    public function setDatasetsLabels(string $datasetsLabels): void
     {
         $this->datasetsLabels = $datasetsLabels;
     }
 
-    /**
-     * @return array
-     */
+    public function getBackgroundColors(): array
+    {
+        return array_values(array_filter(explode('|', $this->databaseBackground)));
+    }
+
+    public function setBackgroundColors(array $backgroundColors): void
+    {
+        $this->databaseBackground = implode('|', array_map('trim', $backgroundColors));
+    }
+
+    public function getBorderColors(): array
+    {
+        return array_values(array_filter(explode('|', $this->databaseBorder)));
+    }
+
+    public function setBorderColors(array $borderColors): void
+    {
+        $this->databaseBorder = implode('|', array_map('trim', $borderColors));
+    }
+
     protected function getAllowedTypes(): array
     {
-        $allowedTypes = [static::TYPE_PLAIN];
+        $allowedTypes = [self::TYPE_PLAIN];
         if (ExtensionManagementUtility::isLoaded('spreadsheets')) {
             // only allow spreadsheet type if required extension is loaded
-            $allowedTypes[] = static::TYPE_SPREADSHEET;
+            $allowedTypes[] = self::TYPE_SPREADSHEET;
         }
         return $allowedTypes;
     }
 
-    /**
-     * @param string $labelData
-     *
-     * @return array
-     */
-    abstract protected function extractLabelList($labelData): array;
+    abstract protected function extractLabelList(string $labelData): array;
 
-    /**
-     * @param string $datasetData
-     *
-     * @return array
-     */
-    abstract protected function extractDatasetList($datasetData): array;
+    abstract protected function extractDatasetList(string $datasetData): array;
 }

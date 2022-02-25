@@ -7,8 +7,8 @@ ansible/
 config/
 vendor/
 var/
+node_modules/
 Documentation-GENERATED*/
 composer.phar
-composer.lock
 Makefile
 Vagrantfile

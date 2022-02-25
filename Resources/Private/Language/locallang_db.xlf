@@ -22,6 +22,13 @@
 				<source>Doughnut Chart</source>
 			</trans-unit>
 
+             <trans-unit id="color_palette.empty">
+                <source>Create new Palette</source>
+             </trans-unit>
+             <trans-unit id="color_palette.newButton">
+                <source>Start</source>
+             </trans-unit>
+
 			<trans-unit id="tx_charts_domain_model_chartdata" xml:space="preserve">
 				<source>Chart Dataset</source>
 			</trans-unit>
@@ -30,9 +37,6 @@
 			</trans-unit>
 			<trans-unit id="tx_charts_domain_model_chartdata.type" xml:space="preserve">
 				<source>Spreadsheet based?</source>
-			</trans-unit>
-			<trans-unit id="tx_charts_domain_model_chartdata.alignment" xml:space="preserve">
-				<source>Is Data vertical aligned?</source>
 			</trans-unit>
 			<trans-unit id="tx_charts_domain_model_chartdata.type.activate" xml:space="preserve">
 				<source>Activate</source>
@@ -58,6 +62,21 @@
 			<trans-unit id="tx_charts_domain_model_chartdata.spreadsheet_assets" xml:space="preserve">
 				<source>Spreadsheet Assets</source>
 			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.tab_colors" xml:space="preserve">
+				<source>Colors</source>
+			</trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.background_colors" xml:space="preserve">
+				<source>Background Colors</source>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.background_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell backgrounds if available</source>
+             </trans-unit>
+			<trans-unit id="tx_charts_domain_model_chartdata.border_colors" xml:space="preserve">
+				<source>Border Colors</source>
+			</trans-unit>
+             <trans-unit id="tx_charts_domain_model_chartdata.border_colors.description">
+                <source>An empty color palette defaults to usage of spreadsheet cell border colors if available</source>
+             </trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,0 +1,10 @@
+.color-palette-modal {
+    position: relative;
+    width: calc(100% + 2rem);
+    height: calc(100% + 1rem);
+    margin: -1rem;
+}
+
+color-palette:not(:defined) {
+    display: none
+}

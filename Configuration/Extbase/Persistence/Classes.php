@@ -2,18 +2,32 @@
 
 declare(strict_types=1);
 
+use Hoogi91\Charts\Domain\Model\ChartData;
+use Hoogi91\Charts\Domain\Model\ChartDataPlain;
+use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
+
 return [
-    \Hoogi91\Charts\Domain\Model\ChartData::class => [
+    ChartData::class => [
         'subclasses' => [
-            \Hoogi91\Charts\Domain\Model\ChartDataPlain::class,
-            \Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet::class,
-        ]
+            ChartDataPlain::class,
+            ChartDataSpreadsheet::class,
+        ],
+        'properties' => [
+            // TODO: update these fallback properties when TYPO3 supports array types in data mapper
+            // see TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper::thawProperties
+            'databaseBackground' => [
+                'fieldName' => 'background_colors'
+            ],
+            'databaseBorder' => [
+                'fieldName' => 'border_colors'
+            ],
+        ],
     ],
-    \Hoogi91\Charts\Domain\Model\ChartDataPlain::class => [
+    ChartDataPlain::class => [
         'tableName' => 'tx_charts_domain_model_chartdata',
         'recordType' => 0,
     ],
-    \Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet::class => [
+    ChartDataSpreadsheet::class => [
         'tableName' => 'tx_charts_domain_model_chartdata',
         'recordType' => 1,
         'properties' => [
@@ -25,9 +39,6 @@ return [
             ],
             'datasetsLabels' => [
                 'fieldName' => 'spreadsheet_datasets_labels'
-            ],
-            'assets' => [
-                'fieldName' => 'spreadsheet_assets'
             ],
         ],
     ],

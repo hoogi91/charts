@@ -1,134 +1,61 @@
 <?php
 
-namespace Hoogi91\Charts\Tests\DataProcessing\Charts;
+namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts;
 
-use Hoogi91\Charts\ChartException;
-use Hoogi91\Charts\DataProcessing\Charts\Library\Chartist;
+use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
-use Hoogi91\Charts\RegisterChartLibraryException;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Cache\Backend\NullBackend;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use Symfony\Component\DependencyInjection\ServiceLocator;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-/**
- * Class LibraryRegistryTest
- * @package Hoogi91\Charts\Tests\DataProcessing\Charts
- */
 class LibraryRegistryTest extends UnitTestCase
 {
-    /**
-     * @var LibraryRegistry|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $registry;
 
-    protected function setUp()
+    private LibraryRegistry $registry;
+
+    protected function setUp(): void
     {
         parent::setUp();
-
-        $this->registry = $this->getMockBuilder(LibraryRegistry::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['loadExtensionConfigurations'])
-            ->getMock();
-
-        $objectManager = $this->createMock(ObjectManager::class);
-        $objectManager->method('get')->willReturnCallback(
-            function ($name) {
-                switch ($name) {
-                    case Chartist::class:
-                        return $this->createMock(Chartist::class);
-                    case ChartJs::class:
-                        return $this->createMock(ChartJs::class);
-                }
-
-                return null;
-            }
+        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $this->registry = new LibraryRegistry(
+            new ServiceLocator(
+                [
+                    ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs($extConf),
+                    ApexCharts::getServiceIndex() => static fn(): ApexCharts => new ApexCharts($extConf),
+                ]
+            )
         );
-
-        \Closure::bind(
-            function () use ($objectManager) {
-                $this->objectManager = $objectManager;
-            },
-            $this->registry,
-            LibraryRegistry::class
-        )();
     }
 
-    /**
-     * @test
-     */
-    public function testLibraryRegistration()
+    public function testLibraryRegistration(): void
     {
-        $this->registry->register('chartist', Chartist::class);
-        $this->registry->register('chartist123', Chartist::class);
-        $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist'));
-        $this->assertInstanceOf(Chartist::class, $this->registry->getLibrary('chartist123'));
-    }
-
-    /**
-     * @test
-     */
-    public function testLibraryRegistrationWithInvalidClass()
-    {
-        $this->expectException(RegisterChartLibraryException::class);
-        $this->registry->register('chartist', ChartException::class);
-    }
-
-    /**
-     * @test
-     */
-    public function testLibraryRegistrationOverride()
-    {
-        // check if forcing override works
-        $this->registry->register('chart.js', Chartist::class);
-        $this->registry->register('chart.js', ChartJs::class, true);
         $this->assertInstanceOf(ChartJs::class, $this->registry->getLibrary('chart.js'));
-
-        // check if exception is thrown when override is not explicit
-        $this->expectException(RegisterChartLibraryException::class);
-        $this->registry->register('chartist', Chartist::class);
-        $this->registry->register('chartist', Chartist::class);
+        $this->assertInstanceOf(ApexCharts::class, $this->registry->getLibrary('apexcharts.js'));
+        $this->assertNull($this->registry->getLibrary('unknown-identifier'));
     }
 
-    /**
-     * @test
-     */
-    public function testUnknownLibraryGetter()
+    public function testLibrarySelectGenerator(): void
     {
-        $this->assertNull($this->registry->getLibrary('loremIpsum'));
-    }
-
-    /**
-     * @test
-     */
-    public function testLibrarySelectGenerator()
-    {
-        $this->registry->register('chartist', Chartist::class);
-        $this->registry->register('chart.js', ChartJs::class);
-
         $select = $this->registry->getLibrarySelect(
             [
                 'fieldName' => 'html-fieldname',
-                'fieldValue' => 'chart.js',
+                'fieldValue' => ChartJs::getServiceIndex(),
             ]
         );
 
         $this->assertNotEmpty($select);
-        $this->assertInternalType('string', $select);
-        $this->assertContains(
+        $this->assertIsString($select);
+        $this->assertStringContainsString(
             '<input type="hidden" name="html-fieldname" value="chart.js"/>',
             $select
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             '<option value="chart.js" selected="selected">chart.js (' . ChartJs::class . ')</option>',
             $select
         );
-        $this->assertContains(
-            '<option value="chartist">chartist (' . Chartist::class . ')</option>',
+        $this->assertStringContainsString(
+            '<option value="apexcharts.js">apexcharts.js (' . ApexCharts::class . ')</option>',
             $select
         );
     }

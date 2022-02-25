@@ -1,0 +1,158 @@
+.color-palette {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.new-palette {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: #000;
+    background: #eee;
+    border: 1px solid #bbb;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.new-palette:hover {
+    color: #333;
+    background: #d7d7d7;
+    border-color: #9c9c9c;
+}
+
+.color {
+    position: relative;
+    flex: 1 0 auto;
+    gap: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+}
+
+.action {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    fill: white;
+    color: white;
+}
+
+.action.move,
+.action.delete {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.action.edit {
+    display: block;
+    position: absolute;
+    bottom: 120px;
+    left: 0;
+    width: 100%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.color:hover > .action {
+    opacity: 0.9;
+}
+
+.color:hover > .action {
+    opacity: 0.9;
+}
+
+.color.light .action {
+    fill: black;
+    color: black;
+}
+
+.color > .action.add {
+    display: inline-block;
+    position: absolute;
+    right: -20px;
+    width: 40px;
+    height: 100%;
+    opacity: 0;
+    z-index: 100;
+}
+
+.color > .action.add:hover {
+    opacity: 1;
+}
+
+.color > .action.add > svg,
+.color > .action.initial-add > svg {
+    fill: black;
+    cursor: pointer;
+}
+
+.color > .action.add > svg {
+    position: relative;
+    top: calc(50% - 20px);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgb(0 0 0 / 50%);
+}
+
+.color:last-child .action.add {
+    right: 1rem;
+}
+
+color-picker {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.start-button {
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+    width: 200px;
+    height: 200px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.start-button > slot[name=newButtonIcon] {
+    fill: #ff8700;
+    color: #ff8700;
+}
+
+.start-button > slot[name=newButtonText] {
+    font-size: 20px;
+    text-transform: uppercase;
+    font-family: monospace;
+}
+
+.color-palette.editor > .color {
+    min-width: 150px;
+}
+
+.color-palette.preview {
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 0.375rem 1rem #d8d8d8;
+}
+
+.color-palette.preview > .color:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.color-palette.preview > .color:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}

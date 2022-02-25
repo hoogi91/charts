@@ -1,0 +1,143 @@
+:host {
+    --wrapper-gap: 40px;
+    --wrapper-width: 410px;
+    --wrapper-height: 175px;
+
+    --color-picker-size: 10px;
+    --color-picker-border: 1px;
+
+    --color-area-bg-color: #F00;
+    --alpha-bg-color: rgb(193, 66, 66);
+}
+
+:host, .backdrop {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: 200; /* must be higher than z-index of add button in color-palette */
+}
+
+.backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.picker-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: white;
+    border-radius: 2px;
+    padding: var(--wrapper-gap);
+    width: calc(var(--wrapper-width) + var(--wrapper-gap) * 2);
+    height: calc(var(--wrapper-height) + var(--wrapper-gap) * 2);
+    margin-left: calc((var(--wrapper-width) / 2 * -1) - var(--wrapper-gap) * 2);
+    margin-top: calc((var(--wrapper-height) / 2 * -1) - var(--wrapper-gap) * 2);
+    box-shadow: 0 0.375rem 1rem rgb(0 0 0 / 50%);
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    user-select: none;
+}
+
+.picker-wrapper .picking-area {
+    width: 253px;
+    height: 253px;
+    border: 1px solid #ddd;
+    position: relative;
+}
+
+.picker-wrapper .control-area {
+    flex: 1 0 auto;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-self: center;
+}
+
+.picker-wrapper .control-area > div {
+    position: relative;
+    height: 30px;
+}
+
+/* HSV format - Hue-Saturation-Value(Brightness) */
+.picker-wrapper .picking-area {
+    background: -moz-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+    -moz-linear-gradient(left, #FFF 0%, rgba(255, 255, 255, 0) 100%);
+    background: -webkit-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+    -webkit-linear-gradient(left, #FFF 0%, rgba(255, 255, 255, 0) 100%);
+    background: -ms-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+    -ms-linear-gradient(left, #FFF 0%, rgba(255, 255, 255, 0) 100%);
+    background: -o-linear-gradient(bottom, #000 0%, rgba(0, 0, 0, 0) 100%),
+    -o-linear-gradient(left, #FFF 0%, rgba(255, 255, 255, 0) 100%);
+    background-color: var(--color-area-bg-color);
+}
+
+.picker-wrapper .picker {
+    position: absolute;
+    top: calc(50% - var(--color-picker-size) + (var(--color-picker-border) * 2));
+    left: calc(50% - var(--color-picker-size) + (var(--color-picker-border) * 2));
+    width: var(--color-picker-size);
+    height: var(--color-picker-size);
+    border-radius: 50%;
+    border: var(--color-picker-border) solid #fff;
+}
+
+.picker-wrapper .picker:before {
+    width: calc(var(--color-picker-size) - (var(--color-picker-border) * 2));
+    height: calc(var(--color-picker-size) - (var(--color-picker-border) * 2));
+    content: "";
+    position: absolute;
+    border: var(--color-picker-border) solid #999;
+    border-radius: 50%;
+}
+
+.picker-wrapper .hue {
+    border: 1px solid #ccc;
+    background: -moz-linear-gradient(left, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%,
+    #00F 66.66%, #F0F 83.33%, #F00 100%);
+    background: -webkit-linear-gradient(left, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%,
+    #00F 66.66%, #F0F 83.33%, #F00 100%);
+    background: linear-gradient(to right, #F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%,
+    #00F 66.66%, #F0F 83.33%, #F00 100%);
+}
+
+.picker-wrapper .alpha {
+    border: 1px solid #ccc;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAG0lEQVR42mM4c+bMf2SMDhjooABdAF0DHRQAAJ4P6+G77p9NAAAAAElFTkSuQmCC');
+}
+
+.picker-wrapper .alpha-mask {
+    width: 100%;
+    height: 100%;
+    background: -moz-linear-gradient(90deg, transparent, var(--alpha-bg-color));
+    background: -webkit-linear-gradient(90deg, transparent, var(--alpha-bg-color));
+    background: linear-gradient(90deg, transparent, var(--alpha-bg-color));
+}
+
+.picker-wrapper .slider-picker {
+    position: absolute;
+    top: -1px;
+    width: 2px;
+    height: 100%;
+    border: 1px solid #777;
+    background-color: #fff;
+}
+
+.picker-wrapper .hue-input,
+.picker-wrapper .rgb-input {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.picker-wrapper input {
+    width: 30px;
+    -moz-appearance: textfield;
+}
+
+.picker-wrapper input::-webkit-outer-spin-button,
+.picker-wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

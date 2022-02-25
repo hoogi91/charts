@@ -5,118 +5,48 @@ namespace Hoogi91\Charts\DataProcessing\Charts\Library;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 
-/**
- * Class AbstractColoredLibrary
- * @package Hoogi91\Charts\DataProcessing\Charts\Library
- */
 abstract class AbstractColoredLibrary extends AbstractLibrary
 {
-    protected const BACKGROUND = 1;
-    protected const BORDER = 2;
 
-    /**
-     * @param int $type
-     *
-     * @return array
-     */
-    abstract public function getDefaultColors(int $type = self::BACKGROUND): array;
-
-    /**
-     * map chart entities to short arrays with data for javascript processing
-     *
-     * @param array $datasets
-     * @param ChartData $chartEntity
-     *
-     * @return array
-     */
-    protected function buildEntityDatasetsForJavascript($datasets, $chartEntity): array
+    protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
-        // get processed datasets from above
         $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);
-
-        // process special mapping for spreadsheet based charts
-        if ($chartEntity instanceof ChartDataSpreadsheet) {
-            return array_map(
-                function ($dataKey) use ($datasets, $processedDatasets, $chartEntity) {
-                    // try to get background colors from spreadsheet
-                    $backgroundColors = $chartEntity->getBackgroundColors($dataKey);
-                    if (empty($backgroundColors)) {
-                        $backgroundColors = $this->getBackgroundColors(count($datasets[$dataKey]));
-                    }
-
-                    // try to get border colors from spreadsheet
-                    $borderColors = $chartEntity->getBorderColors($dataKey);
-                    if (empty($borderColors)) {
-                        $borderColors = $this->getBorderColors(count($datasets[$dataKey]));
-                    }
-
-                    $additionalDatasetData = [
-                        'background' => $backgroundColors,
-                        'border' => $borderColors,
-                    ];
-                    return $additionalDatasetData + $processedDatasets[$dataKey];
-                },
-                array_keys($datasets)
-            );
-        }
-
-        // create default mapping for all chart data entities
         return array_map(
-            function ($dataKey) use ($datasets, $processedDatasets) {
-                $additionalDatasetData = [
-                    'background' => $this->getBackgroundColors(count($datasets[$dataKey])),
-                    'border' => $this->getBorderColors(count($datasets[$dataKey])),
-                ];
-                return $additionalDatasetData + $processedDatasets[$dataKey];
+            static function (int $key) use ($chartEntity, $datasets, $processedDatasets) {
+                $backgroundColors = $chartEntity instanceof ChartDataSpreadsheet
+                    ? $chartEntity->getBackgroundColors($key)
+                    : $chartEntity->getBackgroundColors();
+
+                $borderColors = $chartEntity instanceof ChartDataSpreadsheet
+                    ? $chartEntity->getBorderColors($key)
+                    : $chartEntity->getBorderColors();
+
+                $paletteSize = count($datasets[$key]);
+                $backgroundColors = self::getColorListByPalette($backgroundColors, $paletteSize);
+                $borderColors = self::getColorListByPalette($borderColors, $paletteSize, 'rgba(0, 0, 0, 0.3)');
+
+                return ['background' => $backgroundColors, 'border' => $borderColors] + $processedDatasets[$key];
             },
             array_keys($datasets)
         );
     }
 
-    /**
-     * @param int $count
-     *
-     * @return array
-     */
-    protected function getBackgroundColors(int $count = 1): array
-    {
-        return $this->getColor(self::BACKGROUND, $count);
-    }
-
-    /**
-     * @param int $count
-     *
-     * @return array
-     */
-    protected function getBorderColors(int $count = 1): array
-    {
-        return $this->getColor(self::BORDER, $count);
-    }
-
-    /**
-     * @param int $colorType
-     * @param int $count
-     *
-     * @return array
-     */
-    private function getColor(int $colorType, int $count = 1): array
-    {
-        $defaultColors = $this->getDefaultColors($colorType);
-        if (count($defaultColors) >= $count) {
-            return array_slice($defaultColors, 0, $count);
+    protected static function getColorListByPalette(
+        array $colorPalette,
+        int $size = 1,
+        ?string $defaultColor = 'rgba(0, 0, 0, 0.1)'
+    ): array {
+        // return single color if palette does not define at least two colors
+        if (count($colorPalette) < 2) {
+            return array_filter($colorPalette ?: [$defaultColor]);
         }
 
-        $colors = $defaultColors;
-        while (count($colors) < $count) {
-            // get first color of default colors and remove it from there
-            $firstItemOfDefaultColors = array_shift($defaultColors);
-
-            // (re-)add first item to our default color and result array
-            $defaultColors[] = $firstItemOfDefaultColors;
-            $colors[] = $firstItemOfDefaultColors;
+        $paletteSize = count($colorPalette);
+        for ($i = 0; $i < $size; $i++) {
+            $paletteIndex = ($paletteSize !== 0 && $i >= $paletteSize) ? ($i % $paletteSize) : $i;
+            $colors[] = $colorPalette[$paletteIndex] ?? $defaultColor;
         }
 
-        // final result should be a repeating array of our default colors
-        return $colors;
+        return array_filter($colors ?? []);
     }
 }

@@ -7,103 +7,47 @@ use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\Domain\Model\ChartData;
 use Hoogi91\Charts\Domain\Repository\ChartDataRepository;
-use Hoogi91\Charts\Form\Types\Chart as ChartTypes;
-use Hoogi91\Charts\RegisterChartLibraryException;
-use Hoogi91\Charts\Utility\ExtensionUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
-/**
- * Class ChartsProcessor
- * @package Hoogi91\Charts\DataProcessing
- */
 class ChartsProcessor implements DataProcessorInterface
 {
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    protected $cObj;
+    private PageRenderer $pageRenderer;
 
-    /**
-     * @var array
-     */
-    protected $configuration;
+    private ChartDataRepository $chartDataRepository;
 
-    /**
-     * @var PageRenderer
-     */
-    protected $pageRenderer;
+    private LibraryInterface $chartLibrary;
 
-    /**
-     * @var LibraryInterface
-     */
-    protected $chartLibrary;
-
-    /**
-     * @var ChartDataRepository
-     */
-    protected $chartDataRepository;
-
-    /**
-     * ChartsProcessor constructor.
-     * @throws RegisterChartLibraryException
-     */
-    public function __construct()
-    {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->pageRenderer = $objectManager->get(PageRenderer::class);
-        $this->chartDataRepository = $objectManager->get(ChartDataRepository::class);
-
-        /** @var LibraryRegistry $libraryRegistry */
-        $libraryRegistry = $objectManager->get(LibraryRegistry::class);
-
-        $chartLibraryToLoad = ExtensionUtility::getConfig('library', ChartJsLibrary::class);
-        $this->chartLibrary = $libraryRegistry->getLibrary($chartLibraryToLoad);
-        if (!$this->chartLibrary instanceof LibraryInterface) {
-            throw new RegisterChartLibraryException(
-                sprintf(
-                    'Evaluated Chart Library "%s" doesn\'t exist or doesn\'t implement "%s"',
-                    $chartLibraryToLoad,
-                    LibraryInterface::class
-                ),
-                1522167560
-            );
-        }
+    public function __construct(
+        PageRenderer $pageRenderer,
+        ChartDataRepository $repository,
+        ExtensionConfiguration $extConf,
+        LibraryRegistry $registry
+    ) {
+        $this->pageRenderer = $pageRenderer;
+        $this->chartDataRepository = $repository;
+        $this->chartLibrary = $registry->getLibrary(
+            (string)($extConf->get('charts', 'library') ?: ChartJsLibrary::getServiceIndex())
+        );
     }
 
-    /**
-     * Process content object data
-     *
-     * @param ContentObjectRenderer $cObj The data of the content element or page
-     * @param array $contentObjectConfiguration The configuration of Content Object
-     * @param array $processorConfiguration The configuration of this processor
-     * @param array $processedData Key/value store of processed data
-     *                                                          (e.g. to be passed to a Fluid View)
-     *
-     * @return array the processed data as key/value store
-     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
         array $processorConfiguration,
         array $processedData
     ): array {
-        $this->cObj = $cObj;
-        $this->configuration = $processorConfiguration;
-
         // evaluate options from configuration
         $chartIdentifier = uniqid('chart-', true);
-        $chartType = ChartTypes::getShortName($processedData['data']['CType']);
-        $includeAssets = (bool)$cObj->stdWrapValue('assets', $this->configuration, '1');
-        $targetVariableName = $cObj->stdWrapValue('as', $this->configuration, 'chart');
+        $chartType = $processedData['data']['CType'] ?? '';
+        $includeAssets = (bool)$cObj->stdWrapValue('assets', $processorConfiguration, '1');
+        $targetVariableName = $cObj->stdWrapValue('as', $processorConfiguration, 'chart');
 
         // the chart data uid to load
-        $dataUid = (int)$cObj->stdWrapValue('data', $this->configuration, '0');
+        $dataUid = (int)$cObj->stdWrapValue('data', $processorConfiguration, '0');
         if (empty($dataUid)) {
             $processedData[$targetVariableName] = [
                 'identifier' => $chartIdentifier,
@@ -142,6 +86,9 @@ class ChartsProcessor implements DataProcessorInterface
                 $chartType,
                 $chartEntity
             );
+
+            $chartData['assets']['css']['entity'] = array_filter($chartData['assets']['css']['entity']);
+            $chartData['assets']['js']['entity'] = array_filter($chartData['assets']['js']['entity']);
         }
 
         // assign to current processed data and return

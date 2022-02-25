@@ -1,0 +1,25 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  _instanceof:
+    Hoogi91\Charts\DataProcessing\Charts\LibraryInterface:
+      public: true
+      tags: [ 'charts.libraries' ]
+
+  Hoogi91\Charts\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
+  Hoogi91\Charts\DataProcessing\ChartsProcessor:
+    public: true
+
+  Hoogi91\Charts\DataProcessing\FlexFormProcessor:
+    public: true
+
+  Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry:
+    public: true
+    arguments:
+      - !tagged_locator { tag: 'charts.libraries', index_by: 'key', default_index_method: 'getServiceIndex' }
