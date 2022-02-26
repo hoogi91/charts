@@ -50,7 +50,7 @@ Preparation: Select Chart library in extension settings
 
 #. select chart library you wish to use for frontend rendering
 
-#. optional disable the default caching of evaluated chart data
+#. optional configure different CDN Url or disable library assets if you want to implement them by yourself
 
 Preparation: Include static TypoScript
 --------------------------------------

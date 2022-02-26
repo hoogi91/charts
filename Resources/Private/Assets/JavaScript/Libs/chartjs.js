@@ -144,8 +144,8 @@ export default {
                         data: set['data'],
                         fill: _this.getKeyOfObject(options, 'line.fill', 0) === '1',
                         backgroundColor: datasets.length === 1
-                            ? set['border'] || []
-                            : set['border'][index] || [],
+                            ? set['border'] || set['background'] || []
+                            : set['border'][index] || set['background'][index] || [],
                         borderColor: datasets.length === 1
                             ? set['background'] || []
                             : set['background'][index] || [],
@@ -241,7 +241,7 @@ export default {
                 })
             },
             options: {
-                cutout: cutoutValue,
+                cutout: cutoutValue + '%',
                 plugins: {
                     legend: {
                         display: _this.getKeyOfObject(options, 'legend.active', 0) === '1',

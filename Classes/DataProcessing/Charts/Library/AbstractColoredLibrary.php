@@ -23,7 +23,7 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
 
                 $paletteSize = count($datasets[$key]);
                 $backgroundColors = self::getColorListByPalette($backgroundColors, $paletteSize);
-                $borderColors = self::getColorListByPalette($borderColors, $paletteSize, 'rgba(0, 0, 0, 0.3)');
+                $borderColors = self::getColorListByPalette($borderColors, $paletteSize, null);
 
                 return ['background' => $backgroundColors, 'border' => $borderColors] + $processedDatasets[$key];
             },

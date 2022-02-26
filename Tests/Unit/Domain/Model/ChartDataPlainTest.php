@@ -84,9 +84,7 @@ class ChartDataPlainTest extends UnitTestCase
         $chartData = new ChartDataPlain();
         $chartData->setDatasetsLabels(trim($content));
         $labels = $chartData->getDatasetsLabels();
-        $this->assertIsArray($labels);
-        $this->assertCount(4, $labels);
-        $this->assertEquals('Europe', $labels[1]);
+        $this->assertSame(['Germany'], $labels);
     }
 
     public function labelProvider(): array
