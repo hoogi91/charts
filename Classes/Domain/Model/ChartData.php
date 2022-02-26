@@ -70,7 +70,7 @@ abstract class ChartData extends AbstractEntity
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);
-        return array_shift($labels) ?? [];
+        return array_column($labels, '0') ?? []; // grab first column of every row :)
     }
 
     public function setDatasetsLabels(string $datasetsLabels): void
