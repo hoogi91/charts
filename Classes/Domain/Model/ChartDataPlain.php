@@ -41,4 +41,11 @@ class ChartDataPlain extends ChartData
             )
         );
     }
+
+    public function getDatasetsLabels(): array
+    {
+        // grab first column of every row as dataset labels in plain element
+        $labels = $this->extractLabelList($this->datasetsLabels);
+        return array_column($labels, '0') ?? [];
+    }
 }
