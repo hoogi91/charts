@@ -34,6 +34,7 @@ return (static function (string $extKey = 'charts') {
                 'showitem' => implode(
                     [
                         '--palette--;;corePalette,type,labels,--palette--;;datasetPalette,',
+                        '--div--;' . $ll . '.tab_colors,background_colors, border_colors,',
                         '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,hidden,starttime,endtime'
                     ]
                 ),

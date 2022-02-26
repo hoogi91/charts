@@ -24,27 +24,63 @@ With this extension you are able:
 Screenshots
 ===========
 
-.. image:: ../Images/chart-element-overview.png
-   :class: float-left
-   :alt: Default chart type elements list in new content element wizard
+.. rst-class:: float-left
+.. figure:: ../Images/frontend-plain.png
+   :alt: Frontend example of plain dataset based Bar Chart
    :width: 360px
 
-.. image:: ../Images/dataset_spreadsheet.png
-   :class: float-right
-   :alt: Spreadsheet based chart dataset selection example
+   Bar Chart with plain dataset and custom color palette
+
+.. rst-class:: float-right
+.. figure:: ../Images/frontend-spreadsheet.png
+   :alt: Frontend example of spreadsheet based Bar Chart
    :width: 360px
 
-.. image:: ../Images/dataset_excel_file.png
-   :class: cc float-left
-   :alt: Example excel file content that can be used with this extension
+   Bar chart using data and colors from spreadsheet
+
+.. rst-class:: float-left
+.. figure:: ../Images/frontend-plain-line.png
+   :alt: Frontend example of plain dataset based Line Chart
    :width: 360px
 
-.. image:: ../Images/dataset_result.png
-   :class: float-right
-   :alt: Frontend example result of the example excel file content with above dataset selection example
+   Line Chart with plain dataset and custom color palette
+
+.. rst-class:: float-right
+.. figure:: ../Images/frontend-spreadsheet-line.png
+   :alt: Frontend example of spreadsheet based Line Chart
    :width: 360px
+
+   Line chart using data and colors from spreadsheet
+
+.. rst-class:: float-left
+.. figure:: ../Images/frontend-plain-pie.png
+   :alt: Frontend example of plain dataset based Pie Chart
+   :width: 360px
+
+   Pie Chart with plain dataset and custom color palette
+
+.. rst-class:: float-right
+.. figure:: ../Images/frontend-spreadsheet-pie.png
+   :alt: Frontend example of spreadsheet based Pie Chart
+   :width: 360px
+
+   Pie chart using data and colors from spreadsheet
+
+.. rst-class:: float-left
+.. figure:: ../Images/frontend-plain-doughnut.png
+   :alt: Frontend example of plain dataset based Doughnut Chart
+   :width: 360px
+
+   Doughnut Chart with plain dataset and custom color palette
+
+.. rst-class:: float-right
+.. figure:: ../Images/frontend-spreadsheet-doughnut.png
+   :alt: Frontend example of spreadsheet based Doughnut Chart
+   :width: 360px
+
+   Doughnut chart using data and colors from spreadsheet
 
 .. important::
    :class: cc
 
-   Please note that the above dataset example requires installation of `Spreadsheet extension <http://typo3.org/extensions/repository/view/spreadsheets/>`_
+   Please note that above right-side examples require installation of `Spreadsheet extension <http://typo3.org/extensions/repository/view/spreadsheets/>`_
