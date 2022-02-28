@@ -5,6 +5,7 @@
 .Build
 ansible/
 config/
+node_modules/
 vendor/
 var/
 node_modules/
