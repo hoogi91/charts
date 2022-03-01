@@ -54,6 +54,7 @@ class ColorPaletteInputElement extends HTMLElement {
     }
 
     connectedCallback() {
+        // temporary fix for firefox => https://bugzilla.mozilla.org/show_bug.cgi?id=1502814
         this.__proto__ = customElements.get('color-palette').prototype;
     }
 
