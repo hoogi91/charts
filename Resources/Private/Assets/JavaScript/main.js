@@ -53,6 +53,10 @@ class ColorPaletteInputElement extends HTMLElement {
         console.debug('new-value:', this._input);
     }
 
+    connectedCallback() {
+        this.__proto__ = customElements.get('color-palette').prototype;
+    }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'ref') {
             this.ref = newValue; // update palette if input reference is changed

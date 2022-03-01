@@ -5,6 +5,7 @@
     margin: -1rem;
 }
 
-color-palette:not(:defined) {
+color-palette:not(:defined),
+color-palette:not(:defined) > span {
     display: none
 }

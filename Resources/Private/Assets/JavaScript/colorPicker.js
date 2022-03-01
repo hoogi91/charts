@@ -96,6 +96,10 @@ export class ColorPickerElement extends HTMLElement {
         });
     }
 
+    connectedCallback() {
+        this.__proto__ = customElements.get('color-picker').prototype;
+    }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'value') {
             this.color = Color(newValue);
