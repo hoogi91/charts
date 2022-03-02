@@ -5,7 +5,7 @@ namespace Hoogi91\Charts\DataProcessing\Charts;
 use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Core\ClassLoadingInformation;
+use TYPO3\CMS\Core\Core\Environment;
 
 class LibraryRegistry
 {
@@ -21,8 +21,13 @@ class LibraryRegistry
             //  Currently there is no official way to define DI based classes (like the usage of service locator here)
             //  inside of these requests. The only way is to bootstrap without failsafe container, getting this
             //  service again and retrieving its libraries property by closure.
+            if (is_file(realpath(Environment::getProjectPath()) . '/vendor/autoload.php')) {
+                $autoloader = require realpath(Environment::getProjectPath()) . '/vendor/autoload.php';
+            } else {
+                $autoloader = require dirname(realpath(Environment::getProjectPath())) . '/vendor/autoload.php';
+            }
             $libraries = \Closure::fromCallable(fn() => $this->libraries)
-                ->call(Bootstrap::init(ClassLoadingInformation::getClassLoader())->get(self::class));
+                ->call(Bootstrap::init($autoloader)->get(self::class));
         }
         // @codeCoverageIgnoreEnd
         $this->libraries = $libraries;
