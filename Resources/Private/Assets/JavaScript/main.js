@@ -70,7 +70,12 @@ class ColorPaletteInputElement extends HTMLElement {
             // create modal on click with listener to re-render when modal gets closed
             const colorPalette = createElement('color-palette', {ref: this.ref, append: this.childNodes});
             const modalContent = createElement('div', {class: 'color-palette-modal', append: [colorPalette]});
-            const modal = Modal.advanced({title: 'Color Palette', content: modalContent, size: Modal.sizes.large});
+            const modal = Modal.advanced({
+                title: 'Color Palette',
+                content: modalContent,
+                size: Modal.sizes.large,
+                additionalCssClasses: ['color-palette-modal-wrapper']
+            });
 
             console.debug('paletteModalOpened', this.colorPalette);
             modal.on('hide.bs.modal', () => {
