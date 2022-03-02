@@ -44,7 +44,7 @@ class ColorPaletteInputElement extends AbstractFormElement
     <div class="form-control-wrap">
         <div class="form-wizards-wrap">
             <input id="$inputIdentifier" type="hidden" name="$inputName" value="$inputValue"/>
-            <color-palette ref="$inputIdentifier" mode="preview" style="display:inline-block;height:32px">
+            <color-palette ref="$inputIdentifier" mode="preview" style="display:block;height:32px">
                 <span slot="empty">$emptyPaletteContent</span>
                 <span slot="newButtonIcon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
