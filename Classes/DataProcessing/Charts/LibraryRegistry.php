@@ -24,7 +24,7 @@ class LibraryRegistry
             if (is_file(realpath(Environment::getProjectPath()) . '/vendor/autoload.php')) {
                 $autoloader = require realpath(Environment::getProjectPath()) . '/vendor/autoload.php';
             } else {
-                $autoloader = require dirname(realpath(Environment::getProjectPath())) . '/vendor/autoload.php';
+                $autoloader = require dirname(realpath(Environment::getBackendPath())) . '/vendor/autoload.php';
             }
             $libraries = \Closure::fromCallable(fn() => $this->libraries)
                 ->call(Bootstrap::init($autoloader)->get(self::class));
