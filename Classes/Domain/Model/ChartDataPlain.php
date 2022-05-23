@@ -44,8 +44,13 @@ class ChartDataPlain extends ChartData
 
     public function getDatasetsLabels(): array
     {
-        // grab first column of every row as dataset labels in plain element
         $labels = $this->extractLabelList($this->datasetsLabels);
+        if (count($labels) === 1) {
+            // return first label row values if only one is given
+            return $labels[0] ?? [];
+        }
+
+        // grab first column of every row as dataset labels
         return array_column($labels, '0') ?? [];
     }
 }
