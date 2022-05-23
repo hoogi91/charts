@@ -52,14 +52,13 @@ class ChartDataPlainTest extends UnitTestCase
     /**
      * @dataProvider labelProvider
      */
-    public function testLabelMethods(string $content): void
+    public function testLabelMethods(string $content, array $expected): void
     {
         $chartData = new ChartDataPlain();
         $chartData->setLabels(trim($content));
         $labels = $chartData->getLabels();
         $this->assertIsArray($labels);
-        $this->assertCount(4, $labels);
-        $this->assertEquals('Europe', $labels[1]);
+        $this->assertSame($expected, $labels);
     }
 
     /**
@@ -84,25 +83,41 @@ class ChartDataPlainTest extends UnitTestCase
         $chartData = new ChartDataPlain();
         $chartData->setDatasetsLabels(trim($content));
         $labels = $chartData->getDatasetsLabels();
-        $this->assertSame(['Germany'], $labels);
+        $this->assertSame(['Germany', 'Europe'], $labels);
     }
 
     public function labelProvider(): array
     {
         return [
-            'as xml' => [
+            'as xml on a single row' => [
                 'content' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
                     <T3TableWizard>
                         <numIndex index="2" type="array">
                             <numIndex index="2">Germany</numIndex>
                             <numIndex index="4">Europe</numIndex>
-                            <numIndex index="6">America</numIndex>
-                            <numIndex index="8">China</numIndex>
                         </numIndex>
                     </T3TableWizard>',
+                'expected' => ['Germany', 'Europe'],
             ],
-            'as typo3 format' => [
-                'content' => '|Germany|Europe|America|China|',
+            'as xml in columns' => [
+                'content' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+                    <T3TableWizard>
+                        <numIndex index="2" type="array">
+                            <numIndex index="2">Germany</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="2">Europe</numIndex>
+                        </numIndex>
+                    </T3TableWizard>',
+                'expected' => ['Germany'],
+            ],
+            'as typo3 format in a single row' => [
+                'content' => '|Germany|Europe|',
+                'expected' => ['Germany', 'Europe'],
+            ],
+            'as typo3 format in columns' => [
+                'content' => "|Germany|\n|Europe|",
+                'expected' => ['Germany'],
             ],
         ];
     }

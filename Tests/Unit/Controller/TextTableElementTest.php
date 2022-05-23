@@ -50,6 +50,7 @@ class TextTableElementTest extends UnitTestCase
             ['create' => $this->createConfiguredMock(AbstractNode::class, ['render' => ['html' => '']])]
         );
         $element = new TextTableElement($nodeFactory, [
+            'databaseRow' => [],
             'parameterArray' => [
                 'itemFormElName' => 'field-name',
                 'itemFormElValue' => $formValue,
