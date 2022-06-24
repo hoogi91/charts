@@ -1,0 +1,49 @@
+name: 'Execute phpunit tests'
+description: 'This action executes phpunit tests with support for coverage generation.'
+inputs:
+  coverage:
+    required: false
+    description: 'Enable coverage'
+    default: 'false'
+  coverage-folder:
+    required: false
+    description: 'Folder to save coverage reports into'
+    default: './coverage/'
+  whitelist:
+    required: false
+    description: 'PHPUnit whitelist'
+    default: './Classes/'
+runs:
+  using: 'composite'
+  steps:
+    - name: Unit tests
+      if: inputs.coverage == 'false'
+      shell: bash
+      run: |
+        if [ -d "Tests/Unit" ]; then
+          .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php Tests/Unit/
+        fi
+
+    - name: Functional tests
+      if: inputs.coverage == 'false'
+      shell: bash
+      run: |
+        if [ -d "Tests/Functional" ]; then
+          find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Functional test suite {}"; .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php {}'
+        fi
+
+    - name: Unit tests with coverage
+      if: inputs.coverage != 'false'
+      shell: bash
+      run: |
+        if [ -d "Tests/Unit" ]; then
+          .Build//bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php Tests/Unit/ --coverage-clover=${{ inputs.coverage-folder }}unit/clover.xml --whitelist=${{ inputs.whitelist }}
+        fi
+
+    - name: Functional tests with coverage
+      if: inputs.coverage != 'false'
+      shell: bash
+      run: |
+        if [ -d "Tests/Functional" ]; then
+          find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Functional test suite {}"; .Build//bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php {} --coverage-clover=${{ inputs.coverage-folder }}functional/{}/clover.xml --whitelist=${{ inputs.whitelist }}'
+        fi

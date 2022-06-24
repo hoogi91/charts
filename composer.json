@@ -56,8 +56,7 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "mkdir -p .Build/web/typo3conf/ext/",
-      "[ -L .Build/web/typo3conf/ext/charts ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/charts"
+      "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
     ],
     "prepare-release": [
       "rm -rf .github/ Tests/",
