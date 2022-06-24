@@ -2,14 +2,12 @@
 
 namespace Hoogi91\Charts\Tests\Functional\ViewHelpers;
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class EditLinkViewHelperTest extends AbstractViewHelperTestCase
 {
     private const MOCKED_RETURN_URL = '/typo3/functional/testing/';
-
-    private array $returnUrl = [
-        1 => '/typo3/module/web/layout?token=dummyToken&id=1',
-        456 => '/typo3/module/web/layout?token=dummyToken&id=456',
-    ];
 
     public function setUp(): void
     {
@@ -28,18 +26,37 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
         string $table,
         ?int $returnPid = null
     ): void {
+        $returnUrl = [
+            1 => '/typo3/module/web/layout?token=dummyToken&id=1',
+            456 => '/typo3/module/web/layout?token=dummyToken&id=456',
+        ];
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
+            $returnUrl = [
+                1 => '/typo3/index.php?route=%2Fmodule%2Fweb%2Flayout&token=dummyToken&id=1',
+                456 => '/typo3/index.php?route=%2Fmodule%2Fweb%2Flayout&token=dummyToken&id=456',
+            ];
+        }
+
         $expectedQueryData = [
             'token' => 'dummyToken',
             sprintf('edit[%s][%d]', $table, $recordId) => 'edit'
         ];
-        if (isset($this->returnUrl[$returnPid])) {
-            $expectedQueryData['returnUrl'] = $this->returnUrl[$returnPid];
+        if (isset($returnUrl[$returnPid])) {
+            $expectedQueryData['returnUrl'] = $returnUrl[$returnPid];
         } else {
             $expectedQueryData['returnUrl'] = self::MOCKED_RETURN_URL;
         }
 
         $expectedHref = str_replace('&', '&amp;', '/typo3/record/edit?' . http_build_query($expectedQueryData));
         $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
+
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
+            $expectedHref = str_replace(
+                '&',
+                '&amp;',
+                '/typo3/index.php?route=%2Frecord%2Fedit&' . http_build_query($expectedQueryData)
+            );
+        }
 
         self::assertEquals(
             vsprintf(
