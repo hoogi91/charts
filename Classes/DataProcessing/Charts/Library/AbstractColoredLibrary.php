@@ -43,7 +43,7 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
 
         $paletteSize = count($colorPalette);
         for ($i = 0; $i < $size; $i++) {
-            $paletteIndex = ($paletteSize !== 0 && $i >= $paletteSize) ? ($i % $paletteSize) : $i;
+            $paletteIndex = $i >= $paletteSize ? ($i % $paletteSize) : $i;
             $colors[] = $colorPalette[$paletteIndex] ?? $defaultColor;
         }
 

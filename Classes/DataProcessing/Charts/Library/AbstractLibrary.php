@@ -117,6 +117,7 @@ abstract class AbstractLibrary implements LibraryInterface
         // create standardized initialization and dataset/labels code
         $initCode = "document.addEventListener('DOMContentLoaded', () => window['Hoogi91.Charts'].init());";
         $initCode .= "window['Hoogi91.chartsData'] = {};";
+        /** @psalm-suppress InternalMethod */
         $codeIdentifier = sprintf('chartsData%d', $chartEntity->getUid());
         $code = vsprintf(
             "window['Hoogi91.chartsData']['%s'] = {labels: %s, datasets: %s};",
