@@ -3,6 +3,8 @@ name: "Psalm Security Scan"
 on:
   pull_request:
   push:
+    branches-ignore:
+      - "dependabot/**"
 
 jobs:
   psalm:
