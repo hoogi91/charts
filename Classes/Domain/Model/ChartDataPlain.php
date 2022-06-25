@@ -32,7 +32,7 @@ class ChartDataPlain extends ChartData
             }, array_filter(explode("\n", $datasetData)));
         }
 
-        return array_values(array_map(static fn($item) => array_map('floatval', $item), $data));
+        return array_values(array_map(static fn($item) => array_map('floatval', array_values($item)), $data));
     }
 
     public function getDatasetsLabels(): array
