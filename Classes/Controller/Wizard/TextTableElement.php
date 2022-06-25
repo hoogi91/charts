@@ -4,6 +4,9 @@ namespace Hoogi91\Charts\Controller\Wizard;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * @psalm-suppress InternalClass
+ */
 class TextTableElement extends \TYPO3\CMS\Backend\Form\Element\TextTableElement
 {
 
@@ -15,6 +18,7 @@ class TextTableElement extends \TYPO3\CMS\Backend\Form\Element\TextTableElement
      */
     public function render(): array
     {
+        /** @psalm-suppress InternalMethod */
         $result = parent::render();
 
         preg_match('/<textarea.*>(.*?)<\/textarea>/s', $result['html'], $match);

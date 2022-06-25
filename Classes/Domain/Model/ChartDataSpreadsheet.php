@@ -90,9 +90,9 @@ class ChartDataSpreadsheet extends ChartData
                 $item = vsprintf(
                     'rgb(%s, %s, %s)',
                     [
-                        hexdec(CellColor::getRed($color->getRGB())),
-                        hexdec(CellColor::getGreen($color->getRGB())),
-                        hexdec(CellColor::getBlue($color->getRGB())),
+                        hexdec((string)CellColor::getRed($color->getRGB())),
+                        hexdec((string)CellColor::getGreen($color->getRGB())),
+                        hexdec((string)CellColor::getBlue($color->getRGB())),
                     ]
                 );
             }
@@ -158,9 +158,9 @@ class ChartDataSpreadsheet extends ChartData
                 $item = vsprintf(
                     'rgb(%s, %s, %s)',
                     [
-                        hexdec(CellColor::getRed($borderColor)),
-                        hexdec(CellColor::getGreen($borderColor)),
-                        hexdec(CellColor::getBlue($borderColor)),
+                        hexdec((string)CellColor::getRed($borderColor)),
+                        hexdec((string)CellColor::getGreen($borderColor)),
+                        hexdec((string)CellColor::getBlue($borderColor)),
                     ]
                 );
             }

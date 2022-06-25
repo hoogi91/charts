@@ -14,8 +14,8 @@ class ChartDataPlain extends ChartData
         if (!is_array($data)) {
             // parse default TYPO3 table layout
             $data = array_map(static function ($item) {
-                return (array)explode('|', trim($item, '| '));
-            }, array_filter((array)explode("\n", $labelData)));
+                return explode('|', trim($item, '| '));
+            }, array_filter(explode("\n", $labelData)));
         }
 
         return array_values(array_map('array_values', $data));
@@ -28,18 +28,11 @@ class ChartDataPlain extends ChartData
         if (!is_array($data)) {
             // parse default TYPO3 table layout
             $data = array_map(static function ($item) {
-                return (array)explode('|', trim($item, '| '));
-            }, array_filter((array)explode("\n", $datasetData)));
+                return explode('|', trim($item, '| '));
+            }, array_filter(explode("\n", $datasetData)));
         }
 
-        return array_values(
-            array_map(
-                static function ($item) {
-                    return array_values(array_map('floatval', $item));
-                },
-                $data
-            )
-        );
+        return array_values(array_map(static fn($item) => array_map('floatval', array_values($item)), $data));
     }
 
     public function getDatasetsLabels(): array
@@ -51,6 +44,6 @@ class ChartDataPlain extends ChartData
         }
 
         // grab first column of every row as dataset labels
-        return array_column($labels, '0') ?? [];
+        return array_column($labels, '0');
     }
 }
