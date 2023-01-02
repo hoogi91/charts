@@ -1,7 +1,7 @@
 # TYPO3 Extension ``charts``
 
 [![Version](https://img.shields.io/github/v/tag/hoogi91/charts?label=stable&style=for-the-badge)](https://packagist.org/packages/hoogi91/charts)
-[![Tests](https://img.shields.io/github/workflow/status/hoogi91/charts/PHPUnit%20tests?label=tests&style=for-the-badge)](https://github.com/hoogi91/charts/actions/workflows/phpunit.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/hoogi91/charts/phpunit.yml?label=tests&style=for-the-badge)](https://github.com/hoogi91/charts/actions/workflows/phpunit.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/hoogi91/charts?style=for-the-badge)](https://codecov.io/gh/hoogi91/charts)
 [![License](https://img.shields.io/github/license/hoogi91/charts?style=for-the-badge)](https://github.com/hoogi91/charts/blob/develop/LICENSE)
 [![Documentation](https://img.shields.io/github/v/tag/hoogi91/charts?color=ffe907&label=docs&style=for-the-badge)](https://docs.typo3.org/p/hoogi91/charts/2.0/en-us/)
