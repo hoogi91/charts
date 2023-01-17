@@ -56,6 +56,7 @@
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin",
     "allow-plugins": {
+      "helhum/typo3-console-plugin": true,
       "typo3/class-alias-loader": true,
       "typo3/cms-composer-installers": true
     }
