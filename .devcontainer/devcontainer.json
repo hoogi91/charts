@@ -1,0 +1,29 @@
+{
+  "name": "typo3-charts",
+  "image": "ghcr.io/hoogi91/typo3/php:8.1",
+  "runArgs": [
+    "--name",
+    "typo3-charts"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  },
+  "settings": {
+    "php.validate.executablePath": "/usr/local/bin/php"
+  },
+  "extensions": [
+    "xdebug.php-debug",
+    "bmewburn.vscode-intelephense-client",
+    "benjaminkott.typo3-typoscript",
+    "kamediendesign.typo3-fluid",
+    "christian-kohler.npm-intellisense",
+    "trabpukcip.vscode-npm-scripts"
+  ],
+  "postStartCommand": "apache2ctl start",
+  "postCreateCommand": ".devcontainer/postCreate.sh",
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  }
+}

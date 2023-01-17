@@ -27,6 +27,7 @@
     "typo3/cms-frontend": "^10.4 || ^11.5"
   },
   "require-dev": {
+    "helhum/typo3-console": "^7.1",
     "hoogi91/spreadsheets": "^3.0",
     "mck89/peast": "^1.13",
     "phpstan/phpstan": "^1.7.15",
