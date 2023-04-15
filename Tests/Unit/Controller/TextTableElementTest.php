@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Controller;
 
 use Hoogi91\Charts\Controller\Wizard\TextTableElement;
@@ -8,23 +10,21 @@ use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class TextTableElementTest extends UnitTestCase
 {
-
     use CacheTrait;
 
+    /**
+     * @var bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $resetSingletonInstances = true;
 
     protected function setUp(): void
     {
-        if (class_exists(Typo3Version::class) === false
-            || version_compare((new Typo3Version())->getVersion(), '11.4', '<') === true) {
-            $this->markTestSkipped('TextTableElement does not exists in TYPO3 version < 11.4');
-        }
         parent::setUp();
         $this->setUpCaches();
 
@@ -59,21 +59,27 @@ class TextTableElementTest extends UnitTestCase
             ],
         ]);
 
-        preg_match('/<textarea.*>(.*?)<\/textarea>/s', $element->render()['html'], $match);
+        $html = $element->render()['html'] ?? '';
+        self::assertTrue(is_string($html));
+
+        preg_match('/<textarea.*>(.*?)<\/textarea>/s', $html, $match);
         self::assertTrue(isset($match[1]));
         self::assertSame($expected, $match[1]);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProvider(): array
     {
         return [
             'with empty value' => [
                 'formValue' => '',
-                'expected' => ''
+                'expected' => '',
             ],
             'with TYPO3 table format' => [
                 'formValue' => '|Germany|Europe|America|China|',
-                'expected' => '|Germany|Europe|America|China|'
+                'expected' => '|Germany|Europe|America|China|',
             ],
             'with XML table format' => [
                 'formValue' => '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>

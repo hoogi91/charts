@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
@@ -11,7 +13,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class LibraryRegistryTest extends UnitTestCase
 {
-
     private LibraryRegistry $registry;
 
     protected function setUp(): void
@@ -21,10 +22,11 @@ class LibraryRegistryTest extends UnitTestCase
         $this->registry = new LibraryRegistry(
             new ServiceLocator(
                 [
-                    ChartJs::getServiceIndex() => static fn(): ChartJs => new ChartJs($extConf),
-                    ApexCharts::getServiceIndex() => static fn(): ApexCharts => new ApexCharts($extConf),
+                    ChartJs::getServiceIndex() => static fn (): ChartJs => new ChartJs($extConf),
+                    ApexCharts::getServiceIndex() => static fn (): ApexCharts => new ApexCharts($extConf),
                 ]
-            )
+            ),
+            new ChartJs($extConf)
         );
     }
 
@@ -33,6 +35,7 @@ class LibraryRegistryTest extends UnitTestCase
         $this->assertInstanceOf(ChartJs::class, $this->registry->getLibrary('chart.js'));
         $this->assertInstanceOf(ApexCharts::class, $this->registry->getLibrary('apexcharts.js'));
         $this->assertNull($this->registry->getLibrary('unknown-identifier'));
+        $this->assertInstanceOf(ChartJs::class, $this->registry->getDefaultLibrary());
     }
 
     public function testLibrarySelectGenerator(): void

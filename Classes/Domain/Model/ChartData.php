@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -7,8 +9,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 abstract class ChartData extends AbstractEntity
 {
-    public const TYPE_PLAIN = 0;
-    public const TYPE_SPREADSHEET = 1;
+    final public const TYPE_PLAIN = 0;
+    final public const TYPE_SPREADSHEET = 1;
 
     protected string $title = '';
     protected int $type = self::TYPE_PLAIN;
@@ -44,10 +46,14 @@ abstract class ChartData extends AbstractEntity
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getLabels(): array
     {
         // only get first row of labels and ignore multiple column/row selections
         $labels = $this->extractLabelList($this->labels);
+
         return array_shift($labels) ?? [];
     }
 
@@ -56,6 +62,9 @@ abstract class ChartData extends AbstractEntity
         $this->labels = $labels;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getDatasets(): array
     {
         return $this->extractDatasetList($this->datasets);
@@ -66,10 +75,14 @@ abstract class ChartData extends AbstractEntity
         $this->datasets = $datasets;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getDatasetsLabels(): array
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);
+
         return array_shift($labels) ?? [];
     }
 
@@ -78,26 +91,47 @@ abstract class ChartData extends AbstractEntity
         $this->datasetsLabels = $datasetsLabels;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getBackgroundColors(): array
     {
         return array_values(array_filter(explode('|', $this->databaseBackground)));
     }
 
+    /**
+     * @param array<string> $backgroundColors
+     */
     public function setBackgroundColors(array $backgroundColors): void
     {
-        $this->databaseBackground = implode('|', array_map('trim', $backgroundColors));
+        $this->databaseBackground = implode(
+            '|',
+            array_map(static fn ($item) => trim((string) $item), $backgroundColors)
+        );
     }
 
+    /**
+     * @return array<string>
+     */
     public function getBorderColors(): array
     {
         return array_values(array_filter(explode('|', $this->databaseBorder)));
     }
 
+    /**
+     * @param array<string> $borderColors
+     */
     public function setBorderColors(array $borderColors): void
     {
-        $this->databaseBorder = implode('|', array_map('trim', $borderColors));
+        $this->databaseBorder = implode(
+            '|',
+            array_map(static fn ($item) => trim((string) $item), $borderColors)
+        );
     }
 
+    /**
+     * @return array<int>
+     */
     protected function getAllowedTypes(): array
     {
         $allowedTypes = [self::TYPE_PLAIN];
@@ -105,10 +139,17 @@ abstract class ChartData extends AbstractEntity
             // only allow spreadsheet type if required extension is loaded
             $allowedTypes[] = self::TYPE_SPREADSHEET;
         }
+
         return $allowedTypes;
     }
 
+    /**
+     * @return array<array<mixed>>
+     */
     abstract protected function extractLabelList(string $labelData): array;
 
+    /**
+     * @return array<array<mixed>>
+     */
     abstract protected function extractDatasetList(string $datasetData): array;
 }

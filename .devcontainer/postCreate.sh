@@ -10,6 +10,9 @@ composer install
     --site-setup-type=site \
     --web-server-config=apache
 
+.Build/bin/typo3cms configuration:set SYS/trustedHostsPattern '.*'
+.Build/bin/typo3cms configuration:set SYS/features/security.backend.enforceReferrer false --json
+
 sudo chmod a+x "$(pwd)"
 sudo rm -rf /var/www/html
 sudo ln -s "$(pwd)/.Build/web/" /var/www/html

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Functional\ViewHelpers;
 
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -39,13 +41,9 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
 
         $expectedQueryData = [
             'token' => 'dummyToken',
-            sprintf('edit[%s][%d]', $table, $recordId) => 'edit'
+            sprintf('edit[%s][%d]', $table, $recordId) => 'edit',
         ];
-        if (isset($returnUrl[$returnPid])) {
-            $expectedQueryData['returnUrl'] = $returnUrl[$returnPid];
-        } else {
-            $expectedQueryData['returnUrl'] = self::MOCKED_RETURN_URL;
-        }
+        $expectedQueryData['returnUrl'] = $returnUrl[$returnPid] ?? self::MOCKED_RETURN_URL;
 
         $expectedHref = str_replace('&', '&amp;', '/typo3/record/edit?' . http_build_query($expectedQueryData));
         $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
@@ -64,7 +62,9 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
                 [$recordId, $table, $expectedReturnPid, $expectedHref]
             ),
             $this->getView(
-                '<test:backend.editLink class="link" recordId="{recordId}" recordTable="{table}" returnPid="{pid}">Link</test:backend.editLink>',
+                '<test:backend.editLink class="link" recordId="{recordId}" recordTable="{table}" returnPid="{pid}">' .
+                    'Link' .
+                '</test:backend.editLink>',
                 ['recordId' => $recordId, 'table' => $table, 'pid' => $returnPid]
             )->render()
         );

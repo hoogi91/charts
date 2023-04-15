@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
@@ -10,9 +12,12 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainTest extends UnitTestCase
 {
-
     use CacheTrait;
 
+    /**
+     * @var bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $resetSingletonInstances = true;
 
     protected function setUp(): void
@@ -48,9 +53,10 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
     }
 
-
     /**
      * @dataProvider labelProvider
+     *
+     * @param array<mixed> $expected
      */
     public function testLabelMethods(string $content, array $expected): void
     {
@@ -86,6 +92,9 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertSame(['Germany', 'Europe'], $labels);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function labelProvider(): array
     {
         return [
@@ -122,6 +131,9 @@ class ChartDataPlainTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function datasetProvider(): array
     {
         return [

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Form;
 
 use Hoogi91\Charts\Form\Types\BarChart;

@@ -17,24 +17,28 @@
     }
   ],
   "require": {
-    "php": "~7.4.0 || ~8.0.0 || ~8.1.0",
+    "php": "~8.1.0 || ~8.2.0",
     "ext-json": "*",
-    "typo3/cms-backend": "^10.4 || ^11.5",
-    "typo3/cms-core": "^10.4 || ^11.5",
-    "typo3/cms-extbase": "^10.4 || ^11.5",
-    "typo3/cms-fluid": "^10.4 || ^11.5",
-    "typo3/cms-fluid-styled-content": "^10.4 || ^11.5",
-    "typo3/cms-frontend": "^10.4 || ^11.5"
+    "typo3/cms-backend": "^11.5 || ^12.4",
+    "typo3/cms-core": "^11.5 || ^12.4",
+    "typo3/cms-extbase": "^11.5 || ^12.4",
+    "typo3/cms-fluid": "^11.5 || ^12.4",
+    "typo3/cms-fluid-styled-content": "^11.5 || ^12.4",
+    "typo3/cms-frontend": "^11.5 || ^12.4"
   },
   "require-dev": {
-    "helhum/typo3-console": "^6.7 || ^7.1",
-    "hoogi91/spreadsheets": "^3.0",
+    "bnf/phpstan-psr-container": "^1.0",
+    "friendsoftypo3/phpstan-typo3": "^0.9.0",
+    "helhum/typo3-console": "^7.1",
+    "hoogi91/spreadsheets": "^3.3 || ^4.0",
     "mck89/peast": "^1.13",
     "phpstan/phpstan": "^1.7.15",
     "phpunit/phpunit": "^9.5",
+    "rector/rector": "^0.15",
     "roave/security-advisories": "dev-latest",
+    "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.5",
-    "typo3/minimal": "^10.4 || ^11.5",
+    "typo3/minimal": "^11.5 || ^12.4",
     "typo3/testing-framework": "^6.14",
     "vimeo/psalm": "^5.1"
   },
@@ -57,13 +61,11 @@
     "bin-dir": ".Build/bin",
     "allow-plugins": {
       "typo3/class-alias-loader": true,
-      "typo3/cms-composer-installers": true
+      "typo3/cms-composer-installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "scripts": {
-    "post-autoload-dump": [
-      "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
-    ],
     "prepare-release": [
       "rm -rf .github/ Tests/",
       "rm -f .gitattributes .gitignore .editorconfig composer.lock",

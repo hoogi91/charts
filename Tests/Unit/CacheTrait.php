@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit;
 
 use TYPO3\CMS\Core\Cache\Backend\NullBackend;
@@ -8,14 +10,12 @@ use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Package\Cache\PackageCacheInterface;
 use TYPO3\CMS\Core\Package\UnitTestPackageManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait CacheTrait
 {
-
     private function setUpCaches(): CacheManager
     {
         // if TYPO3 v10 is installed register typo3 version constants (legacy)
@@ -51,18 +51,10 @@ trait CacheTrait
     private function resetPackageManager(): void
     {
         $cache = new PhpFrontend('core', new NullBackend('production', []));
-
-        // Set all packages to active
-        if (interface_exists(PackageCacheInterface::class)) {
-            $packageManager = Bootstrap::createPackageManager(
-                UnitTestPackageManager::class,
-                Bootstrap::createPackageCache($cache)
-            );
-        } else {
-            // v10 compatibility layer
-            // @deprecated Will be removed when v10 compat is dropped from testing-framework
-            $packageManager = Bootstrap::createPackageManager(UnitTestPackageManager::class, $cache);
-        }
+        $packageManager = Bootstrap::createPackageManager(
+            UnitTestPackageManager::class,
+            Bootstrap::createPackageCache($cache)
+        );
 
         ExtensionManagementUtility::setPackageManager($packageManager);
     }

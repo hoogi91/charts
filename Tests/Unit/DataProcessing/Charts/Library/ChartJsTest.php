@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs;
@@ -16,7 +18,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartJsTest extends UnitTestCase
 {
-
     use ExtConfigTrait;
     use JavascriptCompareTrait;
 
@@ -28,6 +29,9 @@ class ChartJsTest extends UnitTestCase
         $this->library = new ChartJs($this->getExtensionConfig('chart_js'));
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function chartDataProvider(): array
     {
         $mockConfig = [
@@ -81,7 +85,7 @@ class ChartJsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
+     * @param ChartData&MockObject $model
      */
     public function testStylesheetEntityBuilding(MockObject $model): void
     {
@@ -95,8 +99,7 @@ class ChartJsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
-     * @param string $expectedFile
+     * @param ChartData&MockObject $model
      */
     public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
@@ -114,8 +117,11 @@ class ChartJsTest extends UnitTestCase
 
     /**
      * @dataProvider spreadsheetMethodProvider
+     * 
+     * @param array<mixed> $labels
+     * @param array<mixed> $datasets
      */
-    public function testEmptyJavascriptOnEmptyLabelsOrDataset($labels, $datasets): void
+    public function testEmptyJavascriptOnEmptyLabelsOrDataset(array $labels, array $datasets): void
     {
         $this->assertEmpty(
             $this->library->getEntityJavascript(
@@ -129,6 +135,9 @@ class ChartJsTest extends UnitTestCase
         );
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function spreadsheetMethodProvider(): array
     {
         return [
@@ -136,11 +145,11 @@ class ChartJsTest extends UnitTestCase
                 'getLabels' => [],
                 'getDatasets' => [
                     ['Data 1-1', 'Data 1-2', 'Data 1-3'],
-                ]
+                ],
             ],
             'empty dataset' => [
                 'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-                'getDatasets' => []
+                'getDatasets' => [],
             ],
         ];
     }
@@ -148,7 +157,7 @@ class ChartJsTest extends UnitTestCase
     public function testDisableUseOfAssets(): void
     {
         $extConf = $this->createMock(ExtensionConfiguration::class);
-        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn(false);
+        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn('false');
 
         $library = $this->getAccessibleMock(
             ChartJs::class,
@@ -164,9 +173,9 @@ class ChartJsTest extends UnitTestCase
 
     /**
      * @dataProvider renderingDataProvider
-     * @param MockObject|ExtensionConfiguration $extConf
-     * @param MockObject|PageRenderer|null $pageRenderer
-     * @return void
+     * 
+     * @param ExtensionConfiguration&MockObject $extConf
+     * @param PageRenderer&MockObject $pageRenderer
      */
     public function testAssetRendering(MockObject $extConf, ?MockObject $pageRenderer): void
     {
@@ -176,30 +185,35 @@ class ChartJsTest extends UnitTestCase
             ['extensionConfiguration' => $extConf]
         );
         $library->expects(self::once())->method('getStylesheetAssetsToLoad')->willReturn(
-            ['folder/chart.css' => ['compress' => true]],
+            ['folder/chart.css' => ['compress' => true]]
         );
         self::assertSame(['folder/chart.css'], $library->getStylesheetAssets('chart-type', $pageRenderer));
 
         $library->expects(self::once())->method('getJavascriptAssetsToLoad')->willReturn(
-            ['folder/chart.js' => ['compress' => true]],
+            ['folder/chart.js' => ['compress' => true]]
         );
         self::assertSame(['folder/chart.js'], $library->getJavascriptAssets('chart-type', $pageRenderer));
     }
 
+    /**
+     * @return Traversable<mixed>
+     */
     public function renderingDataProvider(): Traversable
     {
         $extConf = $this->createMock(ExtensionConfiguration::class);
         $extConf->method('get')->willThrowException(new ExtensionConfigurationPathDoesNotExistException());
+
         yield 'exception is caught and assets are returned' => [
             'extConf' => $extConf,
             'pageRenderer' => null,
         ];
 
         $extConf = $this->createMock(ExtensionConfiguration::class);
-        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn(true);
+        $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn('true');
         $pageRenderer = $this->createMock(PageRenderer::class);
         $pageRenderer->expects(self::once())->method('addCssLibrary');
         $pageRenderer->expects(self::once())->method('addJsFooterLibrary');
+
         yield 'page renderer is called and assets are returned' => [
             'extConf' => $extConf,
             'pageRenderer' => $pageRenderer,

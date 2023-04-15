@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
@@ -13,7 +15,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ApexChartsTest extends UnitTestCase
 {
-
     use ExtConfigTrait;
     use JavascriptCompareTrait;
 
@@ -25,10 +26,13 @@ class ApexChartsTest extends UnitTestCase
         $this->library = new ApexCharts($this->getExtensionConfig('apexcharts_js'));
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function chartDataProvider(): array
     {
         $mockConfig = [
-            'getUid' => 123456,
+            'getUid' => 123_456,
             'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
             'getDatasets' => [
                 ['Data 1-1', 'Data 1-2', 'Data 1-3'],
@@ -78,7 +82,8 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
+     *
+     * @param ChartData&MockObject $model
      */
     public function testStylesheetEntityBuilding(MockObject $model): void
     {
@@ -92,8 +97,8 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
-     * @param string $expectedFile
+     *
+     * @param ChartData&MockObject $model
      */
     public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
@@ -111,8 +116,11 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider spreadsheetMethodProvider
+     *
+     * @param array<mixed> $labels
+     * @param array<mixed> $datasets
      */
-    public function testEmptyJavascriptOnEmptyLabelsOrDataset($labels, $datasets): void
+    public function testEmptyJavascriptOnEmptyLabelsOrDataset(array $labels, array $datasets): void
     {
         $this->assertEmpty(
             $this->library->getEntityJavascript(
@@ -126,6 +134,9 @@ class ApexChartsTest extends UnitTestCase
         );
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function spreadsheetMethodProvider(): array
     {
         return [
@@ -133,11 +144,11 @@ class ApexChartsTest extends UnitTestCase
                 'getLabels' => [],
                 'getDatasets' => [
                     ['Data 1-1', 'Data 1-2', 'Data 1-3'],
-                ]
+                ],
             ],
             'empty dataset' => [
                 'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-                'getDatasets' => []
+                'getDatasets' => [],
             ],
         ];
     }

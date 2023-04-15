@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Form;
 
 use Hoogi91\Charts\Form\Element\ColorPaletteInputElement;
@@ -11,10 +13,11 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
+use const PHP_EOL;
+
 class ColorPaletteInputElementTest extends UnitTestCase
 {
-
-    /** @var NodeFactory|MockObject */
+    /** @var NodeFactory&MockObject */
     private MockObject $nodeFactory;
 
     public function setUp(): void
@@ -37,6 +40,9 @@ class ColorPaletteInputElementTest extends UnitTestCase
 
     /**
      * @dataProvider dataProvider
+     *
+     * @param array<mixed> $data
+     * @param array<mixed> $modules
      */
     public function testRender(string $expected, array $data, array $modules): void
     {
@@ -49,11 +55,15 @@ class ColorPaletteInputElementTest extends UnitTestCase
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function dataProvider(): array
     {
         return [
             'empty data' => [
-                'expected' => '<div class="alert alert-danger">Input form name not set. Please inform administrator!</div>',
+                'expected' => '<div class="alert alert-danger">' .
+                    'Input form name not set. Please inform administrator!</div>',
                 'data' => [],
                 'modules' => [],
             ],
@@ -63,7 +73,7 @@ class ColorPaletteInputElementTest extends UnitTestCase
                     'parameterArray' => [
                         'itemFormElName' => 'some-name',
                         'itemFormElValue' => 'some-value <tag>123</tag>',
-                    ]
+                    ],
                 ],
                 'modules' => ['TYPO3/CMS/Charts/ColorPaletteInputElement'],
             ],

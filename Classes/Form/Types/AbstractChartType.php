@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Form\Types;
 
 abstract class AbstractChartType implements ChartTypeInterface
 {
-
+    /**
+     * @param array<mixed> $columnOverrides
+     */
     public static function register(array $columnOverrides = []): void
     {
         $identifier = static::getIdentifier();
@@ -41,24 +45,25 @@ abstract class AbstractChartType implements ChartTypeInterface
 
     private static function getDefaultShowItems(bool $addFlexFormField = false): string
     {
-        // phpcs:disable
-        return '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.headers;headers,
+        $coreXlf = 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf';
+        $frontendXlf = 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf';
+
+        return '--div--;' . $coreXlf . ':general,
+            --palette--;' . $frontendXlf . ':palette.general;general,
+            --palette--;' . $frontendXlf . ':palette.headers;headers,
             tx_charts_chartdata,
             ' . ($addFlexFormField ? 'pi_flexform,' : '') . '
-        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.frames;frames,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.appearanceLinks;appearanceLinks,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+        --div--;' . $frontendXlf . ':tabs.appearance,
+            --palette--;' . $frontendXlf . ':palette.frames;frames,
+            --palette--;' . $frontendXlf . ':palette.appearanceLinks;appearanceLinks,
+        --div--;' . $coreXlf . ':language,
             --palette--;;language,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+        --div--;' . $coreXlf . ':access,
             --palette--;;hidden,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
+            --palette--;' . $frontendXlf . ':palette.access;access,
+        --div--;' . $coreXlf . ':categories,
         --div--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_category.tabs.category,categories,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,rowDescription,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended';
+        --div--;' . $coreXlf . ':notes,rowDescription,
+        --div--;' . $coreXlf . ':extended';
     }
-    // phpcs:enable
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Form\Types;
 
 interface ChartTypeInterface
@@ -10,5 +12,8 @@ interface ChartTypeInterface
 
     public static function getIconIdentifier(): string;
 
+    /**
+     * @param array<mixed> $columnOverrides
+     */
     public static function register(array $columnOverrides = []): void;
 }

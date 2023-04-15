@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Form\Types;
 
 class BarChart extends AbstractChartType
 {
-
     public static function getIdentifier(): string
     {
         return 'chart_bar';

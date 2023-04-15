@@ -1,0 +1,18 @@
+parameters:
+	level: max
+	paths:
+		- Classes
+		- Tests
+	ignoreErrors:
+		-
+			message: "#^Access to an uninitialized readonly property#"
+			count: 2
+			path: Classes/DataProcessing/Charts/LibraryRegistry.php
+		-
+			message: "#^Cannot assign offset 'resizeTextareas…' to array|string$#"
+			count: 1
+			path: Tests/Unit/Controller/TextTableElementTest.php
+
+includes:
+    - .Build/vendor/bnf/phpstan-psr-container/extension.neon
+    - .Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon

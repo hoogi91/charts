@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
@@ -7,11 +9,17 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainColorTest extends UnitTestCase
 {
-
+    /**
+     * @var bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $resetSingletonInstances = true;
 
     /**
      * @dataProvider backgroundDataProvider
+     *
+     * @param array<string> $colors
+     * @param array<mixed> $expectedColors
      */
     public function testBackgroundColorMethods(
         array $colors,
@@ -24,6 +32,9 @@ class ChartDataPlainColorTest extends UnitTestCase
         $this->assertSame($expectedColors, $chartData->getBackgroundColors());
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function backgroundDataProvider(): array
     {
         return [
@@ -42,6 +53,9 @@ class ChartDataPlainColorTest extends UnitTestCase
 
     /**
      * @dataProvider borderDataProvider
+     *
+     * @param array<string> $colors
+     * @param array<mixed> $expectedColors
      */
     public function testBorderColorMethods(array $colors, int $expectedCount, array $expectedColors): void
     {
@@ -51,6 +65,9 @@ class ChartDataPlainColorTest extends UnitTestCase
         $this->assertSame($expectedColors, $chartData->getBorderColors());
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function borderDataProvider(): array
     {
         return [

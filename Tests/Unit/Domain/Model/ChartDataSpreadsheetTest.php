@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartData;
@@ -14,11 +16,14 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
+    final public const LABEL_DSN = 'file:123|0!A1:E1';
+    final public const DATASET_DSN = 'file:456|0!A2:E7';
+    final public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
 
-    public const LABEL_DSN = 'file:123|0!A1:E1';
-    public const DATASET_DSN = 'file:456|0!A2:E7';
-    public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
-
+    /**
+     * @var bool
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $resetSingletonInstances = true;
 
     private ChartDataSpreadsheet $chartData;
@@ -27,20 +32,18 @@ class ChartDataSpreadsheetTest extends UnitTestCase
     {
         parent::setUp();
 
-        $createCellValue = function (float $value) {
-            return CellDataValueObject::create(
-                $this->createConfiguredMock(Cell::class, [
+        $createCellValue = fn (float $value) => CellDataValueObject::create(
+            $this->createConfiguredMock(Cell::class, [
                     'getCalculatedValue' => $value,
                     'getFormattedValue' => '[formatted]' . $value,
                     'getDataType' => 's',
                     'getXfIndex' => 123,
                     'getStyle' => $this->createConfiguredMock(Style\Style::class, [
-                        'getFont' => $this->createMock(Style\Font::class)
-                    ])
+                        'getFont' => $this->createMock(Style\Font::class),
+                    ]),
                 ]),
-                '[rendered]' . $value
-            );
-        };
+            '[rendered]' . $value
+        );
 
         $spreadsheetMock = $this->createConfiguredMock(Spreadsheet::class, [
             'getCellXfByIndex' => $this->createConfiguredMock(Style\Style::class, [
@@ -64,8 +67,8 @@ class ChartDataSpreadsheetTest extends UnitTestCase
                 'getFill' => $this->createConfiguredMock(Style\Fill::class, [
                     'getFillType' => Style\Fill::FILL_SOLID,
                     'getStartColor' => new Style\Color(Style\Color::COLOR_RED),
-                ])
-            ])
+                ]),
+            ]),
         ]);
 
         $extractorService = $this->createMock(ExtractorService::class);

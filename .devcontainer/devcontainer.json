@@ -1,6 +1,6 @@
 {
   "name": "typo3-charts",
-  "image": "ghcr.io/hoogi91/typo3/php:8.1",
+  "image": "ghcr.io/hoogi91/typo3/php:8.2",
   "runArgs": [
     "--name",
     "typo3-charts"
@@ -10,17 +10,28 @@
       "version": "18"
     }
   },
-  "settings": {
-    "php.validate.executablePath": "/usr/local/bin/php"
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.executablePath": "/usr/local/bin/php",
+        "php.executables": {
+          "8.2": "/usr/local/bin/php"
+        }
+      },
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "xdebug.php-debug",
+        "bmewburn.vscode-intelephense-client",
+        "DEVSENSE.phptools-vscode",
+        "DEVSENSE.composer-php-vscode",
+        "MehediDracula.php-namespace-resolver",
+        "benjaminkott.typo3-typoscript",
+        "kamediendesign.typo3-fluid",
+        "christian-kohler.npm-intellisense",
+        "trabpukcip.vscode-npm-scripts"
+      ],
+    }
   },
-  "extensions": [
-    "xdebug.php-debug",
-    "bmewburn.vscode-intelephense-client",
-    "benjaminkott.typo3-typoscript",
-    "kamediendesign.typo3-fluid",
-    "christian-kohler.npm-intellisense",
-    "trabpukcip.vscode-npm-scripts"
-  ],
   "postStartCommand": "apache2ctl start",
   "postCreateCommand": ".devcontainer/postCreate.sh",
   "otherPortsAttributes": {
