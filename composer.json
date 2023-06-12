@@ -28,7 +28,7 @@
   },
   "require-dev": {
     "helhum/typo3-console": "^6.7 || ^7.1",
-    "hoogi91/spreadsheets": "^3.0",
+    "hoogi91/spreadsheets": "^4.0",
     "mck89/peast": "^1.13",
     "phpstan/phpstan": "^1.7.15",
     "phpunit/phpunit": "^9.5",
