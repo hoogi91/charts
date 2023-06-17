@@ -195,12 +195,11 @@ class ChartDataSpreadsheet extends ChartData
     private function normalize(?ExtractionValueObject $extraction): array
     {
         // get cell data from database value with spreadsheet extractor or return empty data
-        $cellData = $extraction?->getBodyData();
+        /** @var array<array<CellDataValueObject>> $cellData */
+        $cellData = $extraction?->getBodyData() ?? [];
 
         // only get zero-indexed value arrays
-        return is_array($cellData)
-            ? array_values(array_map(static fn ($data) => array_values($data), $cellData))
-            : [];
+        return array_values(array_map(static fn ($data) => array_values($data), $cellData));
     }
 
     private function extractByDSN(string $dsn): ExtractionValueObject

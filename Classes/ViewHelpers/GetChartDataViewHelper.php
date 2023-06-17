@@ -30,7 +30,7 @@ class GetChartDataViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ): array {
-        $uidList = GeneralUtility::intExplode(',', $arguments['list'], true);
+        $uidList = GeneralUtility::intExplode(',', (string) $arguments['list'], true);
         if (empty($uidList)) {
             return [];
         }

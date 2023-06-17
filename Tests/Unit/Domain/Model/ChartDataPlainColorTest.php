@@ -9,11 +9,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainColorTest extends UnitTestCase
 {
-    /**
-     * @var bool
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     */
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @dataProvider backgroundDataProvider

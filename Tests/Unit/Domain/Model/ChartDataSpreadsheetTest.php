@@ -20,11 +20,7 @@ class ChartDataSpreadsheetTest extends UnitTestCase
     final public const DATASET_DSN = 'file:456|0!A2:E7';
     final public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
 
-    /**
-     * @var bool
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     */
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     private ChartDataSpreadsheet $chartData;
 

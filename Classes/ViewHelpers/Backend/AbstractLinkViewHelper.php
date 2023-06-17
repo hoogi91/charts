@@ -32,7 +32,7 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
     {
         /** @var string $renderedContent */
         $renderedContent = $this->renderChildren();
-        $classes = trim($this->arguments['class']);
+        $classes = trim((string) $this->arguments['class']);
         if (!empty($classes)) {
             $this->tag->addAttribute('class', $classes);
         }

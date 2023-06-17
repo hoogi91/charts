@@ -14,20 +14,12 @@ class ChartDataPlainTest extends UnitTestCase
 {
     use CacheTrait;
 
-    /**
-     * @var bool
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     */
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpCaches();
-
-        $packageManager = $this->createMock(PackageManager::class);
-        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
-        ExtensionManagementUtility::setPackageManager($packageManager);
     }
 
     protected function tearDown(): void
@@ -45,6 +37,10 @@ class ChartDataPlainTest extends UnitTestCase
 
     public function testTypeMethods(): void
     {
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
+        ExtensionManagementUtility::setPackageManager($packageManager);
+
         $chartData = new ChartDataPlain();
         $chartData->setType(ChartDataPlain::TYPE_PLAIN);
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());

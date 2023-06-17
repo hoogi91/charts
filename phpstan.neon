@@ -3,15 +3,24 @@ parameters:
 	paths:
 		- Classes
 		- Tests
+	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
 		-
 			message: "#^Access to an uninitialized readonly property#"
 			count: 2
 			path: Classes/DataProcessing/Charts/LibraryRegistry.php
 		-
-			message: "#^Cannot assign offset 'resizeTextareas…' to array|string$#"
+			message: '#Class TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\ViewHelperResolver constructor invoked with 3 parameters, 2 required#'
+			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
 			count: 1
-			path: Tests/Unit/Controller/TextTableElementTest.php
+		-
+			message: '#Class TYPO3\\CMS\\Extbase\\Object\\ObjectManager not found#'
+			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
+			count: 1
+		-
+			message: '#Parameter \#2 \$namespaces of class TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\ViewHelperResolver constructor expects#'
+			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
+			count: 1
 
 includes:
     - .Build/vendor/bnf/phpstan-psr-container/extension.neon

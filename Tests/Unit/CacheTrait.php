@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Package\UnitTestPackageManager;
+use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -52,10 +52,9 @@ trait CacheTrait
     {
         $cache = new PhpFrontend('core', new NullBackend('production', []));
         $packageManager = Bootstrap::createPackageManager(
-            UnitTestPackageManager::class,
+            PackageManager::class,
             Bootstrap::createPackageCache($cache)
         );
-
         ExtensionManagementUtility::setPackageManager($packageManager);
     }
 }

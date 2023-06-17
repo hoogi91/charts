@@ -18,11 +18,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
 {
     private const DATASET_DSN = 'file:456|0!A2:E7';
 
-    /**
-     * @var bool
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
-     */
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @dataProvider backgroundDataProvider
