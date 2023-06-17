@@ -6,6 +6,7 @@ namespace Hoogi91\Charts\Form\Element;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use const ENT_QUOTES;
 
 class ColorPaletteInputElement extends AbstractFormElement
@@ -44,7 +45,8 @@ class ColorPaletteInputElement extends AbstractFormElement
             'LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf:color_palette.newButton'
         );
 
-        $resultArray['requireJsModules'] = ['TYPO3/CMS/Charts/ColorPaletteInputElement'];
+
+        $resultArray['requireJsModules'] = [JavaScriptModuleInstruction::forRequireJS('TYPO3/CMS/Charts/ColorPaletteInputElement')];
         $resultArray['html'] = <<<HTML
 <div class="formengine-field-item t3js-formengine-field-item">
     {$this->renderFieldInformation()['html']}

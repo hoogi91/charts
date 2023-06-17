@@ -78,10 +78,19 @@ class ColorPaletteInputElement extends HTMLElement {
             });
 
             console.debug('paletteModalOpened', this.colorPalette);
-            modal.on('hide.bs.modal', () => {
-                this.renderPaletteContent(); // re-render colors on close
-                console.debug('paletteModalClosed', this.colorPalette);
-            });
+            if (typeof modal.on === "undefined") { 
+                // we are already on newer version using custom elements
+                modal.addEventListener('typo3-modal-hide', () => {
+                    this.renderPaletteContent(); // re-render colors on close
+                    console.debug('paletteModalClosed', this.colorPalette);
+                });
+            } else {
+                // use legacy jQuery modals
+                modal.on('hide.bs.modal', () => {
+                    this.renderPaletteContent(); // re-render colors on close
+                    console.debug('paletteModalClosed', this.colorPalette);
+                });
+            }
         });
     }
 
