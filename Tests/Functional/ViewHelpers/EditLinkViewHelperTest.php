@@ -7,6 +7,8 @@ namespace Hoogi91\Charts\Tests\Functional\ViewHelpers;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use const PHP_QUERY_RFC3986;
+
 class EditLinkViewHelperTest extends AbstractViewHelperTestCase
 {
     private const MOCKED_RETURN_URL = '/typo3/functional/testing/';
@@ -32,29 +34,19 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
             1 => '/typo3/module/web/layout?token=dummyToken&id=1',
             456 => '/typo3/module/web/layout?token=dummyToken&id=456',
         ];
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
-            $returnUrl = [
-                1 => '/typo3/index.php?route=%2Fmodule%2Fweb%2Flayout&token=dummyToken&id=1',
-                456 => '/typo3/index.php?route=%2Fmodule%2Fweb%2Flayout&token=dummyToken&id=456',
-            ];
-        }
 
         $expectedQueryData = [
             'token' => 'dummyToken',
             sprintf('edit[%s][%d]', $table, $recordId) => 'edit',
+            'returnUrl' => $returnUrl[$returnPid] ?? self::MOCKED_RETURN_URL,
         ];
-        $expectedQueryData['returnUrl'] = $returnUrl[$returnPid] ?? self::MOCKED_RETURN_URL;
-
-        $expectedHref = str_replace('&', '&amp;', '/typo3/record/edit?' . http_build_query($expectedQueryData));
-        $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
-
-        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() === 10) {
-            $expectedHref = str_replace(
-                '&',
-                '&amp;',
-                '/typo3/index.php?route=%2Frecord%2Fedit&' . http_build_query($expectedQueryData)
-            );
+        $query = http_build_query($expectedQueryData, '', '&', PHP_QUERY_RFC3986);
+        if (GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion() <= 11) {
+            $query = http_build_query($expectedQueryData);
         }
+
+        $expectedHref = str_replace('&', '&amp;', '/typo3/record/edit?' . $query);
+        $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
 
         self::assertEquals(
             vsprintf(
