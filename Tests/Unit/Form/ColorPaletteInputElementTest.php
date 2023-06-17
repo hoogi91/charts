@@ -10,6 +10,7 @@ use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -47,7 +48,7 @@ class ColorPaletteInputElementTest extends UnitTestCase
     public function testRender(string $expected, array $data, array $modules): void
     {
         $rendered = (new ColorPaletteInputElement($this->nodeFactory, $data))->render();
-        self::assertSame($modules, $rendered['requireJsModules']);
+        self::assertEquals($modules, $rendered['requireJsModules']);
         if (is_file($expected)) {
             self::assertStringEqualsFile($expected, $rendered['html'] . PHP_EOL); // files always have an ending newline
         } else {
@@ -75,7 +76,7 @@ class ColorPaletteInputElementTest extends UnitTestCase
                         'itemFormElValue' => 'some-value <tag>123</tag>',
                     ],
                 ],
-                'modules' => ['TYPO3/CMS/Charts/ColorPaletteInputElement'],
+                'modules' => [JavaScriptModuleInstruction::forRequireJS('TYPO3/CMS/Charts/ColorPaletteInputElement')],
             ],
         ];
     }
