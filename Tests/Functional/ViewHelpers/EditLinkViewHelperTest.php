@@ -40,6 +40,7 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
                 'returnUrl' => $returnUrl[$returnPid] ?? self::MOCKED_RETURN_URL,
             ]
         );
+        $expectedHref = str_replace('&', '&amp;', $expectedHref);
         $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
 
         self::assertEquals(
