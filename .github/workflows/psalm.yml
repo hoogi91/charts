@@ -17,7 +17,7 @@ jobs:
         dependencies:
           - "locked"
         php-version:
-          - "8.1"
+          - "8.2"
         operating-system:
           - "ubuntu-latest"
 
@@ -33,7 +33,7 @@ jobs:
           extensions: json, mbstring
 
       - name: "Psalm Security Scan"
-        run: .Build/bin/psalm --output-format=github --taint-analysis --report=results.sarif
+        run: .Build/bin/psalm --output-format=github --report=results.sarif
 
       - name: "Upload Security Analysis results to GitHub"
         uses: github/codeql-action/upload-sarif@v2

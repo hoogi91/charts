@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Functional\ViewHelpers;
 
 class GetChartDataViewHelperTest extends AbstractViewHelperTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -22,7 +23,9 @@ class GetChartDataViewHelperTest extends AbstractViewHelperTestCase
         self::assertSame(
             $expected,
             $this->getView(
-                '<f:alias map="{chartData: \'{test:getChartData(list: tx_charts_chartdata)}\'}">{chartData.0.title}</f:alias>',
+                '<f:alias map="{chartData: \'{test:getChartData(list: tx_charts_chartdata)}\'}">' .
+                    '{chartData.0.title}' .
+                '</f:alias>',
                 ['tx_charts_chartdata' => $chartUidList]
             )->render()
         );

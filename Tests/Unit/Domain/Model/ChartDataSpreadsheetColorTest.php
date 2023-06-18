@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
@@ -14,20 +16,24 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataSpreadsheetColorTest extends UnitTestCase
 {
-
     private const DATASET_DSN = 'file:456|0!A2:E7';
 
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @dataProvider backgroundDataProvider
+     *
+     * @param array<array<string>> $consecutiveBackground
+     * @param array<mixed> $expectedColors
      */
     public function testBackgroundColorMethods(
         array $consecutiveBackground,
         int $expectedCount,
         array $expectedColors
     ): void {
+        $styleMocks = [];
         foreach ($consecutiveBackground as $background) {
+            $configuration = ['getFillType' => Style\Fill::FILL_NONE];
             if (empty($background) === false) {
                 $fillType = array_key_first($background);
                 $configuration = [
@@ -40,21 +46,21 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
             }
 
             $styleMocks[] = $this->createConfiguredMock(Style\Style::class, [
-                'getFill' => $this->createConfiguredMock(
-                    Style\Fill::class,
-                    $configuration ?? ['getFillType' => Style\Fill::FILL_NONE]
-                )
+                'getFill' => $this->createConfiguredMock(Style\Fill::class, $configuration),
             ]);
         }
 
         $spreadsheetMock = $this->createMock(Spreadsheet::class);
-        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?? [null]);
+        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null]);
 
         $colors = $this->getChartData($spreadsheetMock)->getBackgroundColors(1);
         $this->assertCount($expectedCount, $colors);
         $this->assertSame($expectedColors, $colors);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function backgroundDataProvider(): array
     {
         return [
@@ -91,11 +97,16 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
 
     /**
      * @dataProvider borderDataProvider
+     *
+     * @param array<array<string, array<string>>> $consecutiveBorders
+     * @param array<mixed> $expectedColors
      */
     public function testBorderColorMethods(array $consecutiveBorders, int $expectedCount, array $expectedColors): void
     {
         // generate border mock objects
+        $styleMocks = [];
         foreach ($consecutiveBorders as $borders) {
+            $configuration = [];
             foreach (['top', 'bottom', 'left', 'right'] as $position) {
                 if (isset($borders[$position])) {
                     $borderStyle = array_key_first($borders[$position]);
@@ -111,18 +122,21 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
             }
 
             $styleMocks[] = $this->createConfiguredMock(Style\Style::class, [
-                'getBorders' => $this->createConfiguredMock(Style\Borders::class, $configuration ?? [])
+                'getBorders' => $this->createConfiguredMock(Style\Borders::class, $configuration),
             ]);
         }
 
         $spreadsheetMock = $this->createMock(Spreadsheet::class);
-        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?? [null]);
+        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null]);
 
         $colors = $this->getChartData($spreadsheetMock)->getBorderColors(1);
         $this->assertCount($expectedCount, $colors);
         $this->assertSame($expectedColors, $colors);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function borderDataProvider(): array
     {
         return [
@@ -169,24 +183,24 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @param Spreadsheet&MockObject $spreadsheetMock
+     */
     private function getChartData(MockObject $spreadsheetMock): ChartDataSpreadsheet
     {
-        $createCellValue = function (float $value) {
-            return CellDataValueObject::create(
-                $this->createConfiguredMock(Cell::class, [
+        $createCellValue = fn (float $value) => CellDataValueObject::create(
+            $this->createConfiguredMock(Cell::class, [
                     'getCalculatedValue' => $value,
                     'getFormattedValue' => '[formatted]' . $value,
                     'getDataType' => 's',
                     'getXfIndex' => 123,
                     'getStyle' => $this->createConfiguredMock(Style\Style::class, [
-                        'getFont' => $this->createMock(Style\Font::class)
-                    ])
+                        'getFont' => $this->createMock(Style\Font::class),
+                    ]),
                 ]),
-                '[rendered]' . $value
-            );
-        };
+            '[rendered]' . $value
+        );
 
-        /** @var Spreadsheet|MockObject $spreadsheetMock */
         $extractorService = $this->createMock(ExtractorService::class);
         $extractorService->method('getDataByDsnValueObject')->willReturn(
             ExtractionValueObject::create(
@@ -202,6 +216,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         $chartData = new ChartDataSpreadsheet();
         $chartData->injectExtractorService($extractorService);
         $chartData->setDatasets(self::DATASET_DSN);
+
         return $chartData;
     }
 }

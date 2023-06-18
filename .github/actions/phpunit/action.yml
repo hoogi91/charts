@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: |
         if [ -d "Tests/Unit" ]; then
-          .Build/bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php Tests/Unit/
+          .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/
         fi
 
     - name: Functional tests
@@ -37,7 +37,7 @@ runs:
       shell: bash
       run: |
         if [ -d "Tests/Unit" ]; then
-          .Build//bin/phpunit --bootstrap .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php Tests/Unit/ --coverage-clover=${{ inputs.coverage-folder }}unit/clover.xml --whitelist=${{ inputs.whitelist }}
+          .Build//bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=${{ inputs.coverage-folder }}unit/clover.xml --whitelist=${{ inputs.whitelist }}
         fi
 
     - name: Functional tests with coverage

@@ -1,5 +1,5 @@
 # cat=basic/enable; type=user[Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry->getLibrarySelect]; label=Chart Library to use
-library =
+library = chart.js
 
 # cat=ChartJS/enable; type=boolean; label=Use packed assets:If disabled the defined CDN and library related assets are not injected into the rendered page
 chart_js_assets = 1

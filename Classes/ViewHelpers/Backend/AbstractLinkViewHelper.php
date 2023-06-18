@@ -1,13 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\ViewHelpers\Backend;
 
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
 {
-
+    /**
+     * @var string
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
     protected $tagName = 'a';
+
+    /**
+     * @var array<string, string>
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint
+     */
+    protected $arguments = [];
 
     public function initializeArguments(): void
     {
@@ -19,14 +30,20 @@ abstract class AbstractLinkViewHelper extends AbstractTagBasedViewHelper
 
     public function render(): string
     {
-        $classes = trim($this->arguments['class']);
+        /** @var string $renderedContent */
+        $renderedContent = $this->renderChildren();
+        $classes = trim((string) $this->arguments['class']);
         if (!empty($classes)) {
             $this->tag->addAttribute('class', $classes);
         }
         $this->tag->addAttribute('href', $this->renderModuleUrl($this->arguments));
-        $this->tag->setContent($this->renderChildren());
+        $this->tag->setContent($renderedContent);
+
         return $this->tag->render();
     }
 
+    /**
+     * @param array<mixed> $arguments
+     */
     abstract protected function renderModuleUrl(array $arguments = []): string;
 }

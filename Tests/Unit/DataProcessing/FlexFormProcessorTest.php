@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing;
 
 use Hoogi91\Charts\DataProcessing\FlexFormProcessor;
@@ -9,9 +11,14 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class FlexFormProcessorTest extends UnitTestCase
 {
-
     /**
      * @dataProvider flexformDataProvider
+     *
+     * @param array<mixed> $expected
+     * @param array<mixed> $parsedData
+     * @param array<array<mixed>> $processorConfig
+     * @param array<mixed> $contentObjectConfig
+     * @param array<mixed> $processedData
      */
     public function testProcess(
         array $expected,
@@ -22,13 +29,16 @@ class FlexFormProcessorTest extends UnitTestCase
     ): void {
         $unit = new FlexFormProcessor(
             $this->createConfiguredMock(FlexFormService::class, [
-                'convertFlexFormContentToArray' => $parsedData
+                'convertFlexFormContentToArray' => $parsedData,
             ])
         );
         $result = $unit->process(new ContentObjectRenderer(), $contentObjectConfig, $processorConfig, $processedData);
         self::assertSame($expected, $result);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function flexformDataProvider(): array
     {
         return [
@@ -61,8 +71,8 @@ class FlexFormProcessorTest extends UnitTestCase
                         'parsed-data' => 789,
                         'existing' => 'world hello',
                         'falseIsReplaced' => 123,
-                        'nullIsReplaced' => 456
-                    ]
+                        'nullIsReplaced' => 456,
+                    ],
                 ],
                 'parsedData' => [
                     'parsed-data' => 789,
@@ -77,8 +87,8 @@ class FlexFormProcessorTest extends UnitTestCase
                     'settings.' => [
                         'existing' => 'hello world',
                         'falseIsReplaced' => 123,
-                        'nullIsReplaced' => 456
-                    ]
+                        'nullIsReplaced' => 456,
+                    ],
                 ],
             ],
         ];

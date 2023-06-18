@@ -24,16 +24,15 @@ jobs:
           - "lowest"
           - "highest"
         php-version:
+          - "8.2"
           - "8.1"
-          - "8.0"
-          - "7.4"
         operating-system:
           - "ubuntu-latest"
         coverage:
           - "false"
         include:
           - dependencies: "locked"
-            php-version: "8.1"
+            php-version: "8.2"
             operating-system: "ubuntu-latest"
             coverage: "true"
 

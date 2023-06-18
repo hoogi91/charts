@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
@@ -10,19 +12,14 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainTest extends UnitTestCase
 {
-
     use CacheTrait;
 
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpCaches();
-
-        $packageManager = $this->createMock(PackageManager::class);
-        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
-        ExtensionManagementUtility::setPackageManager($packageManager);
     }
 
     protected function tearDown(): void
@@ -40,6 +37,10 @@ class ChartDataPlainTest extends UnitTestCase
 
     public function testTypeMethods(): void
     {
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
+        ExtensionManagementUtility::setPackageManager($packageManager);
+
         $chartData = new ChartDataPlain();
         $chartData->setType(ChartDataPlain::TYPE_PLAIN);
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
@@ -48,9 +49,10 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
     }
 
-
     /**
      * @dataProvider labelProvider
+     *
+     * @param array<mixed> $expected
      */
     public function testLabelMethods(string $content, array $expected): void
     {
@@ -86,6 +88,9 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertSame(['Germany', 'Europe'], $labels);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function labelProvider(): array
     {
         return [
@@ -122,6 +127,9 @@ class ChartDataPlainTest extends UnitTestCase
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function datasetProvider(): array
     {
         return [

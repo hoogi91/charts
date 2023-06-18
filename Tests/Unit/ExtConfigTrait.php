@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit;
 
 use PHPUnit\Framework\MockObject\MockObject;
@@ -7,9 +9,8 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 trait ExtConfigTrait
 {
-
     /**
-     * @return ExtensionConfiguration|MockObject
+     * @return ExtensionConfiguration&MockObject
      */
     private function getExtensionConfig(string $type, bool $enabled = true): MockObject
     {
