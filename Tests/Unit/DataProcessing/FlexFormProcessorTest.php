@@ -39,7 +39,7 @@ class FlexFormProcessorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function flexformDataProvider(): array
+    public static function flexformDataProvider(): array
     {
         return [
             'empty data' => [

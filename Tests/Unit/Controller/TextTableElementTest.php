@@ -66,7 +66,7 @@ class TextTableElementTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         return [
             'with empty value' => [

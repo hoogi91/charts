@@ -23,6 +23,7 @@ class ColorPaletteInputElementTest extends UnitTestCase
 
     public function setUp(): void
     {
+        parent::setUp();
         GeneralUtility::addInstance(IconFactory::class, $this->createMock(IconFactory::class));
         $languageService = $this->createMock(LanguageService::class);
         $languageService->method('sL')->willReturnMap(
@@ -59,7 +60,7 @@ class ColorPaletteInputElementTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function dataProvider(): array
+    public static function dataProvider(): array
     {
         return [
             'empty data' => [

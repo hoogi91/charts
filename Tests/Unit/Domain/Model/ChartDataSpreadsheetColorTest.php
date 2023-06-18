@@ -61,7 +61,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function backgroundDataProvider(): array
+    public static function backgroundDataProvider(): array
     {
         return [
             'no background style' => [
@@ -137,7 +137,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function borderDataProvider(): array
+    public static function borderDataProvider(): array
     {
         return [
             'no border style' => [

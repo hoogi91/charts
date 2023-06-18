@@ -31,7 +31,7 @@ class ChartDataPlainColorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function backgroundDataProvider(): array
+    public static function backgroundDataProvider(): array
     {
         return [
             'empty backgrounds are dropped' => [
@@ -64,7 +64,7 @@ class ChartDataPlainColorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function borderDataProvider(): array
+    public static function borderDataProvider(): array
     {
         return [
             'empty borders are dropped' => [

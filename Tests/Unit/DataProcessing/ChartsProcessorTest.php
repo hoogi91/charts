@@ -56,9 +56,9 @@ class ChartsProcessorTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function chartDataProvider(): array
+    public static function chartDataProvider(): array
     {
-        $chartEntity = $this->createMock(ChartData::class);
+        $chartEntity = self::createMockInProvider(ChartData::class);
         $expectedResult = static fn (
             object $entity = null,
             string $type = '',
@@ -130,7 +130,7 @@ class ChartsProcessorTest extends UnitTestCase
                     'data' => ['CType' => 'chart_bar'],
                 ],
                 'chartEntity' => $chartEntity,
-                'chartLibrary' => new ApexCharts($this->getExtensionConfig('apexcharts_js')),
+                'chartLibrary' => new ApexCharts(self::getExtensionConfig('apexcharts_js')),
             ],
         ];
     }

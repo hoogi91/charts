@@ -9,7 +9,7 @@ class GetChartDataViewHelperTest extends AbstractViewHelperTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->importDataSet(dirname(__DIR__, 2) . '/Fixtures/tx_charts_domain_model_chartdata.xml');
+        $this->importCSVDataSet(dirname(__DIR__, 2) . '/Fixtures/tx_charts_domain_model_chartdata.csv');
     }
 
     /**

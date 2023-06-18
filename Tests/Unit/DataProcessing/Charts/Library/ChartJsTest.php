@@ -26,13 +26,13 @@ class ChartJsTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ChartJs($this->getExtensionConfig('chart_js'));
+        $this->library = new ChartJs(self::getExtensionConfig('chart_js'));
     }
 
     /**
      * @return array<mixed>
      */
-    public function chartDataProvider(): array
+    public static function chartDataProvider(): array
     {
         $mockConfig = [
             'getUid' => 123456,
@@ -51,11 +51,11 @@ class ChartJsTest extends UnitTestCase
 
         return [
             'plain chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartData::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartData::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_chartjs.js',
             ],
             'spreadsheet chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartDataSpreadsheet::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartDataSpreadsheet::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_chartjs.js',
             ],
         ];
@@ -104,12 +104,15 @@ class ChartJsTest extends UnitTestCase
     public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
-        $pageRenderer->expects(self::exactly(2))
+        $pageRenderer->expects($matcher = $this->exactly(2))
             ->method('addJsFooterInlineCode')
-            ->withConsecutive(
-                ['chartsInitialization', self::isType('string')],
-                ['chartsData123456', self::isType('string')]
-            );
+            ->willReturnCallback(function (string $param) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => $this->assertEquals($param, 'chartsInitialization'),
+                    2 => $this->assertEquals($param, 'chartsData123456'),
+                    default => true,
+                };
+            });
 
         $javascript = $this->library->getEntityJavascript('test-identifier-123', 'doughnut', $model, $pageRenderer);
         $this->assertStringEqualsJavascriptFile($expectedFile, $javascript);
@@ -138,7 +141,7 @@ class ChartJsTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function spreadsheetMethodProvider(): array
+    public static function spreadsheetMethodProvider(): array
     {
         return [
             'empty labels' => [
@@ -198,9 +201,9 @@ class ChartJsTest extends UnitTestCase
     /**
      * @return Traversable<mixed>
      */
-    public function renderingDataProvider(): Traversable
+    public static function renderingDataProvider(): Traversable
     {
-        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $extConf = self::createMockInProvider(ExtensionConfiguration::class);
         $extConf->method('get')->willThrowException(new ExtensionConfigurationPathDoesNotExistException());
 
         yield 'exception is caught and assets are returned' => [
@@ -208,9 +211,9 @@ class ChartJsTest extends UnitTestCase
             'pageRenderer' => null,
         ];
 
-        $extConf = $this->createMock(ExtensionConfiguration::class);
+        $extConf = self::createMockInProvider(ExtensionConfiguration::class);
         $extConf->method('get')->with('charts', 'chart_js_assets')->willReturn('true');
-        $pageRenderer = $this->createMock(PageRenderer::class);
+        $pageRenderer = self::createMockInProvider(PageRenderer::class);
         $pageRenderer->expects(self::once())->method('addCssLibrary');
         $pageRenderer->expects(self::once())->method('addJsFooterLibrary');
 
