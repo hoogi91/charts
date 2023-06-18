@@ -13,13 +13,6 @@ use TYPO3Fluid\Fluid\View\TemplateView;
 abstract class AbstractViewHelperTestCase extends FunctionalTestCase
 {
     /**
-     * @var array<string, non-empty-string>
-     */
-    protected array $pathsToLinkInTestInstance = [
-        'typo3conf/ext/charts/Tests/Fixtures/' => 'fileadmin/user_upload',
-    ];
-
-    /**
      * @var array<non-empty-string>
      */
     protected array $testExtensionsToLoad = [
