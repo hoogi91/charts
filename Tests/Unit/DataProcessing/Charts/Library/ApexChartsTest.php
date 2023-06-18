@@ -23,13 +23,13 @@ class ApexChartsTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ApexCharts($this->getExtensionConfig('apexcharts_js'));
+        $this->library = new ApexCharts(self::getExtensionConfig('apexcharts_js'));
     }
 
     /**
      * @return array<mixed>
      */
-    public function chartDataProvider(): array
+    public static function chartDataProvider(): array
     {
         $mockConfig = [
             'getUid' => 123_456,
@@ -48,11 +48,11 @@ class ApexChartsTest extends UnitTestCase
 
         return [
             'plain chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartData::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartData::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
             'spreadsheet chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartDataSpreadsheet::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartDataSpreadsheet::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
         ];
@@ -103,12 +103,14 @@ class ApexChartsTest extends UnitTestCase
     public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
-        $pageRenderer->expects(self::exactly(2))
+        $pageRenderer->expects($matcher = $this->exactly(2))
             ->method('addJsFooterInlineCode')
-            ->withConsecutive(
-                ['chartsInitialization', self::isType('string')],
-                ['chartsData123456', self::isType('string')]
-            );
+            ->willReturnCallback(function (string $param) use ($matcher) {
+                match ($matcher->numberOfInvocations()) {
+                    1 => $this->assertEquals($param, 'chartsInitialization'),
+                    2 => $this->assertEquals($param, 'chartsData123456'),
+                };
+            });
 
         $javascript = $this->library->getEntityJavascript('test-identifier-123', 'doughnut', $model, $pageRenderer);
         $this->assertStringEqualsJavascriptFile($expectedFile, $javascript);
@@ -137,7 +139,7 @@ class ApexChartsTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function spreadsheetMethodProvider(): array
+    public static function spreadsheetMethodProvider(): array
     {
         return [
             'empty labels' => [

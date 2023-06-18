@@ -91,7 +91,7 @@ class ChartDataPlainTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function labelProvider(): array
+    public static function labelProvider(): array
     {
         return [
             'as xml on a single row' => [
@@ -130,7 +130,7 @@ class ChartDataPlainTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function datasetProvider(): array
+    public static function datasetProvider(): array
     {
         return [
             'as xml' => [
