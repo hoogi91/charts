@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hoogi91\Charts\Tests\Unit;
 
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -32,20 +33,23 @@ trait ExtConfigTrait
      * @psalm-template RealInstanceType of object
      *
      * @psalm-param class-string<RealInstanceType> $originalClassName
+     * @param array<string,mixed> $configuration
      *
      * @psalm-return MockObject&RealInstanceType
      *
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
      */
     private static function createMockInProvider(string $originalClassName, array $configuration = []): MockObject
     {
+        // phpcs:disable SlevomatCodingStandard.Functions.DisallowNamedArguments
         $mock = (new Generator())->getMock(
             $originalClassName,
             callOriginalConstructor: false,
             callOriginalClone: false,
             cloneArguments: false,
-            allowMockingUnknownTypes: false,
+            allowMockingUnknownTypes: false
         );
+        // phpcs:enable
         foreach ($configuration as $method => $return) {
             $mock->method($method)->willReturn($return);
         }

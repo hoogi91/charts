@@ -105,10 +105,11 @@ class ApexChartsTest extends UnitTestCase
         $pageRenderer = $this->createMock(PageRenderer::class);
         $pageRenderer->expects($matcher = $this->exactly(2))
             ->method('addJsFooterInlineCode')
-            ->willReturnCallback(function (string $param) use ($matcher) {
+            ->willReturnCallback(function (string $param) use ($matcher): void {
                 match ($matcher->numberOfInvocations()) {
                     1 => $this->assertEquals($param, 'chartsInitialization'),
                     2 => $this->assertEquals($param, 'chartsData123456'),
+                    default => true,
                 };
             });
 

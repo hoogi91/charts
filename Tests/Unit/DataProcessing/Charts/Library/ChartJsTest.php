@@ -110,6 +110,7 @@ class ChartJsTest extends UnitTestCase
                 match ($matcher->numberOfInvocations()) {
                     1 => $this->assertEquals($param, 'chartsInitialization'),
                     2 => $this->assertEquals($param, 'chartsData123456'),
+                    default => true,
                 };
             });
 
