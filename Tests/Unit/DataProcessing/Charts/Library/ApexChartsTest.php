@@ -33,8 +33,8 @@ class ApexChartsTest extends UnitTestCase
     {
         $mockConfig = [
             'getUid' => 123_456,
-            'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-            'getDatasets' => [
+            'getLabelList' => ['Label 1', 'Label 2', 'Label 3'],
+            'getDatasetList' => [
                 ['Data 1-1', 'Data 1-2', 'Data 1-3'],
                 ['Data 2-1', 'Data 2-2', 'Data 2-3'],
                 ['Data 3-1', 'Data 3-2', 'Data 3-3'],
@@ -131,7 +131,7 @@ class ApexChartsTest extends UnitTestCase
                 'doughnut',
                 $this->createConfiguredMock(
                     ChartDataSpreadsheet::class,
-                    ['getLabels' => $labels, 'getDatasets' => $datasets]
+                    ['getLabelList' => $labels, 'getDatasetList' => $datasets]
                 )
             )
         );
@@ -144,14 +144,14 @@ class ApexChartsTest extends UnitTestCase
     {
         return [
             'empty labels' => [
-                'getLabels' => [],
-                'getDatasets' => [
+                'getLabelList' => [],
+                'getDatasetList' => [
                     ['Data 1-1', 'Data 1-2', 'Data 1-3'],
                 ],
             ],
             'empty dataset' => [
-                'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-                'getDatasets' => [],
+                'getLabelList' => ['Label 1', 'Label 2', 'Label 3'],
+                'getDatasetList' => [],
             ],
         ];
     }

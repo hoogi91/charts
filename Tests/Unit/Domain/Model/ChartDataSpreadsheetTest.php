@@ -12,6 +12,7 @@ use Hoogi91\Spreadsheets\Service\ExtractorService;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataSpreadsheetTest extends UnitTestCase
@@ -27,7 +28,11 @@ class ChartDataSpreadsheetTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->chartData = new ChartDataSpreadsheet();
+    }
 
+    private function injectExtractorService(): void
+    {
         $createCellValue = fn (float $value) => CellDataValueObject::create(
             $this->createConfiguredMock(Cell::class, [
                     'getCalculatedValue' => $value,
@@ -78,9 +83,7 @@ class ChartDataSpreadsheetTest extends UnitTestCase
                 ]
             )
         );
-
-        $this->chartData = new ChartDataSpreadsheet();
-        $this->chartData->injectExtractorService($extractorService);
+        GeneralUtility::addInstance(ExtractorService::class, $extractorService);
     }
 
     public function testTitleMethods(): void
@@ -100,8 +103,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testLabelMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setLabels(self::LABEL_DSN);
-        $labels = $this->chartData->getLabels();
+        $labels = $this->chartData->getLabelList();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
         $this->assertEquals('[rendered]1.2', $labels[1]);
@@ -109,8 +113,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testDatasetMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setDatasets(self::DATASET_DSN);
-        $datasets = $this->chartData->getDatasets();
+        $datasets = $this->chartData->getDatasetList();
         $this->assertIsArray($datasets);
         $this->assertCount(3, $datasets);
         $this->assertEquals([1.1, 1.2, 1.3], $datasets[0]);
@@ -120,8 +125,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testDatasetLabelMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setDatasetsLabels(self::DATASET_LABEL_DSN);
-        $labels = $this->chartData->getDatasetsLabels();
+        $labels = $this->chartData->getDatasetsLabelList();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
         $this->assertEquals('[rendered]1.2', $labels[1]);

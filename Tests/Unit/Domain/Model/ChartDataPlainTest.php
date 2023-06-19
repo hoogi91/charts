@@ -58,7 +58,7 @@ class ChartDataPlainTest extends UnitTestCase
     {
         $chartData = new ChartDataPlain();
         $chartData->setLabels(trim($content));
-        $labels = $chartData->getLabels();
+        $labels = $chartData->getLabelList();
         $this->assertIsArray($labels);
         $this->assertSame($expected, $labels);
     }
@@ -70,7 +70,7 @@ class ChartDataPlainTest extends UnitTestCase
     {
         $chartData = new ChartDataPlain();
         $chartData->setDatasets(trim($content));
-        $datasets = $chartData->getDatasets();
+        $datasets = $chartData->getDatasetList();
         $this->assertIsArray($datasets);
         $this->assertCount(2, $datasets);
         $this->assertIsFloat($datasets[0][0]);
@@ -84,7 +84,7 @@ class ChartDataPlainTest extends UnitTestCase
     {
         $chartData = new ChartDataPlain();
         $chartData->setDatasetsLabels(trim($content));
-        $labels = $chartData->getDatasetsLabels();
+        $labels = $chartData->getDatasetsLabelList();
         $this->assertSame(['Germany', 'Europe'], $labels);
     }
 

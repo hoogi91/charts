@@ -123,8 +123,8 @@ abstract class AbstractLibrary implements LibraryInterface
         PageRenderer $pageRenderer = null
     ): string {
         // check if labels and datasets are not empty ;)
-        $labels = $chartEntity->getLabels();
-        $datasets = $chartEntity->getDatasets();
+        $labels = $chartEntity->getLabelList();
+        $datasets = $chartEntity->getDatasetList();
         if (empty($labels) || empty($datasets)) {
             return '';
         }
@@ -162,7 +162,7 @@ abstract class AbstractLibrary implements LibraryInterface
      */
     protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
     {
-        $labels = $chartEntity->getDatasetsLabels();
+        $labels = $chartEntity->getDatasetsLabelList();
 
         return array_map(
             static fn (int $key) => ['data' => $datasets[$key], 'label' => $labels[$key] ?? ''],

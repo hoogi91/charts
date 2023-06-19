@@ -49,7 +49,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array<mixed>
      */
-    public function getLabels(): array
+    public function getLabelList(): array
     {
         // only get first row of labels and ignore multiple column/row selections
         $labels = $this->extractLabelList($this->labels);
@@ -65,7 +65,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array<mixed>
      */
-    public function getDatasets(): array
+    public function getDatasetList(): array
     {
         return $this->extractDatasetList($this->datasets);
     }
@@ -78,7 +78,7 @@ abstract class ChartData extends AbstractEntity
     /**
      * @return array<mixed>
      */
-    public function getDatasetsLabels(): array
+    public function getDatasetsLabelList(): array
     {
         // only get single row of labels => in javascript this should be mapped together with datasets
         $labels = $this->extractLabelList($this->datasetsLabels);

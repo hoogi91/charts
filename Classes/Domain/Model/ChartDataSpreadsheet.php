@@ -12,16 +12,10 @@ use PhpOffice\PhpSpreadsheet\Reader\Exception as SpreadsheetReaderException;
 use PhpOffice\PhpSpreadsheet\Style\Border as CellBorder;
 use PhpOffice\PhpSpreadsheet\Style\Color as CellColor;
 use PhpOffice\PhpSpreadsheet\Style\Fill as CellBackground;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ChartDataSpreadsheet extends ChartData
 {
-    private ExtractorService $extractorService;
-
-    public function injectExtractorService(ExtractorService $extractorService): void
-    {
-        $this->extractorService = $extractorService;
-    }
-
     /**
      * @return array<array<mixed>>
      */
@@ -204,6 +198,8 @@ class ChartDataSpreadsheet extends ChartData
 
     private function extractByDSN(string $dsn): ExtractionValueObject
     {
-        return $this->extractorService->getDataByDsnValueObject(DsnValueObject::createFromDSN($dsn));
+        $extractorService = GeneralUtility::makeInstance(ExtractorService::class);
+
+        return $extractorService->getDataByDsnValueObject(DsnValueObject::createFromDSN($dsn));
     }
 }

@@ -47,7 +47,7 @@ class ChartDataPlain extends ChartData
     /**
      * @return array<mixed>
      */
-    public function getDatasetsLabels(): array
+    public function getDatasetsLabelList(): array
     {
         $labels = $this->extractLabelList($this->datasetsLabels);
         if (count($labels) === 1) {

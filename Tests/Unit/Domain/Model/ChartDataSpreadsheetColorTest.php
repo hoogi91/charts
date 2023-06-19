@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataSpreadsheetColorTest extends UnitTestCase
@@ -212,9 +213,9 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
                 ]
             )
         );
+        GeneralUtility::addInstance(ExtractorService::class, $extractorService);
 
         $chartData = new ChartDataSpreadsheet();
-        $chartData->injectExtractorService($extractorService);
         $chartData->setDatasets(self::DATASET_DSN);
 
         return $chartData;
