@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
@@ -7,11 +9,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainColorTest extends UnitTestCase
 {
-
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     /**
      * @dataProvider backgroundDataProvider
+     *
+     * @param array<string> $colors
+     * @param array<mixed> $expectedColors
      */
     public function testBackgroundColorMethods(
         array $colors,
@@ -24,7 +28,10 @@ class ChartDataPlainColorTest extends UnitTestCase
         $this->assertSame($expectedColors, $chartData->getBackgroundColors());
     }
 
-    public function backgroundDataProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function backgroundDataProvider(): array
     {
         return [
             'empty backgrounds are dropped' => [
@@ -42,6 +49,9 @@ class ChartDataPlainColorTest extends UnitTestCase
 
     /**
      * @dataProvider borderDataProvider
+     *
+     * @param array<string> $colors
+     * @param array<mixed> $expectedColors
      */
     public function testBorderColorMethods(array $colors, int $expectedCount, array $expectedColors): void
     {
@@ -51,7 +61,10 @@ class ChartDataPlainColorTest extends UnitTestCase
         $this->assertSame($expectedColors, $chartData->getBorderColors());
     }
 
-    public function borderDataProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function borderDataProvider(): array
     {
         return [
             'empty borders are dropped' => [

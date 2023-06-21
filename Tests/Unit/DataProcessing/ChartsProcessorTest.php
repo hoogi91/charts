@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
@@ -22,6 +24,10 @@ class ChartsProcessorTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
+     *
+     * @param array<mixed> $expected
+     * @param array<mixed> $processorConfig
+     * @param array<array<string>> $processedData
      */
     public function testProcess(
         array $expected,
@@ -33,11 +39,11 @@ class ChartsProcessorTest extends UnitTestCase
         $unit = new ChartsProcessor(
             $this->createConfiguredMock(PageRenderer::class, []),
             $this->createConfiguredMock(ChartDataRepository::class, ['findByUid' => $chartEntity]),
-            $this->createConfiguredMock(ExtensionConfiguration::class, []),
+            $this->createConfiguredMock(ExtensionConfiguration::class, ['get' => 'chartjs']),
             $this->createConfiguredMock(
                 LibraryRegistry::class,
                 ['getLibrary' => $library ?? new ChartJs($this->getExtensionConfig('chart_js'))]
-            ),
+            )
         );
         $result = $unit->process(new ContentObjectRenderer(), [], $processorConfig, $processedData);
 
@@ -47,19 +53,22 @@ class ChartsProcessorTest extends UnitTestCase
         self::assertEquals($expected, $result);
     }
 
-    public function chartDataProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function chartDataProvider(): array
     {
-        $chartEntity = $this->createMock(ChartData::class);
-        $expectedResult = static fn(
+        $chartEntity = self::createMockInProvider(ChartData::class);
+        $expectedResult = static fn (
             object $entity = null,
             string $type = '',
             string $library = ChartJs::TECHNICAL_NAME
         ) => ['type' => $type, 'library' => $library, 'entity' => $entity];
-        $expectedCss = static fn(array $libs = [], string ...$entities) => [
-            'assets' => ['css' => ['libs' => $libs, 'entity' => $entities]]
+        $expectedCss = static fn (array $libs = [], string ...$entities) => [
+            'assets' => ['css' => ['libs' => $libs, 'entity' => $entities]],
         ];
-        $expectedJs = static fn(array $libs = [], string ...$entities) => [
-            'assets' => ['js' => ['libs' => $libs, 'entity' => $entities]]
+        $expectedJs = static fn (array $libs = [], string ...$entities) => [
+            'assets' => ['js' => ['libs' => $libs, 'entity' => $entities]],
         ];
 
         return [
@@ -88,7 +97,7 @@ class ChartsProcessorTest extends UnitTestCase
             'with chart data and target variable' => [
                 'expected' => [
                     'data' => ['CType' => 'chart_line'],
-                    'custom-variable' => $expectedResult($chartEntity, 'chart_line')
+                    'custom-variable' => $expectedResult($chartEntity, 'chart_line'),
                 ],
                 'processorConfig' => [
                     'data' => 123,
@@ -110,7 +119,7 @@ class ChartsProcessorTest extends UnitTestCase
                                 'https://cdn.example.com/apexcharts_js.js',
                                 'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js',
                             ]
-                        ),
+                        )
                     ),
                 ],
                 'processorConfig' => [
@@ -121,7 +130,7 @@ class ChartsProcessorTest extends UnitTestCase
                     'data' => ['CType' => 'chart_bar'],
                 ],
                 'chartEntity' => $chartEntity,
-                'chartLibrary' => new ApexCharts($this->getExtensionConfig('apexcharts_js'))
+                'chartLibrary' => new ApexCharts(self::getExtensionConfig('apexcharts_js')),
             ],
         ];
     }

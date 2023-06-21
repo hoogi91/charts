@@ -33,7 +33,7 @@ export class ColorPickerElement extends HTMLElement {
         <label>A <input type="number" min="0" max="1" step="0.01" name="a"/></label>
     </div>
 </div>
-    `
+    `;
 
     constructor() {
         super();

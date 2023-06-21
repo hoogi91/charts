@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartData;
@@ -10,37 +12,39 @@ use Hoogi91\Spreadsheets\Service\ExtractorService;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataSpreadsheetTest extends UnitTestCase
 {
+    final public const LABEL_DSN = 'file:123|0!A1:E1';
+    final public const DATASET_DSN = 'file:456|0!A2:E7';
+    final public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
 
-    public const LABEL_DSN = 'file:123|0!A1:E1';
-    public const DATASET_DSN = 'file:456|0!A2:E7';
-    public const DATASET_LABEL_DSN = 'file:789|0!A7:C7';
-
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     private ChartDataSpreadsheet $chartData;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->chartData = new ChartDataSpreadsheet();
+    }
 
-        $createCellValue = function (float $value) {
-            return CellDataValueObject::create(
-                $this->createConfiguredMock(Cell::class, [
+    private function injectExtractorService(): void
+    {
+        $createCellValue = fn (float $value) => CellDataValueObject::create(
+            $this->createConfiguredMock(Cell::class, [
                     'getCalculatedValue' => $value,
                     'getFormattedValue' => '[formatted]' . $value,
                     'getDataType' => 's',
                     'getXfIndex' => 123,
                     'getStyle' => $this->createConfiguredMock(Style\Style::class, [
-                        'getFont' => $this->createMock(Style\Font::class)
-                    ])
+                        'getFont' => $this->createMock(Style\Font::class),
+                    ]),
                 ]),
-                '[rendered]' . $value
-            );
-        };
+            '[rendered]' . $value
+        );
 
         $spreadsheetMock = $this->createConfiguredMock(Spreadsheet::class, [
             'getCellXfByIndex' => $this->createConfiguredMock(Style\Style::class, [
@@ -64,8 +68,8 @@ class ChartDataSpreadsheetTest extends UnitTestCase
                 'getFill' => $this->createConfiguredMock(Style\Fill::class, [
                     'getFillType' => Style\Fill::FILL_SOLID,
                     'getStartColor' => new Style\Color(Style\Color::COLOR_RED),
-                ])
-            ])
+                ]),
+            ]),
         ]);
 
         $extractorService = $this->createMock(ExtractorService::class);
@@ -79,9 +83,7 @@ class ChartDataSpreadsheetTest extends UnitTestCase
                 ]
             )
         );
-
-        $this->chartData = new ChartDataSpreadsheet();
-        $this->chartData->injectExtractorService($extractorService);
+        GeneralUtility::addInstance(ExtractorService::class, $extractorService);
     }
 
     public function testTitleMethods(): void
@@ -101,8 +103,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testLabelMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setLabels(self::LABEL_DSN);
-        $labels = $this->chartData->getLabels();
+        $labels = $this->chartData->getLabelList();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
         $this->assertEquals('[rendered]1.2', $labels[1]);
@@ -110,8 +113,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testDatasetMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setDatasets(self::DATASET_DSN);
-        $datasets = $this->chartData->getDatasets();
+        $datasets = $this->chartData->getDatasetList();
         $this->assertIsArray($datasets);
         $this->assertCount(3, $datasets);
         $this->assertEquals([1.1, 1.2, 1.3], $datasets[0]);
@@ -121,8 +125,9 @@ class ChartDataSpreadsheetTest extends UnitTestCase
 
     public function testDatasetLabelMethods(): void
     {
+        $this->injectExtractorService();
         $this->chartData->setDatasetsLabels(self::DATASET_LABEL_DSN);
-        $labels = $this->chartData->getDatasetsLabels();
+        $labels = $this->chartData->getDatasetsLabelList();
         $this->assertIsArray($labels);
         $this->assertCount(3, $labels);
         $this->assertEquals('[rendered]1.2', $labels[1]);

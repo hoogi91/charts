@@ -1,0 +1,49 @@
+name: 'Install php and composer dependencies'
+description: 'This action sets up PHP and installs deps using composer.'
+inputs:
+  php-version:
+    required: true
+    description: 'PHP Version to use'
+  extensions:
+    required: false
+    description: 'PHP extensions to install'
+    default: ''
+  dependencies:
+    required: false
+    description: 'Instruction which composer dependencies to install - one of "highest", "lowest", defaults to "locked"'
+    default: 'locked'
+runs:
+  using: 'composite'
+  steps:
+    - name: "Install PHP"
+      uses: "shivammathur/setup-php@v2"
+      with:
+        coverage: "pcov"
+        php-version: "${{ inputs.php-version }}"
+        ini-values: memory_limit=-1
+        tools: composer:v2, cs2pr
+        extensions: "${{ inputs.extensions }}"
+
+    - name: "Cache dependencies"
+      uses: "actions/cache@v2"
+      with:
+        path: |
+          ~/.composer/cache
+          vendor
+        key: "php-${{ inputs.php-version }}-${{ inputs.dependencies }}"
+        restore-keys: "php-${{ inputs.php-version }}-${{ inputs.dependencies }}"
+
+    - name: "Install lowest dependencies"
+      if: ${{ inputs.dependencies == 'lowest' }}
+      shell: bash
+      run: "composer update --prefer-lowest --no-interaction --no-progress"
+
+    - name: "Install highest dependencies"
+      if: ${{ inputs.dependencies == 'highest' }}
+      shell: bash
+      run: "composer update --no-interaction --no-progress"
+
+    - name: "Install locked dependencies"
+      if: ${{ inputs.dependencies == 'locked' }}
+      shell: bash
+      run: "composer install --no-interaction --no-progress"

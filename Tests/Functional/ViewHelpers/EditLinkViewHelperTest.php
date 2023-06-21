@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Functional\ViewHelpers;
+
+use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EditLinkViewHelperTest extends AbstractViewHelperTestCase
 {
     private const MOCKED_RETURN_URL = '/typo3/functional/testing/';
-
-    private array $returnUrl = [
-        1 => '/typo3/module/web/layout?token=dummyToken&id=1',
-        456 => '/typo3/module/web/layout?token=dummyToken&id=456',
-    ];
 
     public function setUp(): void
     {
@@ -28,17 +28,19 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
         string $table,
         ?int $returnPid = null
     ): void {
-        $expectedQueryData = [
-            'token' => 'dummyToken',
-            sprintf('edit[%s][%d]', $table, $recordId) => 'edit'
+        $returnUrl = [
+            1 => '/typo3/module/web/layout?token=dummyToken&id=1',
+            456 => '/typo3/module/web/layout?token=dummyToken&id=456',
         ];
-        if (isset($this->returnUrl[$returnPid])) {
-            $expectedQueryData['returnUrl'] = $this->returnUrl[$returnPid];
-        } else {
-            $expectedQueryData['returnUrl'] = self::MOCKED_RETURN_URL;
-        }
 
-        $expectedHref = str_replace('&', '&amp;', '/typo3/record/edit?' . http_build_query($expectedQueryData));
+        $expectedHref = (string)GeneralUtility::makeInstance(UriBuilder::class)->buildUriFromRoute(
+            'record_edit',
+            [
+                sprintf('edit[%s][%d]', $table, $recordId) => 'edit',
+                'returnUrl' => $returnUrl[$returnPid] ?? self::MOCKED_RETURN_URL,
+            ]
+        );
+        $expectedHref = str_replace('&', '&amp;', $expectedHref);
         $expectedReturnPid = $returnPid !== null ? ' returnPid="' . $returnPid . '"' : '';
 
         self::assertEquals(
@@ -47,7 +49,9 @@ class EditLinkViewHelperTest extends AbstractViewHelperTestCase
                 [$recordId, $table, $expectedReturnPid, $expectedHref]
             ),
             $this->getView(
-                '<test:backend.editLink class="link" recordId="{recordId}" recordTable="{table}" returnPid="{pid}">Link</test:backend.editLink>',
+                '<test:backend.editLink class="link" recordId="{recordId}" recordTable="{table}" returnPid="{pid}">' .
+                    'Link' .
+                '</test:backend.editLink>',
                 ['recordId' => $recordId, 'table' => $table, 'pid' => $returnPid]
             )->render()
         );

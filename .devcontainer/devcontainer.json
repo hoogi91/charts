@@ -1,0 +1,40 @@
+{
+  "name": "typo3-charts",
+  "image": "ghcr.io/hoogi91/typo3/php:8.2",
+  "runArgs": [
+    "--name",
+    "typo3-charts"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.executablePath": "/usr/local/bin/php",
+        "php.executables": {
+          "8.2": "/usr/local/bin/php"
+        }
+      },
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "xdebug.php-debug",
+        "bmewburn.vscode-intelephense-client",
+        "DEVSENSE.phptools-vscode",
+        "DEVSENSE.composer-php-vscode",
+        "MehediDracula.php-namespace-resolver",
+        "benjaminkott.typo3-typoscript",
+        "kamediendesign.typo3-fluid",
+        "christian-kohler.npm-intellisense",
+        "trabpukcip.vscode-npm-scripts"
+      ],
+    }
+  },
+  "postStartCommand": "apache2ctl start",
+  "postCreateCommand": ".devcontainer/postCreate.sh",
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  }
+}

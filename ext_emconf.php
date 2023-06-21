@@ -5,14 +5,14 @@ $EM_CONF[$_EXTKEY] = [
     'category'     => 'fe',
     'author'       => 'Thorsten Hogenkamp',
     'author_email' => 'thorsten@hogenkamp-bocholt.de',
-    'version'      => '2.0.6',
+    'version'      => '3.0.0',
     'state'        => 'stable',
     'constraints'  => [
         'depends'  => [
-            'typo3' => '10.4.0-11.5.99',
+            'typo3' => '11.5.0-12.4.99',
         ],
         'suggests' => [
-            'spreadsheets' => '2.0.0-3.99.99',
+            'spreadsheets' => '3.3.0-4.99.99',
         ],
     ],
     'autoload'     => [

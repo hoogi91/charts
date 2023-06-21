@@ -1,0 +1,41 @@
+name: "NPM Lint & Build"
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  lint:
+    name: "Lint & Build"
+
+    runs-on: ${{ matrix.operating-system }}
+
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      matrix:
+        node-version:
+          - "18"
+        operating-system:
+          - "ubuntu-latest"
+        experimental:
+          - false
+        include:
+          - node-version: "19"
+            operating-system: "ubuntu-latest"
+            experimental: true
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Composer install"
+        uses: ./.github/actions/npm
+        with:
+          node-version: '${{ matrix.node-version }}'
+
+      - name: "Lint"
+        run: npm run lint -- --format unix
+
+      - name: "Build"
+        run: npm run build

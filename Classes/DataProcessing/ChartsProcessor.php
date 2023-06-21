@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\DataProcessing;
 
-use Hoogi91\Charts\DataProcessing\Charts\Library\ChartJs as ChartJsLibrary;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryInterface;
 use Hoogi91\Charts\DataProcessing\Charts\LibraryRegistry;
 use Hoogi91\Charts\Domain\Model\ChartData;
@@ -14,26 +15,27 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 class ChartsProcessor implements DataProcessorInterface
 {
-
-    private PageRenderer $pageRenderer;
-
-    private ChartDataRepository $chartDataRepository;
-
-    private LibraryInterface $chartLibrary;
+    private readonly LibraryInterface $chartLibrary;
 
     public function __construct(
-        PageRenderer $pageRenderer,
-        ChartDataRepository $repository,
+        private readonly PageRenderer $pageRenderer,
+        private readonly ChartDataRepository $chartDataRepository,
         ExtensionConfiguration $extConf,
         LibraryRegistry $registry
     ) {
-        $this->pageRenderer = $pageRenderer;
-        $this->chartDataRepository = $repository;
-        $this->chartLibrary = $registry->getLibrary(
-            (string)($extConf->get('charts', 'library') ?: ChartJsLibrary::getServiceIndex())
-        );
+        $library = $extConf->get('charts', 'library');
+        $this->chartLibrary = is_string($library) && !empty($library)
+            ? $registry->getLibrary($library) ?? $registry->getDefaultLibrary()
+            : $registry->getDefaultLibrary();
     }
 
+    /**
+     * @param array<mixed> $contentObjectConfiguration
+     * @param array<mixed> $processorConfiguration
+     * @param array<array<string>> $processedData
+     *
+     * @return array<array<mixed>>
+     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
@@ -55,6 +57,7 @@ class ChartsProcessor implements DataProcessorInterface
                 'library' => $this->chartLibrary->getName(),
                 'entity' => null,
             ];
+
             return $processedData;
         }
 
@@ -93,6 +96,7 @@ class ChartsProcessor implements DataProcessorInterface
 
         // assign to current processed data and return
         $processedData[$targetVariableName] = $chartData;
+
         return $processedData;
     }
 }

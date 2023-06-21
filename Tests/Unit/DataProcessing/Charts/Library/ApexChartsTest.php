@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\DataProcessing\Charts\Library;
 
 use Hoogi91\Charts\DataProcessing\Charts\Library\ApexCharts;
@@ -13,7 +15,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ApexChartsTest extends UnitTestCase
 {
-
     use ExtConfigTrait;
     use JavascriptCompareTrait;
 
@@ -22,15 +23,18 @@ class ApexChartsTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->library = new ApexCharts($this->getExtensionConfig('apexcharts_js'));
+        $this->library = new ApexCharts(self::getExtensionConfig('apexcharts_js'));
     }
 
-    public function chartDataProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function chartDataProvider(): array
     {
         $mockConfig = [
-            'getUid' => 123456,
-            'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-            'getDatasets' => [
+            'getUid' => 123_456,
+            'getLabelList' => ['Label 1', 'Label 2', 'Label 3'],
+            'getDatasetList' => [
                 ['Data 1-1', 'Data 1-2', 'Data 1-3'],
                 ['Data 2-1', 'Data 2-2', 'Data 2-3'],
                 ['Data 3-1', 'Data 3-2', 'Data 3-3'],
@@ -44,11 +48,11 @@ class ApexChartsTest extends UnitTestCase
 
         return [
             'plain chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartData::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartData::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
             'spreadsheet chart data' => [
-                'chartData' => $this->createConfiguredMock(ChartDataSpreadsheet::class, $mockConfig),
+                'chartData' => self::createMockInProvider(ChartDataSpreadsheet::class, $mockConfig),
                 'expectedFile' => __DIR__ . '/entity_apexcharts.js',
             ],
         ];
@@ -78,7 +82,8 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
+     *
+     * @param ChartData&MockObject $model
      */
     public function testStylesheetEntityBuilding(MockObject $model): void
     {
@@ -92,18 +97,21 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider chartDataProvider
-     * @param MockObject|ChartData $model
-     * @param string $expectedFile
+     *
+     * @param ChartData&MockObject $model
      */
     public function testJavascriptEntityBuilding(MockObject $model, string $expectedFile): void
     {
         $pageRenderer = $this->createMock(PageRenderer::class);
-        $pageRenderer->expects(self::exactly(2))
+        $pageRenderer->expects($matcher = $this->exactly(2))
             ->method('addJsFooterInlineCode')
-            ->withConsecutive(
-                ['chartsInitialization', self::isType('string')],
-                ['chartsData123456', self::isType('string')]
-            );
+            ->willReturnCallback(function (string $param) use ($matcher): void {
+                match ($matcher->numberOfInvocations()) {
+                    1 => $this->assertEquals($param, 'chartsInitialization'),
+                    2 => $this->assertEquals($param, 'chartsData123456'),
+                    default => true,
+                };
+            });
 
         $javascript = $this->library->getEntityJavascript('test-identifier-123', 'doughnut', $model, $pageRenderer);
         $this->assertStringEqualsJavascriptFile($expectedFile, $javascript);
@@ -111,8 +119,11 @@ class ApexChartsTest extends UnitTestCase
 
     /**
      * @dataProvider spreadsheetMethodProvider
+     *
+     * @param array<mixed> $labels
+     * @param array<mixed> $datasets
      */
-    public function testEmptyJavascriptOnEmptyLabelsOrDataset($labels, $datasets): void
+    public function testEmptyJavascriptOnEmptyLabelsOrDataset(array $labels, array $datasets): void
     {
         $this->assertEmpty(
             $this->library->getEntityJavascript(
@@ -120,24 +131,27 @@ class ApexChartsTest extends UnitTestCase
                 'doughnut',
                 $this->createConfiguredMock(
                     ChartDataSpreadsheet::class,
-                    ['getLabels' => $labels, 'getDatasets' => $datasets]
+                    ['getLabelList' => $labels, 'getDatasetList' => $datasets]
                 )
             )
         );
     }
 
-    public function spreadsheetMethodProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function spreadsheetMethodProvider(): array
     {
         return [
             'empty labels' => [
-                'getLabels' => [],
-                'getDatasets' => [
+                'getLabelList' => [],
+                'getDatasetList' => [
                     ['Data 1-1', 'Data 1-2', 'Data 1-3'],
-                ]
+                ],
             ],
             'empty dataset' => [
-                'getLabels' => ['Label 1', 'Label 2', 'Label 3'],
-                'getDatasets' => []
+                'getLabelList' => ['Label 1', 'Label 2', 'Label 3'],
+                'getDatasetList' => [],
             ],
         ];
     }

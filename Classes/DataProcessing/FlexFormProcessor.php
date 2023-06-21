@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\DataProcessing;
 
 use TYPO3\CMS\Core\Service\FlexFormService;
@@ -9,14 +11,17 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 class FlexFormProcessor implements DataProcessorInterface
 {
-
-    private FlexFormService $flexFormService;
-
-    public function __construct(FlexFormService $flexFormService)
+    public function __construct(private readonly FlexFormService $flexFormService)
     {
-        $this->flexFormService = $flexFormService;
     }
 
+    /**
+     * @param array<mixed> $contentObjectConfiguration
+     * @param array<array<mixed>> $processorConfiguration
+     * @param array<mixed> $processedData
+     *
+     * @return array<mixed>
+     */
     public function process(
         ContentObjectRenderer $cObj,
         array $contentObjectConfiguration,
@@ -39,9 +44,11 @@ class FlexFormProcessor implements DataProcessorInterface
         );
 
         // if target variable is settings, try to merge it with contentObjectConfiguration['settings.']
-        if ($targetVariableName === 'settings'
+        if (
+            $targetVariableName === 'settings'
             && isset($contentObjectConfiguration['settings.'])
-            && is_array($contentObjectConfiguration['settings.'])) {
+            && is_array($contentObjectConfiguration['settings.'])
+        ) {
             $convertedConf = GeneralUtility::removeDotsFromTS($contentObjectConfiguration['settings.']);
             foreach ($convertedConf as $key => $value) {
                 if (!isset($processedData['settings'][$key]) || $processedData['settings'][$key] === false) {

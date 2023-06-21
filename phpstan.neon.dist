@@ -1,3 +1,0 @@
-parameters:
-	excludePaths:
-		- Classes/Controller/Wizard/TableController.php

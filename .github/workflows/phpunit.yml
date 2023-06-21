@@ -1,0 +1,74 @@
+name: "PHPUnit tests"
+
+on:
+  pull_request:
+  push:
+
+env:
+  TYPO3_PATH_ROOT: ${{ github.workspace }}/.Build/web
+  typo3DatabaseHost: 127.0.0.1
+  typo3DatabaseName: typo3
+  typo3DatabaseUsername: root
+  typo3DatabasePassword: root
+
+jobs:
+  phpunit:
+    name: "PHPUnit tests"
+
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        dependencies:
+          - "lowest"
+          - "highest"
+        php-version:
+          - "8.2"
+          - "8.1"
+        operating-system:
+          - "ubuntu-latest"
+        coverage:
+          - "false"
+        include:
+          - dependencies: "locked"
+            php-version: "8.2"
+            operating-system: "ubuntu-latest"
+            coverage: "true"
+
+    services:
+      mysql:
+        image: bitnami/mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: typo3
+          MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+        ports:
+          - 3306:3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+
+      - name: "Composer install"
+        uses: ./.github/actions/composer
+        with:
+          php-version: '${{ matrix.php-version }}'
+          dependencies: '${{ matrix.dependencies }}'
+          extensions: json, mbstring, pdo_mysql, mysql
+
+      - name: "Tests"
+        uses: ./.github/actions/phpunit
+        with:
+          coverage: '${{ matrix.coverage }}'
+          coverage-folder: ./coverage/
+
+      - name: "Upload coverage"
+        uses: codecov/codecov-action@v3
+        if: matrix.coverage == 'true'
+        with:
+          token: '${{ secrets.CODECOV_TOKEN }}'
+          directory: ./coverage/
+          flags: phpunit

@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Controller\Wizard;
 
+use TYPO3\CMS\Backend\Form\Element\TextTableElement as Typo3TextTableElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class TextTableElement extends \TYPO3\CMS\Backend\Form\Element\TextTableElement
+class TextTableElement extends Typo3TextTableElement
 {
-
     /**
      * Fixes existing fields which saved data as XML content
      *
-     * @return array
+     * @return array<mixed>
      * @todo this fix should be removed in further versions
      */
     public function render(): array
     {
+        /** @psalm-suppress InternalMethod */
         $result = parent::render();
 
-        preg_match('/<textarea.*>(.*?)<\/textarea>/s', $result['html'], $match);
+        preg_match('/<textarea.*>(.*?)<\/textarea>/s', (string) $result['html'], $match);
         if (!isset($match[1]) || empty($match[1])) {
             return $result;
         }
@@ -34,8 +37,9 @@ class TextTableElement extends \TYPO3\CMS\Backend\Form\Element\TextTableElement
         $result['html'] = preg_replace(
             '/(<textarea.*>)(.*?)(<\/textarea>)/s',
             '$1' . implode("\n", $data) . '$3',
-            $result['html']
+            (string) $result['html']
         );
+
         return $result;
     }
 }

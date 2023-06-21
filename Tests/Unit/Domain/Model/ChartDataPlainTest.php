@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
 use Hoogi91\Charts\Domain\Model\ChartDataPlain;
@@ -10,19 +12,14 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ChartDataPlainTest extends UnitTestCase
 {
-
     use CacheTrait;
 
-    protected $resetSingletonInstances = true;
+    protected bool $resetSingletonInstances = true;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->setUpCaches();
-
-        $packageManager = $this->createMock(PackageManager::class);
-        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
-        ExtensionManagementUtility::setPackageManager($packageManager);
     }
 
     protected function tearDown(): void
@@ -40,6 +37,10 @@ class ChartDataPlainTest extends UnitTestCase
 
     public function testTypeMethods(): void
     {
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('isPackageActive')->with('spreadsheets')->willReturn(false);
+        ExtensionManagementUtility::setPackageManager($packageManager);
+
         $chartData = new ChartDataPlain();
         $chartData->setType(ChartDataPlain::TYPE_PLAIN);
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
@@ -48,15 +49,16 @@ class ChartDataPlainTest extends UnitTestCase
         $this->assertEquals(ChartDataPlain::TYPE_PLAIN, $chartData->getType());
     }
 
-
     /**
      * @dataProvider labelProvider
+     *
+     * @param array<mixed> $expected
      */
     public function testLabelMethods(string $content, array $expected): void
     {
         $chartData = new ChartDataPlain();
         $chartData->setLabels(trim($content));
-        $labels = $chartData->getLabels();
+        $labels = $chartData->getLabelList();
         $this->assertIsArray($labels);
         $this->assertSame($expected, $labels);
     }
@@ -68,7 +70,7 @@ class ChartDataPlainTest extends UnitTestCase
     {
         $chartData = new ChartDataPlain();
         $chartData->setDatasets(trim($content));
-        $datasets = $chartData->getDatasets();
+        $datasets = $chartData->getDatasetList();
         $this->assertIsArray($datasets);
         $this->assertCount(2, $datasets);
         $this->assertIsFloat($datasets[0][0]);
@@ -82,11 +84,14 @@ class ChartDataPlainTest extends UnitTestCase
     {
         $chartData = new ChartDataPlain();
         $chartData->setDatasetsLabels(trim($content));
-        $labels = $chartData->getDatasetsLabels();
+        $labels = $chartData->getDatasetsLabelList();
         $this->assertSame(['Germany', 'Europe'], $labels);
     }
 
-    public function labelProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function labelProvider(): array
     {
         return [
             'as xml on a single row' => [
@@ -122,7 +127,10 @@ class ChartDataPlainTest extends UnitTestCase
         ];
     }
 
-    public function datasetProvider(): array
+    /**
+     * @return array<mixed>
+     */
+    public static function datasetProvider(): array
     {
         return [
             'as xml' => [

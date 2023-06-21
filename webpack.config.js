@@ -1,7 +1,9 @@
+const ESLintPlugin = require("eslint-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 const config = {
+    plugins: [new ESLintPlugin()],
     optimization: {
         minimize: true,
         minimizer: [
@@ -23,7 +25,6 @@ const config = {
                 exclude: /node_modules/,
                 use: [
                     "babel-loader",
-                    "eslint-loader",
                 ],
             },
             {

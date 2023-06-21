@@ -1,0 +1,24 @@
+name: 'Install npm dependencies'
+description: 'This action sets up Nodejs and installs deps using npm.'
+inputs:
+  node-version:
+    required: true
+    description: 'Node Version to use'
+runs:
+  using: 'composite'
+  steps:
+    - name: "Setup Node.js"
+      uses: "actions/setup-node@v2"
+      with:
+        node-version: "${{ inputs.node-version }}"
+
+    - name: "Cache dependencies"
+      uses: "actions/cache@v2"
+      with:
+        path: ~/.npm
+        key: "npm-${{ inputs.node-version }}-${{ hashFiles('package-lock.json') }}"
+        restore-keys: "npm-${{ inputs.node-version }}"
+
+    - name: "Install dependencies"
+      shell: bash
+      run: "npm ci --ignore-scripts"
