@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hoogi91\Charts\Tests\Unit;
 
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\Generator;
+use PHPUnit\Framework\MockObject\Generator\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 

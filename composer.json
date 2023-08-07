@@ -33,7 +33,7 @@
     "hoogi91/spreadsheets": "^3.3 || ^4.0",
     "mck89/peast": "^1.13",
     "phpstan/phpstan": "^1.7.15",
-    "phpunit/phpunit": "^10.0",
+    "phpunit/phpunit": "^10.3",
     "rector/rector": "^0.17",
     "roave/security-advisories": "dev-latest",
     "slevomat/coding-standard": "^8.8",
