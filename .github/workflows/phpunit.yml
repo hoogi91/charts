@@ -24,6 +24,7 @@ jobs:
           - "lowest"
           - "highest"
         php-version:
+          - "8.3"
           - "8.2"
           - "8.1"
         operating-system:
