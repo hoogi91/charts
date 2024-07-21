@@ -24,6 +24,7 @@ jobs:
           - "lowest"
           - "highest"
         php-version:
+          - "8.3"
           - "8.2"
           - "8.1"
         operating-system:
@@ -32,7 +33,7 @@ jobs:
           - "false"
         include:
           - dependencies: "locked"
-            php-version: "8.2"
+            php-version: "8.3"
             operating-system: "ubuntu-latest"
             coverage: "true"
 
@@ -50,7 +51,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
 
       - name: "Composer install"
         uses: ./.github/actions/composer
@@ -66,7 +67,7 @@ jobs:
           coverage-folder: ./coverage/
 
       - name: "Upload coverage"
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         if: matrix.coverage == 'true'
         with:
           token: '${{ secrets.CODECOV_TOKEN }}'
