@@ -117,7 +117,7 @@ class ChartsProcessorTest extends UnitTestCase
                         $expectedJs(
                             [
                                 'https://cdn.example.com/apexcharts_js.js',
-                                'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js',
+                                'EXT:charts/Resources/Public/JavaScript/apexcharts.js',
                             ]
                         )
                     ),

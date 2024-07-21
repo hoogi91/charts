@@ -3,7 +3,6 @@ parameters:
 	paths:
 		- Classes
 		- Tests
-	checkGenericClassInNonGenericObjectType: false
 	reportUnmatchedIgnoredErrors: true
 	ignoreErrors:
 		-
@@ -11,21 +10,17 @@ parameters:
 			count: 2
 			path: Classes/DataProcessing/Charts/LibraryRegistry.php
 		-
-			message: '#Class TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\ViewHelperResolver constructor invoked with 3 parameters, 2 required#'
-			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
-			count: 1
-		-
-			message: '#Class TYPO3\\CMS\\Extbase\\Object\\ObjectManager not found#'
-			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
-			count: 1
-		-
-			message: '#Parameter \#2 \$namespaces of class TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\ViewHelperResolver constructor expects#'
-			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
-			count: 1
-		-
 			message: '#Call to an undefined method PHPUnit\\Framework\\MockObject\\Generator\\Generator#'
 			path: Tests/Unit/ExtConfigTrait.php
 			count: 6
+		-
+			message: '#Class TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\ViewHelperResolver constructor invoked with 2 parameters, 3 required#'
+			path: Tests/Functional/ViewHelpers/AbstractViewHelperTestCase.php
+			count: 1
+		-
+			message: '#Cannot assign offset .* to array|string#'
+			path: Tests/Unit/Controller/TextTableElementTest.php
+			count: 1
 
 includes:
     - .Build/vendor/bnf/phpstan-psr-container/extension.neon

@@ -4,8 +4,8 @@
 
 | Charts       | TYPO3       | PHP       | Supported                     |
 | ------------ | ----------- |-----------|-------------------------------|
-| dev-master   | 12.4        | 8.2       | :white_check_mark: (unstable) |
-| 3.x          | 11.5 - 12.4 | 8.1 - 8.2 | :white_check_mark:            |
+| dev-master   | 12.4        | 8.3       | :white_check_mark: (unstable) |
+| 3.x          | 11.5 - 12.4 | 8.1 - 8.3 | :white_check_mark:            |
 | 2.x          | 10.4 - 11.5 | 7.4 - 8.1 | :white_check_mark: (security) |
 | 1.x          | 8.7 - 10.4  | 7.0 - 7.4 | :x:                           |
 

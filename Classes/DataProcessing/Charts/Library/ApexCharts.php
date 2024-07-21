@@ -61,7 +61,7 @@ class ApexCharts extends AbstractColoredLibrary implements LibraryFlexformInterf
         return array_filter(
             [
                 $cdnUrl => ['noConcat' => true],
-                'typo3conf/ext/charts/Resources/Public/JavaScript/apexcharts.js' => ['compress' => true],
+                'EXT:charts/Resources/Public/JavaScript/apexcharts.js' => ['compress' => true],
             ],
             static fn ($key) => empty($key) === false,
             ARRAY_FILTER_USE_KEY
