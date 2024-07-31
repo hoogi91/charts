@@ -33,8 +33,10 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         int $expectedCount,
         array $expectedColors
     ): void {
-        if (empty($consecutiveBackground)
-            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1) {
+        if (
+            empty($consecutiveBackground)
+            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
+        ) {
             return;
         }
 
@@ -110,8 +112,10 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
      */
     public function testBorderColorMethods(array $consecutiveBorders, int $expectedCount, array $expectedColors): void
     {
-        if (empty($consecutiveBorders)
-            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1) {
+        if (
+            empty($consecutiveBorders)
+            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
+        ) {
             return;
         }
 
