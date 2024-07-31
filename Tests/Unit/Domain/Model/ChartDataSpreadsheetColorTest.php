@@ -35,7 +35,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
     ): void {
         if (
             empty($consecutiveBackground)
-            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
+            && version_compare((string)InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
         ) {
             return;
         }
@@ -114,7 +114,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
     {
         if (
             empty($consecutiveBorders)
-            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
+            && version_compare((string)InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1
         ) {
             return;
         }
@@ -204,7 +204,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
      */
     private function getChartData(MockObject $spreadsheetMock): ChartDataSpreadsheet
     {
-        $createCellValue = fn(float $value) => CellDataValueObject::create(
+        $createCellValue = fn (float $value) => CellDataValueObject::create(
             $this->createConfiguredMock(Cell::class, [
                 'getCalculatedValue' => $value,
                 'getFormattedValue' => '[formatted]' . $value,
