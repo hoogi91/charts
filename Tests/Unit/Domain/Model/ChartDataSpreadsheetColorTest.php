@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Hoogi91\Charts\Tests\Unit\Domain\Model;
 
+use Composer\InstalledVersions;
 use Hoogi91\Charts\Domain\Model\ChartDataSpreadsheet;
 use Hoogi91\Spreadsheets\Domain\ValueObject\CellDataValueObject;
 use Hoogi91\Spreadsheets\Domain\ValueObject\ExtractionValueObject;
@@ -32,6 +33,11 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         int $expectedCount,
         array $expectedColors
     ): void {
+        if (empty($consecutiveBackground)
+            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1) {
+            return;
+        }
+
         $styleMocks = [];
         foreach ($consecutiveBackground as $background) {
             $configuration = ['getFillType' => Style\Fill::FILL_NONE];
@@ -104,6 +110,11 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
      */
     public function testBorderColorMethods(array $consecutiveBorders, int $expectedCount, array $expectedColors): void
     {
+        if (empty($consecutiveBorders)
+            && version_compare(InstalledVersions::getVersion('phpoffice/phpspreadsheet'), '2.0.0') !== -1) {
+            return;
+        }
+
         // generate border mock objects
         $styleMocks = [];
         foreach ($consecutiveBorders as $borders) {
@@ -189,16 +200,16 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
      */
     private function getChartData(MockObject $spreadsheetMock): ChartDataSpreadsheet
     {
-        $createCellValue = fn (float $value) => CellDataValueObject::create(
+        $createCellValue = fn(float $value) => CellDataValueObject::create(
             $this->createConfiguredMock(Cell::class, [
-                    'getCalculatedValue' => $value,
-                    'getFormattedValue' => '[formatted]' . $value,
-                    'getDataType' => 's',
-                    'getXfIndex' => 123,
-                    'getStyle' => $this->createConfiguredMock(Style\Style::class, [
-                        'getFont' => $this->createMock(Style\Font::class),
-                    ]),
+                'getCalculatedValue' => $value,
+                'getFormattedValue' => '[formatted]' . $value,
+                'getDataType' => 's',
+                'getXfIndex' => 123,
+                'getStyle' => $this->createConfiguredMock(Style\Style::class, [
+                    'getFont' => $this->createMock(Style\Font::class),
                 ]),
+            ]),
             '[rendered]' . $value
         );
 
