@@ -21,7 +21,7 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
                     ? $chartEntity->getBorderColors($key)
                     : $chartEntity->getBorderColors();
 
-                $paletteSize = count($datasets[$key]);
+                $paletteSize = count($datasets);
                 $backgroundColors = self::getColorListByPalette($backgroundColors, $paletteSize);
                 $borderColors = self::getColorListByPalette($borderColors, $paletteSize, null);
 
