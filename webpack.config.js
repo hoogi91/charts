@@ -23,48 +23,43 @@ const config = {
             {
                 test: /\.(js)$/,
                 exclude: /node_modules/,
-                use: [
-                    "babel-loader",
-                ],
+                use: ["babel-loader"],
             },
             {
                 test: /\.(css)$/,
                 use: ["css-loader"],
             },
-        ]
+        ],
     },
 };
 
 module.exports = [
-    Object.assign({}, config, {
-        name: "ColorPaletteInputElement",
-        entry: path.join(__dirname, "/Resources/Private/Assets/JavaScript/main.js"),
-        output: {
-            filename: "ColorPaletteInputElement.js",
-            library: {type: 'amd-require'},
-            path: path.join(__dirname, "/Resources/Public/JavaScript"),
-            publicPath: "/",
-        },
-        externals: {
-            "DocumentService": "TYPO3/CMS/Core/DocumentService",
-            "Modal": "TYPO3/CMS/Backend/Modal",
-        },
-    }),
+    // Other configurations...
 
+    // Configuration for chartjs
     Object.assign({}, config, {
         entry: {
-            apexcharts: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/apexcharts.js"),
             chartjs: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/chartjs.js"),
         },
         output: {
             filename: "[name].js",
             library: {
                 name: 'Hoogi91.Charts',
-                type: 'window',
-                export: 'default',
+                type: 'umd',
             },
             path: path.join(__dirname, "/Resources/Public/JavaScript"),
             publicPath: "/",
         },
-    })
+        // Adjust externals if needed
+        externals: [
+            function ({ request }, callback) {
+                // Exclude all imports that start with "@typo3/"
+                if (request.startsWith('@typo3/')) {
+                    return callback(null, `module ${request}`);
+                }
+                callback();
+            },
+        ],
+    }),
 ];
+

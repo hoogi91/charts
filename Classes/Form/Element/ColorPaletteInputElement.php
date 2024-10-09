@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Hoogi91\Charts\Form\Element;
 
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 use const ENT_QUOTES;
 
@@ -28,10 +29,9 @@ class ColorPaletteInputElement extends AbstractFormElement
     {
         $resultArray = $this->initializeResultArray();
         $inputName = (string)($this->data['parameterArray']['itemFormElName'] ?? '');
-        if (empty($inputName) === true) {
+        if (empty($inputName)) {
             $resultArray['html'] = '<div class="alert alert-danger">';
             $resultArray['html'] .= 'Input form name not set. Please inform administrator!</div>';
-
             return $resultArray;
         }
 
@@ -45,10 +45,10 @@ class ColorPaletteInputElement extends AbstractFormElement
             'LLL:EXT:charts/Resources/Private/Language/locallang_db.xlf:color_palette.newButton'
         );
 
+        // Use PageRenderer to include the JavaScript module
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->loadJavaScriptModule('@hoogi91/charts/ColorPaletteInputElement.js');
 
-        $resultArray['requireJsModules'] = [JavaScriptModuleInstruction::forRequireJS(
-            'TYPO3/CMS/Charts/ColorPaletteInputElement'
-        )];
         $resultArray['html'] = <<<HTML
 <div class="formengine-field-item t3js-formengine-field-item">
     {$this->renderFieldInformation()['html']}

@@ -1,4 +1,4 @@
-export default {
+const ChartsModule = {
     chartsData: null,
     chartsContainer: null,
 
@@ -331,3 +331,6 @@ export default {
         return chartConfig;
     }
 };
+
+// Export the module for Webpack
+module.exports = ChartsModule;

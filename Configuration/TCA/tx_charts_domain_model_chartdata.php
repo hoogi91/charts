@@ -27,7 +27,10 @@ return (static function (string $extKey = 'charts') {
             'type' => 'type',
             'searchFields' => 'title',
             'dynamicConfigFile' => '',
-            'iconfile' => 'EXT:' . $extKey . '/Resources/Public/Icons/Extension.svg',
+            'iconfile' => 'EXT:' . $extKey . '/Resources/Public/Icons/Extension.svg',            
+            'security' => [
+                'ignorePageTypeRestriction' => true,
+            ],
         ],
         'types' => [
             0 => [
@@ -192,22 +195,21 @@ return (static function (string $extKey = 'charts') {
             'spreadsheet_assets' => [
                 'exclude' => true,
                 'label' => $ll . '.spreadsheet_assets',
-                'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                    'assets',
-                    [
-                        'appearance' => [
-                            'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/Database.xlf:tt_content.asset_references.addFileReference',
-                        ],
-                        'overrideChildTca' => [
-                            'types' => [
-                                '0' => [
-                                    'showitem' => '--palette--;;filePalette',
-                                ],
+                'config' => [
+                    'type' => 'file',
+                    'appearance' => [
+                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/Database.xlf:tt_content.asset_references.addFileReference',
+                    ],
+                    'overrideChildTca' => [
+                        'types' => [
+                            \TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => [
+                                'showitem' => '--palette--;;filePalette',
                             ],
                         ],
                     ],
-                    'xls,xlsx,ods'
-                ),
+                    'allowed' => 'xls,xlsx,ods',
+                    'maxitems' => 1,  // Adjust this as needed for multiple files
+                ],
             ],
             'background_colors' => [
                 'exclude' => true,
