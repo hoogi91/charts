@@ -19,12 +19,12 @@
   "require": {
     "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
     "ext-json": "*",
-    "typo3/cms-backend": "^11.5 || ^12.4",
-    "typo3/cms-core": "^11.5 || ^12.4",
-    "typo3/cms-extbase": "^11.5 || ^12.4",
-    "typo3/cms-fluid": "^11.5 || ^12.4",
-    "typo3/cms-fluid-styled-content": "^11.5 || ^12.4",
-    "typo3/cms-frontend": "^11.5 || ^12.4"
+    "typo3/cms-backend": "^11.5 || ^12.4 || ^13",
+    "typo3/cms-core": "^11.5 || ^12.4 || ^13",
+    "typo3/cms-extbase": "^11.5 || ^12.4 || ^13",
+    "typo3/cms-fluid": "^11.5 || ^12.4 || ^13",
+    "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13",
+    "typo3/cms-frontend": "^11.5 || ^12.4 || ^13"
   },
   "require-dev": {
     "bnf/phpstan-psr-container": "^1.0",
@@ -38,7 +38,7 @@
     "roave/security-advisories": "dev-latest",
     "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.5",
-    "typo3/minimal": "^11.5 || ^12.4",
+    "typo3/minimal": "^11.5 || ^12.4 || ^13",
     "typo3/testing-framework": "^7.0 || ^8.0",
     "vimeo/psalm": "^5.1"
   },
