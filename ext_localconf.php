@@ -3,12 +3,6 @@
 defined('TYPO3') or die();
 
 (static function (string $extKey = 'charts') {
-    // add content element to insert tables in content element wizard
-    // and register template for backend preview rendering
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $extKey . '/Configuration/PageTSconfig/NewContentElementWizard.typoscript">
-            <INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $extKey . '/Configuration/PageTSconfig/BackendPreview.typoscript">'
-    );
 
     // override TextTableElement to create fix for old XML values
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Backend\Form\Element\TextTableElement::class] = [

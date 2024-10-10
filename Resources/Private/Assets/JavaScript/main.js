@@ -1,5 +1,5 @@
-import DocumentService from 'DocumentService';
-import Modal from 'Modal';
+import DocumentService from '@typo3/core/document-service.js';
+import Modal from '@typo3/backend/modal.js';
 import Color from 'color';
 import Sortable from 'sortablejs/modular/sortable.core.esm.js';
 import {ColorPickerElement} from './colorPicker';
