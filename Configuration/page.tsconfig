@@ -1,0 +1,5 @@
+
+// add content element to insert tables in content element wizard
+// and register template for backend preview rendering
+@import 'EXT:charts/Configuration/PageTSconfig/NewContentElementWizard.typoscript'
+@import 'EXT:charts/Configuration/PageTSconfig/BackendPreview.typoscript'
