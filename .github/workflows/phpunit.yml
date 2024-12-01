@@ -67,7 +67,7 @@ jobs:
           coverage-folder: ./coverage/
 
       - name: "Upload coverage"
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: matrix.coverage == 'true'
         with:
           token: '${{ secrets.CODECOV_TOKEN }}'
