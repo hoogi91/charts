@@ -7,25 +7,25 @@
 				<source>Bar Chart</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.bar_chart_description" xml:space="preserve">
-				<source></source>
+				<source>Display of data sheets in vertical or horizontal bars.</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.line_chart_title" xml:space="preserve">
 				<source>Line Chart</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.line_chart_description" xml:space="preserve">
-				<source></source>
+				<source>Display of data sheets as horizontal lines.</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.pie_chart_title" xml:space="preserve">
 				<source>Pie Chart</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.pie_chart_description" xml:space="preserve">
-				<source></source>
+				<source>Display of data sheets in a pie chart.</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.doughnut_chart_title" xml:space="preserve">
 				<source>Doughnut Chart</source>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.doughnut_chart_description" xml:space="preserve">
-				<source></source>
+				<source>Display of data sheets in a doughnut chart.</source>
 			</trans-unit>
 		</body>
 	</file>
