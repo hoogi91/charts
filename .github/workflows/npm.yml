@@ -29,7 +29,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Composer install"
+      - name: "NPM install"
         uses: ./.github/actions/npm
         with:
           node-version: '${{ matrix.node-version }}'
