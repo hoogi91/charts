@@ -14,9 +14,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class LibraryRegistry
 {
+    /**
+     * @var ServiceLocator<LibraryInterface|mixed>
+     */
     private readonly ServiceLocator $libraries;
     private readonly LibraryInterface $defaultLibrary;
 
+    /**
+     * @param ServiceLocator<LibraryInterface|mixed>|null $libraries
+     */
     public function __construct(ServiceLocator $libraries = null, ChartJs $defaultLibrary = null)
     {
         // @codeCoverageIgnoreStart
