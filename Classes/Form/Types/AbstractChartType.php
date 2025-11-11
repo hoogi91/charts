@@ -14,6 +14,7 @@ abstract class AbstractChartType implements ChartTypeInterface
         $identifier = static::getIdentifier();
         $iconIdentifier = static::getIconIdentifier();
 
+        $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$identifier] = $iconIdentifier;
         $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
             sprintf('%s:tt_content.CType.%s', self::LANGUAGE_FILE, $identifier),
             $identifier,
