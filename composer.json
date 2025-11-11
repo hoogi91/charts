@@ -2,6 +2,7 @@
   "name": "hoogi91/charts",
   "type": "typo3-cms-extension",
   "description": "Extension to create datasets and show them as line, bar, pie or doughnut chart in frontend",
+  "readme": "README.md",
   "license": "GPL-3.0-or-later",
   "authors": [
     {

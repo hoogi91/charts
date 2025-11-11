@@ -1,4 +1,4 @@
-import {createElement, debounce} from "./helper";
+import {createElement, debounce} from "./helper.js";
 import css from './colorPicker.css';
 import Color from "color";
 
