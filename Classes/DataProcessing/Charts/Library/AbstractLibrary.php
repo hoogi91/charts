@@ -130,7 +130,7 @@ abstract class AbstractLibrary implements LibraryInterface
         }
 
         // build datasets for current entity to insert in javascript below
-        $datasets = $this->buildEntityDatasetsForJavascript($datasets, $chartEntity);
+        $datasets = $this->buildEntityDatasetsForJavascript($chartIdentifier, $chartType, $datasets, $chartEntity);
 
         // create standardized initialization and dataset/labels code
         $initCode = "document.addEventListener('DOMContentLoaded', () => window['Hoogi91.Charts'].init());";
@@ -160,8 +160,12 @@ abstract class AbstractLibrary implements LibraryInterface
      *
      * @return array<mixed>
      */
-    protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
-    {
+    protected function buildEntityDatasetsForJavascript(
+        string $chartIdentifier,
+        string $chartType,
+        array $datasets,
+        ChartData $chartEntity
+    ): array {
         $labels = $chartEntity->getDatasetsLabelList();
 
         return array_map(
