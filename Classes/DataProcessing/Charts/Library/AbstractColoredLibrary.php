@@ -14,12 +14,21 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
      *
      * @return array<mixed>
      */
-    protected function buildEntityDatasetsForJavascript(array $datasets, ChartData $chartEntity): array
-    {
-        $processedDatasets = parent::buildEntityDatasetsForJavascript($datasets, $chartEntity);
+    protected function buildEntityDatasetsForJavascript(
+        string $chartIdentifier,
+        string $chartType,
+        array $datasets,
+        ChartData $chartEntity
+    ): array {
+        $processedDatasets = parent::buildEntityDatasetsForJavascript(
+            $chartIdentifier,
+            $chartType,
+            $datasets,
+            $chartEntity
+        );
 
         return array_map(
-            static function (int $key) use ($chartEntity, $datasets, $processedDatasets) {
+            static function (int $key) use ($chartType, $chartEntity, $datasets, $processedDatasets) {
                 $backgroundColors = $chartEntity instanceof ChartDataSpreadsheet
                     ? $chartEntity->getBackgroundColors($key)
                     : $chartEntity->getBackgroundColors();
@@ -28,7 +37,10 @@ abstract class AbstractColoredLibrary extends AbstractLibrary
                     ? $chartEntity->getBorderColors($key)
                     : $chartEntity->getBorderColors();
 
-                $paletteSize = count($datasets);
+                $paletteSize = $chartType === 'chart_pie' || $chartType === 'chart_doughnut'
+                    ? count($datasets[$key])
+                    : count($datasets);
+
                 $backgroundColors = self::getColorListByPalette($backgroundColors, $paletteSize);
                 $borderColors = self::getColorListByPalette($borderColors, $paletteSize, null);
 

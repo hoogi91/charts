@@ -2,8 +2,8 @@ import DocumentService from 'DocumentService';
 import Modal from 'Modal';
 import Color from 'color';
 import Sortable from 'sortablejs/modular/sortable.core.esm.js';
-import {ColorPickerElement} from './colorPicker';
-import {createColorElement, createElement, getHexValue, isLightColor} from "./helper";
+import {ColorPickerElement} from './colorPicker.js';
+import {createColorElement, createElement, getHexValue, isLightColor} from "./helper.js";
 import css from "./colorPalette.css";
 
 class ColorPaletteInputElement extends HTMLElement {

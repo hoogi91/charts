@@ -1,70 +1,95 @@
-const ESLintPlugin = require("eslint-webpack-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
-const path = require('path');
+import TerserPlugin from "terser-webpack-plugin";
+import path from "path";
+import * as url from 'url';
 
-const config = {
-    plugins: [new ESLintPlugin()],
-    optimization: {
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                terserOptions: {
-                    output: {
-                        comments: false,
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+export default (env, argv) => [
+    {
+        optimization: {
+            minimizer: [
+                new TerserPlugin({
+                    parallel: true,
+                    terserOptions: {
+                        output: {
+                            comments: false,
+                        },
                     },
+                    extractComments: false,
+                }),
+            ],
+        },
+        entry: {
+            ColorPaletteInputElement: path.join(__dirname, "/Resources/Private/Assets/JavaScript/main.js"),
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.(js)$/,
+                    exclude: /node_modules/,
+                    use: [
+                        "babel-loader",
+                    ],
                 },
-                extractComments: false,
-            }),
-        ],
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(js)$/,
-                exclude: /node_modules/,
-                use: [
-                    "babel-loader",
-                ],
-            },
-            {
-                test: /\.(css)$/,
-                use: ["css-loader"],
-            },
-        ]
-    },
-};
-
-module.exports = [
-    Object.assign({}, config, {
-        name: "ColorPaletteInputElement",
-        entry: path.join(__dirname, "/Resources/Private/Assets/JavaScript/main.js"),
+                {
+                    test: /\.(css)$/,
+                    use: ["css-loader"],
+                },
+            ]
+        },
         output: {
-            filename: "ColorPaletteInputElement.js",
-            library: {type: 'amd-require'},
+            filename: "[name].js",
+            libraryTarget: "amd",
             path: path.join(__dirname, "/Resources/Public/JavaScript"),
-            publicPath: "/",
+            publicPath: argv.mode !== "production" ? "/" : "../dist/"
         },
         externals: {
             "DocumentService": "TYPO3/CMS/Core/DocumentService",
             "Modal": "TYPO3/CMS/Backend/Modal",
+        }
+    },
+    {
+        optimization: {
+            minimizer: [
+                new TerserPlugin({
+                    parallel: true,
+                    terserOptions: {
+                        output: {
+                            comments: false,
+                        },
+                    },
+                    extractComments: false,
+                }),
+            ],
         },
-    }),
-
-    Object.assign({}, config, {
         entry: {
             apexcharts: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/apexcharts.js"),
             chartjs: path.join(__dirname, "/Resources/Private/Assets/JavaScript/Libs/chartjs.js"),
         },
+        module: {
+            rules: [
+                {
+                    test: /\.(js)$/,
+                    exclude: /node_modules/,
+                    use: [
+                        "babel-loader",
+                    ],
+                },
+                {
+                    test: /\.(css)$/,
+                    use: ["css-loader"],
+                },
+            ]
+        },
         output: {
             filename: "[name].js",
             library: {
-                name: 'Hoogi91.Charts',
-                type: 'window',
-                export: 'default',
+                name: "Hoogi91.Charts",
+                type: "window",
+                export: "default",
             },
             path: path.join(__dirname, "/Resources/Public/JavaScript"),
-            publicPath: "/",
-        },
-    })
+            publicPath: argv.mode !== "production" ? "/" : "../dist/"
+        }
+    }
 ];

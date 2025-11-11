@@ -6,35 +6,35 @@
 		<body>
 			<trans-unit id="wizards.newContentElement.bar_chart_title" xml:space="preserve">
 				<source>Bar Chart</source>
-				<target>Balkendiagram</target>
+				<target>Balkendiagramm</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.bar_chart_description" xml:space="preserve">
-				<source></source>
-				<target></target>
+				<source>Display of data sheets in vertical or horizontal bars.</source>
+				<target>Darstellung von Datenblättern in vertikalen oder horizontalen Balken.</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.line_chart_title" xml:space="preserve">
 				<source>Line Chart</source>
 				<target>Liniendiagramm</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.line_chart_description" xml:space="preserve">
-				<source></source>
-				<target></target>
+				<source>Display of data sheets as horizontal lines.</source>
+				<target>Darstellung von Datenblättern als horizontale Linien. </target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.pie_chart_title" xml:space="preserve">
 				<source>Pie Chart</source>
 				<target>Kreisdiagramm</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.pie_chart_description" xml:space="preserve">
-				<source></source>
-				<target></target>
+				<source>Display of data sheets in a pie chart.</source>
+				<target>Darstellung von Datenblättern in einem Kreisdiagramm.</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.doughnut_chart_title" xml:space="preserve">
 				<source>Doughnut Chart</source>
 				<target>Donut-Diagramm</target>
 			</trans-unit>
 			<trans-unit id="wizards.newContentElement.doughnut_chart_description" xml:space="preserve">
-				<source></source>
-				<target></target>
+				<source>Display of data sheets in a doughnut chart.</source>
+				<target>Darstellung von Datenblättern in einem Ringdiagramm.</target>
 			</trans-unit>
 		</body>
 	</file>

@@ -14,7 +14,7 @@
 			</trans-unit>
 			<trans-unit id="tt_content.CType.chart_bar" xml:space="preserve">
 				<source>Bar Chart</source>
-				<target>Balkendiagram</target>
+				<target>Balkendiagramm</target>
 			</trans-unit>
 			<trans-unit id="tt_content.CType.chart_line" xml:space="preserve">
 				<source>Line Chart</source>

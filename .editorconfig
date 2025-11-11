@@ -13,6 +13,9 @@ ij_formatter_tags_enabled = false
 ij_smart_tabs = false
 ij_wrap_on_typing = false
 
+[*.txt]
+insert_final_newline = false
+
 [*.blade.php]
 ij_blade_keep_indents_on_empty_lines = false
 
@@ -337,7 +340,7 @@ ij_javascript_import_sort_members = true
 ij_javascript_import_sort_module_name = false
 ij_javascript_import_use_node_resolution = true
 ij_javascript_imports_wrap = on_every_item
-ij_javascript_indent_case_from_switch = false
+ij_javascript_indent_case_from_switch = true
 ij_javascript_indent_chained_calls = true
 ij_javascript_indent_package_children = 0
 ij_javascript_jsx_attribute_value = braces

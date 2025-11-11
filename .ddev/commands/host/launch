@@ -1,0 +1,19 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+    FULLURL="http://${DDEV_SITENAME}.ddev.site"
+else
+    FULLURL="http://$1.${DDEV_SITENAME}.ddev.site"
+fi
+
+echo "Opening \"${FULLURL}\"..."
+case $OSTYPE in
+  linux-gnu)
+    xdg-open ${FULLURL}
+    ;;
+  "darwin"*)
+    open ${FULLURL}
+    ;;
+  "win*"* | "msys"*)
+    start ${FULLURL}
+    ;;
+esac

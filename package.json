@@ -2,40 +2,46 @@
   "name": "asset-build",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "build": "webpack build --mode production",
     "build-watch": "webpack watch --mode production",
     "build-dev": "webpack build --mode development",
     "build-dev-watch": "webpack watch --mode development",
-    "lint": "eslint --ext .js Resources/Private/Assets/JavaScript/",
-    "lint-fix": "eslint --fix --ext .js Resources/Private/Assets/JavaScript/",
+    "lint": "eslint Resources/Private/Assets/JavaScript/",
+    "lint-fix": "eslint --fix Resources/Private/Assets/JavaScript/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/eslint-parser": "^7.25.1",
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
     "@babel/plugin-proposal-class-properties": "^7.17.12",
-    "@babel/plugin-transform-object-assign": "^7.24.7",
-    "@babel/plugin-transform-parameters": "^7.24.7",
+    "@babel/plugin-transform-object-assign": "^7.27.1",
+    "@babel/plugin-transform-parameters": "^7.25.7",
     "@babel/polyfill": "^7.10.4",
-    "@babel/preset-env": "^7.25.3",
-    "babel-loader": "^9.1.3",
-    "color": "^4.2.3",
-    "core-js": "^3.38.0",
+    "@babel/preset-env": "^7.28.5",
+    "babel-loader": "^10.0.0",
+    "color": "^5.0.2",
+    "core-js": "^3.46.0",
     "css-loader": "^7.1.2",
-    "eslint": "^8.57.0",
-    "eslint-webpack-plugin": "^4.2.0",
-    "sortablejs": "^1.15.2",
-    "terser-webpack-plugin": "^5.3.10",
-    "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
+    "eslint": "^9.39.1",
+    "sortablejs": "^1.15.6",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1"
   },
   "browserslist": [
     "> 1% and last 2 versions",
     "Firefox ESR",
     "not ie <= 11",
     "not dead"
-  ]
+  ],
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.39.0",
+    "eslint-formatter-unix": "^9.0.1",
+    "globals": "^16.5.0"
+  }
 }

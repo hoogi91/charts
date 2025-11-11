@@ -1,0 +1,24 @@
+changelog:
+  exclude:
+    labels:
+      - "dependencies"
+    authors:
+      - dependabot
+      - github-actions
+  categories:
+    - title: "⚠️ Breaking changes"
+      labels:
+        - "breaking"
+    - title: "🚀 New features"
+      labels:
+        - "feature"
+        - "enhancement"
+    - title: "📘 Documentation updates"
+      labels:
+        - "documentation"
+    - title: "🐛 Bug fixes"
+      labels:
+        - "bug"
+    - title: Other Changes
+      labels:
+        - "*"

@@ -1,15 +1,17 @@
-name: 🚢 to TER
+name: "TYPO3 TER Upload"
+
 on:
-  push:
-    tags:
-      - "**"
+  release:
+    types: [published]
+  workflow_dispatch: 
 
 jobs:
-  deploy:
+  ter-upload:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.inputs.commit }}
       - uses: tomasnorre/typo3-upload-ter@v2

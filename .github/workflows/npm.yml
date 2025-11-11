@@ -27,9 +27,9 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v5"
 
-      - name: "Composer install"
+      - name: "NPM install"
         uses: ./.github/actions/npm
         with:
           node-version: '${{ matrix.node-version }}'

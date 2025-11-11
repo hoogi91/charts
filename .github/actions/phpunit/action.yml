@@ -37,7 +37,7 @@ runs:
       shell: bash
       run: |
         if [ -d "Tests/Unit" ]; then
-          .Build//bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=${{ inputs.coverage-folder }}unit/clover.xml --coverage-filter=${{ inputs.whitelist }}
+          .Build/bin/phpunit --bootstrap Tests/bootstrap.php Tests/Unit/ --coverage-clover=${{ inputs.coverage-folder }}unit/clover.xml --coverage-filter=${{ inputs.whitelist }}
         fi
 
     - name: Functional tests with coverage
