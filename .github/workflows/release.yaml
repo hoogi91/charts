@@ -50,7 +50,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - id: autocommit
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: https://github.com/hoogi91/charts/releases/tag/${{ steps.bump-version.outputs.version }}
       - run: gh release create ${{ steps.bump-version.outputs.version }} --generate-notes --draft --target=${{ steps.autocommit.outputs.commit_hash || github.sha }} --latest=${{ inputs.latest-release }}
