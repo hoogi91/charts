@@ -29,7 +29,7 @@ jobs:
     outputs:
       version: ${{ steps.bump-version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
@@ -62,7 +62,7 @@ jobs:
     environment: 'github'
     needs: [ bump-version ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: gh release edit ${{ needs.bump-version.outputs.version }} --draft=false --latest=${{ inputs.latest-release }}
         env:
           GH_TOKEN: ${{ secrets.ADMIN_TOKEN || secrets.GITHUB_TOKEN }}
