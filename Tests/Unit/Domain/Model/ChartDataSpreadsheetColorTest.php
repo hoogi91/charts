@@ -60,7 +60,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         }
 
         $spreadsheetMock = $this->createMock(Spreadsheet::class);
-        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null]);
+        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null, null, null]);
 
         $colors = $this->getChartData($spreadsheetMock)->getBackgroundColors(1);
         $this->assertCount($expectedCount, $colors);
@@ -143,7 +143,7 @@ class ChartDataSpreadsheetColorTest extends UnitTestCase
         }
 
         $spreadsheetMock = $this->createMock(Spreadsheet::class);
-        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null]);
+        $spreadsheetMock->method('getCellXfByIndex')->willReturnOnConsecutiveCalls(...$styleMocks ?: [null, null, null]);
 
         $colors = $this->getChartData($spreadsheetMock)->getBorderColors(1);
         $this->assertCount($expectedCount, $colors);
